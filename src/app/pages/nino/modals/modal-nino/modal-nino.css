@@ -1,0 +1,274 @@
+.image-preview-card{
+  margin-top: 10px;
+  width:100%;
+  height: 310px;
+  border:1px solid #e2e8f0;
+  border-radius: 10px;
+  background:#fff;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .25s ease;
+}
+
+.image-preview{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px;
+  background: #FFFFFF;
+}
+
+.image-preview img{
+  max-width:100%;
+  max-height:100%;
+  border-radius: 10px;
+  object-fit:contain;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+.empty-preview{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 5px;
+  background: #FFFFFF;
+  color:#94a3b8;
+}
+
+.empty-preview i{
+  font-size: 45px;
+  opacity:.8;
+}
+
+.image-preview-card:hover,
+.empty-preview:hover{
+  border-color:#cbd5e1;
+  background:#fcfcfd;
+  box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+
+.empty-preview span{
+  font-size:14px;
+  font-weight:500;
+}
+
+.btn-remove-image{
+  width:100%;
+  padding:10px 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  margin-top: 11px;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  background:#fcfcfd;
+  color:#94a3b8;
+  font-size:14px;
+  font-weight:500;
+  letter-spacing:.2px;
+  cursor:pointer;
+  transition:all .22s ease;
+}
+
+.btn-remove-image i{
+  font-size:15px;
+  transform:translateY(1px);
+}
+
+.btn-remove-image:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  color:#2563eb;
+  transform:translateY(-1px);
+}
+
+.btn-remove-image:active{
+  transform:translateY(0);
+}
+
+.btn-remove-image:disabled{
+  background:#f8fafc;
+  color:#94a3b8;
+  border-color:#e2e8f0;
+  opacity:.7;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
+/* ========================== CONTENEDOR DE COLORES ========================== */
+.colors-container{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  max-height: 50px;
+  height: 50px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 6px 2px 2px;
+  transition: transform .18s ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: #d8d8d8 transparent;
+}
+
+.colors-container.shift-right{
+  transform: translateX(5px);
+}
+
+.colors-container.shift-left{
+  transform: translateX(-5px);
+}
+
+.color-chip{
+  min-height: 40px;
+  height: 40px;
+  background: #fafafa;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 12px;
+  transition: border-color .2s ease,
+  background .2s ease,
+  box-shadow .2s ease;
+  flex-shrink: 0;
+}
+
+.color-chip:focus-within{
+  background: #fff;
+  border-color: #d9d9d9;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.03);
+}
+
+.color-dot{
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  border-radius: 50%;
+  background: #333;
+  margin-right: 8px;
+}
+
+.color-chip input{
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: #333;
+  min-width: 40px;
+  max-width: 110px;
+}
+
+.color-chip input::placeholder{
+  color: #aaa;
+}
+
+.chip-remove{
+  margin-left: 4px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.chip-remove i{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 13px;
+  line-height: 1;
+  color: #8c8c8c;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.chip-remove:hover i{
+  color: #5C0B15;
+  transform: scale(1.1);
+}
+
+.add-color-btn{
+  height: 40px;
+  width: 90px;
+  padding: 0 15px;
+  border: 1.5px dashed #d8d8d8;
+  background: #fff;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  transition: background .2s ease,
+  border-color .2s ease,
+  color .2s ease;
+}
+
+.add-color-btn:hover{
+  background: #fafafa;
+  border-color: #cfcfcf;
+  color: #222;
+}
+
+/* ========================== SWITCH DE ESTADO ========================== */
+.switch-preview{
+  position:relative;
+  display:inline-block;
+  width:45px;
+  height:20px;
+  border-radius:90px;
+  background:#cbd5e1;
+  box-shadow:inset 0 2px 5px rgba(15,23,42,.12);
+  overflow:hidden;
+  transition:background .3s ease;
+}
+
+.switch-preview::after{
+  content:"";
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:
+    0 2px 6px rgba(15,23,42,.18),
+    0 1px 2px rgba(15,23,42,.08);
+}
+
+.switch-preview.active{
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+}
+
+.switch-preview.active::after{
+  animation:switchOn .35s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes switchOn{
+  from{
+    transform:translateX(0);
+  }
+  to{
+    transform:translateX(25px);
+  }
+}

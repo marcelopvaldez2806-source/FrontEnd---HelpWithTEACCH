@@ -1,0 +1,283 @@
+.navbar{
+  height: 75px;
+  padding: 0 25px;
+  background:#fff;
+  border-bottom:1px solid #e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:90;
+  box-shadow:0 2px 12px rgba(15,23,42,.04);
+}
+
+.navbar-left,
+.navbar-right{
+  display:flex;
+  align-items:center;
+}
+
+.navbar-right{
+  gap: 15px;
+  position:relative;
+}
+
+/* ================= BREADCRUMB ================= */
+
+.breadcrumb{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.crumb{
+  font-size: 14px;
+  font-weight:500;
+  color:#64748b;
+}
+
+.crumb.active{
+  color:#2563eb;
+  font-weight:600;
+}
+
+.breadcrumb i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 15px;
+  line-height:1;
+  color:#cbd5e1;
+}
+
+/* ================= BOTONES ================= */
+
+.btn-navbar{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  position:relative;
+  transition:all .25s ease;
+}
+
+.btn-navbar:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  transform:translateY(-2px);
+}
+
+.btn-navbar i{
+  display:grid;
+  place-items:center;
+  font-size:18px;
+  line-height:1;
+  color:#475569;
+  transition:.25s;
+}
+
+.btn-navbar:hover i{
+  color:#2563eb;
+}
+
+/* ================= NOTIFICACIÓN ================= */
+
+.notification-btn{
+  position:relative;
+}
+
+.notification-dot{
+  position:absolute;
+  top:9px;
+  right:10px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#2563eb;
+  border:2px solid #fff;
+}
+
+/* ================= AVATAR ================= */
+
+.user-avatar{
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.25s;
+  box-shadow:0 6px 14px rgba(37,99,235,.2);
+}
+
+.user-avatar:hover{
+  transform:scale(1.05);
+}
+
+/* ================= MENÚ USUARIO ================= */
+
+.user-menu{
+  position:absolute;
+  top:58px;
+  right:0;
+  width:260px;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 20px 45px rgba(15,23,42,.12);
+  animation:menuIn .2s ease;
+}
+
+.user-menu-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px;
+}
+
+.avatar-large{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  font-weight:600;
+}
+
+.user-data{
+  display:flex;
+  flex-direction:column;
+}
+
+.name{
+  font-size:15px;
+  font-weight:600;
+  color:#1e293b;
+}
+
+.role{
+  margin-top:2px;
+  font-size:13px;
+  color:#64748b;
+}
+
+.user-menu-divider{
+  height:1px;
+  background:#e2e8f0;
+}
+
+.user-menu-item{
+  width:100%;
+  height:48px;
+  border:none;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 18px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:500;
+  color:#334155;
+  transition:.2s;
+}
+
+.user-menu-item:hover{
+  background:#eff6ff;
+  color:#2563eb;
+}
+
+.user-menu-item i{
+  font-size:17px;
+}
+
+.user-menu-item.logout:hover{
+  background:#fef2f2;
+  color:#dc2626;
+}
+
+/* ================= MENÚ TEMAS ================= */
+
+.theme-btn{
+  position:relative;
+}
+
+.theme-menu{
+  position:absolute;
+  top:58px;
+  right:0;
+  width:210px;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 20px 45px rgba(15,23,42,.12);
+  animation:menuIn .2s ease;
+}
+
+.theme-option{
+  height:46px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  font-size:14px;
+  color:#334155;
+  transition:.2s;
+}
+
+.theme-option:hover{
+  background:#eff6ff;
+}
+
+.color{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+}
+
+.rose{
+  background:#d6336c;
+}
+
+.blue{
+  background:#2563eb;
+}
+
+.green{
+  background:#16a34a;
+}
+
+.dark{
+  background:#1e293b;
+}
+
+/* ================= ANIMACIÓN ================= */
+
+@keyframes menuIn{
+  from{
+    opacity:0;
+    transform:translateY(-8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}

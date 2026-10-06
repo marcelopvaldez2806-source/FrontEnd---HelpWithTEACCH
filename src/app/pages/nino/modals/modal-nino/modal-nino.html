@@ -1,0 +1,287 @@
+<div class="modal-backdrop" [class.fade-out]="closing">
+
+  <div class="modal-container" [class.modal-close]="closing" (click)="$event.stopPropagation()">
+    <form [formGroup]="form">
+
+      <div class="app-modal-header">
+
+        <div class="app-modal-header-left">
+          <div class="app-modal-header-icon">
+            <i [class]="modoEdicion ? 'fi-rr-refresh' : 'fi-rr-clothes-hanger'"></i>
+          </div>
+
+          <div class="app-modal-header-text">
+            <h2>{{ modoEdicion ? 'Editar Prenda' : 'Registrar Nueva Prenda' }}</h2>
+            <p>{{ modoEdicion ? 'Modifica los datos y características de la prenda seleccionada'
+              : 'Completa la información para agregar una nueva prenda al catálogo' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="app-modal-header-right">
+          <div class="app-modal-badge">
+            <i class="fi fi-br-asterik"></i>
+            <span>Campo Obligatorio</span>
+          </div>
+
+          <button type="button" class="app-modal-close-btn" (click)="cancelar()">
+            <i class="fi fi-br-cross-small"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="app-modal-body">
+
+        <div class="app-modal-grid left-wide">
+
+          <div class="app-modal-column">
+            <div class="app-modal-section">
+
+              <!-- NOMBRE -->
+              <div class="form-group primero">
+                <label>Nombre de Prenda
+                  <span class="required"><i class="fi fi-sr-asterik"></i></span>
+                </label>
+
+                <app-custom-imput
+                  formControlName="nombre"
+                  type="default"
+                  icon="fi fi-rr-label"
+                  placeholder="Ej: Hoodie Urbano Classic"
+                  [invalid]="submitted && (form.get('nombre')?.invalid ?? false)">
+                </app-custom-imput>
+              </div>
+
+              <!-- CATEGORIA Y MARCA -->
+              <div class="row-2">
+                <div class="form-group">
+                  <label>Categoría
+                    <span class="required"><i class="fi fi-sr-asterik"></i></span>
+                  </label>
+
+                  <app-custom-select
+                    [options]="categoriaOptions"
+                    [value]="form.get('categoriaId')?.value"
+                    placeholder="Seleccionar categoría"
+                    [invalid]="submitted && (form.get('categoriaId')?.invalid ?? false)"
+                    (valueChange)="onCategoriaChange($event)">
+                  </app-custom-select>
+
+                </div>
+
+                <div class="form-group">
+                  <label>Marca
+                    <span class="required"><i class="fi fi-sr-asterik"></i></span>
+                  </label>
+
+                  <app-custom-select
+                    [options]="marcaOptions"
+                    [value]="form.get('marcaId')?.value"
+                    placeholder="Seleccionar marca"
+                    [invalid]="submitted && (form.get('marcaId')?.invalid ?? false)"
+                    (valueChange)="onMarcaChange($event)">
+                  </app-custom-select>
+
+                </div>
+              </div>
+
+              <!-- MATERIAL -->
+              <div class="form-group">
+                <label>Material
+                  <span class="required"><i class="fi fi-sr-asterik"></i>
+                  </span>
+                </label>
+
+                <app-custom-imput
+                  formControlName="material"
+                  type="default"
+                  icon="fi fi-rr-reel"
+                  placeholder="Ej: 100% Algodón, Denim Stretch..."
+                  [invalid]="submitted && (form.get('material')?.invalid ?? false)">
+                </app-custom-imput>
+              </div>
+
+              <!-- COLORES -->
+              <div class="form-group">
+                <label>Colores</label>
+
+                <div class="colors-container" [class.shift-right]="animAgregar" [class.shift-left]="animEliminar">
+
+                  <div class="color-chip" *ngFor="let color of colores; let i = index; trackBy: trackByIndex">
+
+                    <span class="color-dot"></span>
+
+                    <input type="text" [(ngModel)]="colores[i]" [ngModelOptions]="{standalone:true}"
+                       [style.width.px]="Math.max(40, (colores[i]?.length || 0) * 9)" placeholder="Color">
+
+                    <button type="button" class="chip-remove" (click)="eliminarColor(i)">
+                      <i class="fi fi-rr-cross-small"></i>
+                    </button>
+
+                  </div>
+
+                  <button type="button" class="add-color-btn" (click)="agregarColor()">+ Color</button>
+                </div>
+              </div>
+
+              <!-- DESCRIPCIÓN -->
+              <div class="form-group">
+                <label>Descripción</label>
+
+                <app-custom-imput
+                  formControlName="descripcion"
+                  type="text"
+                  placeholder="Características especiales, uso recomendado...">
+                </app-custom-imput>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="app-modal-column">
+            <div class="app-modal-section">
+
+              <!-- IMÁGEN -->
+              <div class="form-group primero">
+                <label>URL de Imágen</label>
+
+                <app-custom-imput
+                  formControlName="imagenUrl"
+                  type="default"
+                  icon="fi fi-rr-link-alt"
+                  placeholder="https://..."
+                  [invalid]="!!(form.get('imagenUrl')?.value && !esUrlValida(form.get('imagenUrl')?.value))">
+                </app-custom-imput>
+              </div>
+
+              <div class="image-preview-card">
+                <ng-container *ngIf="form.get('imagenUrl')?.value; else emptyImage">
+                  <ng-container *ngIf="esUrlValida(form.get('imagenUrl')?.value); else invalidImage">
+                    <div class="image-preview">
+                      <img [src]="form.get('imagenUrl')?.value" alt="Vista previa">
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+
+                <!-- EMPTY IMÁGEN -->
+                <ng-template #invalidImage>
+                  <div class="empty-preview">
+                    <i class="fi fi-rr-picture"></i>
+                    <span>URL inválida</span>
+                  </div>
+                </ng-template>
+
+                <ng-template #emptyImage>
+                  <div class="empty-preview">
+                    <i class="fi fi-rr-picture"></i>
+                    <span>Sin IMG</span>
+                  </div>
+                </ng-template>
+              </div>
+
+              <button type="button" class="btn-remove-image" [disabled]="!form.get('imagenUrl')?.value" (click)="eliminarImagen()">
+                <i class="fi fi-bs-trash"></i>Eliminar IMG
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="app-modal-section app-modal-section-full top">
+
+          <div class="info-grid">
+
+            <!-- CÓDIGO -->
+            <div class="info-card">
+              <div class="info-card-header">
+                <span>Código de Prenda</span>
+                <span class="info-badge"><i [class]="modoEdicion? 'fi fi-br-user-robot': 'fi fi-bs-sparkles'"></i>{{ modoEdicion ? 'Sistema' : 'Generado' }}</span>
+              </div>
+
+              <div class="info-value">
+                <i class="fi fi-bs-qrcode"></i>
+                <span class="info-text">{{ modoEdicion ? datosPrenda?.codigo : 'PRD-XXXXXXXX' }}</span>
+                <i class="fi fi-br-lock"></i>
+              </div>
+            </div>
+
+            <!-- FECHA -->
+            <div class="info-card">
+              <div class="info-card-header">
+                <span>Fecha de Registro</span>
+                <span class="info-badge"><i class="fi fi-br-user-robot"></i>Sistema</span>
+              </div>
+
+              <div class="info-value">
+                <i class="fi fi-br-calendar"></i>
+                <span class="info-text">{{modoEdicion ? (datosPrenda?.fechaRegistro | date:'dd MMM yyyy, HH:mm aa') : fechaActual | date:'dd MMM yyyy, HH:mm aa'}}</span>
+                <i class="fi fi-bs-lock"></i>
+              </div>
+            </div>
+
+            <!-- ESTADO -->
+            <div class="info-card">
+              <div class="info-card-header">
+                <span>Estado</span>
+                <span class="info-badge"><i class="fi fi-br-user-robot"></i>Sistema</span>
+              </div>
+
+              <div class="info-value">
+                <i class="fi fi-br-refresh"></i>
+                <span class="info-text">{{modoEdicion ? (datosPrenda?.estado === 'SIN_LOTES' ? 'SIN LOTES' : datosPrenda?.estado) : 'SIN LOTES' }}</span>
+                <i class="fi fi-bs-lock"></i>
+              </div>
+            </div>
+
+            <!-- ACTIVO -->
+            <div class="info-card">
+              <div class="info-card-header">
+                <span>Activo</span>
+                <span class="info-badge"><i class="fi fi-br-user-robot"></i>Sistema</span>
+              </div>
+
+              <div class="info-value">
+                <span class="switch-preview" [class.active]="!modoEdicion || datosPrenda?.estado !== 'INHABILITADA'"></span>
+                <span class="info-text">{{!modoEdicion || datosPrenda?.estado !== 'INHABILITADA' ? 'True' : 'False' }}</span>
+                <i class="fi fi-bs-lock"></i>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+
+        <div class="app-modal-footer-left">
+          <button type="button" class="app-modal-btn" [disabled]="!puedeBuscar()" (click)="buscarPrenda()">
+            <i class="fi fi-br-search"></i>
+            <span>Buscar</span>
+          </button>
+
+          <button type="button" class="app-modal-btn" (click)="limpiarFormulario()">
+            <i class="fi fi-br-broom"></i>
+            <span>Limpiar</span>
+          </button>
+        </div>
+
+        <div class="app-modal-footer-right">
+          <button type="button" class="btn-secondary" (click)="cancelar()">
+            <i class="fi fi-br-cross-small"></i>
+            <span>Cancelar</span>
+          </button>
+
+          <button type="button" class="btn-primary" (click)="guardar()">
+            <i class="fi fi-bs-disk"></i>
+            <span>{{ modoEdicion ? 'Actualizar' : 'Registrar' }}</span>
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div>

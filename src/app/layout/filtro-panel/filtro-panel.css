@@ -1,0 +1,156 @@
+.filters-card {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.filters-top {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr) auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.search-box{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all .25s ease;
+}
+
+.search-box:hover{
+  border-color: #cbd5e1;
+  background: #fcfcfd;
+}
+
+.search-box:focus-within{
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+  background: #fff;
+}
+
+.search-box i{
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: color .25s ease;
+}
+
+.search-box:focus-within i{
+  color: #3b82f6;
+}
+
+.search-box input{
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1e293b;
+}
+
+.search-box input::placeholder{
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.advanced-filters {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height .3s ease,
+    opacity .25s ease,
+    margin-top .3s ease;
+}
+
+.advanced-filters.open {
+  max-height: 180px;
+  margin-top: 16px;
+  opacity: 1;
+}
+
+.advanced-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ececec;
+}
+
+.advanced-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.advanced-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+}
+
+.advanced-group input {
+  height: 42px;
+  padding: 0 12px;
+  background: #fafafa;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.advanced-group input:focus {
+  background: #fff;
+  border-color: #d8d8d8;
+}
+
+.advanced-group input::placeholder {
+  color: #aaa;
+}
+
+@media (max-width: 1200px) {
+  .filters-top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-box {
+    grid-column: 1 / -1;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+
+  .advanced-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .filters-top,
+  .advanced-grid {
+    grid-template-columns: 1fr;
+  }
+}

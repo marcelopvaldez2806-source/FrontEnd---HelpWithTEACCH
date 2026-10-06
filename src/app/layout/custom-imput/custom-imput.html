@@ -1,0 +1,49 @@
+<div
+  class="custom-input"
+  [class.variant-default]="variant === 'default'"
+  [class.variant-outline]="variant === 'outline'"
+
+  [class.type-default]="type === 'default'"
+  [class.type-text]="type === 'text'"
+  [class.type-number]="type === 'number'"
+  [class.type-password]="type === 'password'"
+  [class.type-email]="type === 'email'"
+
+  [class.disabled]="disabled"
+  [class.invalid]="invalid"
+  [class.focused]="focused">
+
+  <div class="input-container">
+
+    <i *ngIf="icon" [class]="icon + ' input-icon'"></i>
+
+    <ng-container *ngIf="type !== 'text'; else textareaTemplate">
+
+      <input
+        [type]="type === 'default' ? 'text' : type"
+        [placeholder]="placeholder"
+        [value]="value"
+        [disabled]="disabled"
+        [attr.autocomplete]="type === 'password' ? 'current-password' : 'off'"
+        (input)="onInput($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()">
+
+    </ng-container>
+
+    <ng-template #textareaTemplate>
+
+      <textarea
+        [placeholder]="placeholder"
+        [value]="value"
+        [disabled]="disabled"
+        (input)="onInput($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()">
+      </textarea>
+
+    </ng-template>
+
+  </div>
+
+</div>

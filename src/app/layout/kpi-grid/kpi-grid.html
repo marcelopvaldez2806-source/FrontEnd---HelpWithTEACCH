@@ -1,0 +1,61 @@
+<div class="kpis-grid">
+
+  <ng-container *ngIf="items.length > 0; else emptyKpis">
+
+    <div class="kpi-card" *ngFor="let item of items">
+
+      <div class="kpi-header">
+
+        <span class="kpi-title">
+          {{ item.title }}
+        </span>
+
+        <div class="kpi-icon-box" [ngClass]="item.iconClass">
+          <i [class]="item.icon"></i>
+        </div>
+
+      </div>
+
+      <div class="kpi-value">
+        {{ item.value }}
+      </div>
+
+      <div class="kpi-footer" [ngClass]="item.footerClass">
+        {{ item.footer }}
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-template #emptyKpis>
+
+    <div class="kpi-card" *ngFor="let _ of [1,2,3,4,5]">
+
+      <div class="kpi-header">
+
+        <span class="kpi-title">
+          KPI CARD
+        </span>
+
+        <div class="kpi-icon-box">
+
+          <i class="fi fi-br-circle"></i>
+
+        </div>
+
+      </div>
+
+      <div class="kpi-value">
+        Valor
+      </div>
+
+      <div class="kpi-footer">
+        Subtitulo
+      </div>
+
+    </div>
+
+  </ng-template>
+
+</div>

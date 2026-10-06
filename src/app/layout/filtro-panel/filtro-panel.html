@@ -1,0 +1,77 @@
+<div class="filters-card">
+
+  <div class="filters-top">
+
+    <div class="search-box">
+      <i class="fi fi-br-search"></i>
+      <input type="text" [placeholder]="searchPlaceholder" [(ngModel)]="search" (input)="emitFilters()">
+    </div>
+
+    <app-custom-select
+      [placeholder]="select1Placeholder"
+      [options]="select1Options"
+      [(value)]="select1"
+      (valueChange)="emitFilters()">
+    </app-custom-select>
+
+    <app-custom-select
+      [placeholder]="select2Placeholder"
+      [options]="select2Options"
+      [(value)]="select2"
+      (valueChange)="emitFilters()">
+    </app-custom-select>
+
+    <app-custom-select
+      *ngIf="select3Type === 'select'"
+      [placeholder]="select3Placeholder"
+      [options]="select3Options"
+      [(value)]="select3"
+      (valueChange)="emitFilters()">
+    </app-custom-select>
+
+    <app-custom-date
+      *ngIf="select3Type === 'date'"
+      [placeholder]="select3Placeholder"
+      [value]="select3"
+      (valueChange)="select3 = $event; emitFilters()">
+    </app-custom-date>
+
+    <div class="actions">
+
+      <button class="btn-tool" [class.active]="showAdvanced" (click)="toggleAdvancedFilters()">
+        <i [class]="showAdvanced ? 'fi fi-bs-clear-alt' : 'fi fi-bs-filter'"></i>
+      </button>
+
+      <button class="btn-tool" (click)="clearFilters()">
+        <i class="fi fi-br-broom"></i>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="advanced-filters" [class.open]="showAdvanced">
+
+    <div class="advanced-grid">
+
+      <div class="advanced-group" *ngFor="let field of advancedFields">
+
+        <label>
+          {{field.label}}
+        </label>
+
+        <app-custom-imput
+          [placeholder]="field.placeholder"
+          [icon]="field.icon"
+          [(value)]="field.value"
+          (valueChange)="emitFilters()">
+        </app-custom-imput>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>

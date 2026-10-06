@@ -1,0 +1,378 @@
+/* ========================== BOTONES HEADER DE LA PAGINA PRINCIPAL ========================== */
+button{
+  border: none;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.btn-primary,
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 5px;
+  padding:12px 15px;
+  border-radius:10px;
+  font-size:14px;
+  letter-spacing:.3px;
+  transition:all .25s ease;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:#2563eb;
+  color:#fff;
+  font-weight:500;
+  border:none;
+  box-shadow:0 8px 18px rgba(37,99,235,.18);
+}
+
+.btn-secondary{
+  background:#fff;
+  color:#475569;
+  font-weight:600;
+  border:1px solid #dbe3ee;
+}
+
+.btn-primary:hover{
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(37,99,235,.25);
+}
+
+.btn-secondary:hover{
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  transform: translateY(-1px);
+}
+
+.btn-primary i,
+.btn-secondary i{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+/* ========================== BOTON X DEL HEADER DEL MODAL ========================== */
+.app-modal-close-btn{
+  padding: 12px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  color:#64748b;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all .25s ease;
+}
+
+.app-modal-close-btn i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+
+.app-modal-close-btn:hover{
+  background:#eff6ff;
+  border-color:#93c5fd;
+  color:#2563eb;
+  box-shadow:0 8px 20px rgba(37,99,235,.15);
+  transform:translateY(-2px);
+}
+/* ========================== BOTONES DEL FOOTER DEL MODAL ========================== */
+.app-modal-btn{
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 5px;
+  font-family:'Poppins',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  line-height:1;
+  background:#fff;
+  color:#475569;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  cursor:pointer;
+  user-select:none;
+  transition:
+    background .25s ease,
+    color .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease,
+    transform .2s ease;
+}
+
+.app-modal-btn i{
+  display:grid;
+  place-items:center;
+  width:18px;
+  height:18px;
+  font-size:15px;
+  line-height:1;
+}
+
+.app-modal-btn:hover{
+  background:#f8fafc;
+  border-color:#cbd5e1;
+  color:#1e293b;
+  box-shadow:0 6px 18px rgba(15,23,42,.08);
+  transform:translateY(-2px);
+}
+
+.app-modal-btn:active{
+  transform:translateY(0);
+  box-shadow:0 2px 8px rgba(15,23,42,.08);
+}
+
+.app-modal-btn:disabled{
+  background:#f8fafc;
+  color:#94a3b8;
+  border-color:#e2e8f0;
+  box-shadow:none;
+  cursor:not-allowed;
+  opacity:.7;
+  transform:none;
+}
+
+.app-modal-btn-success{
+  background: linear-gradient(135deg,#6fb48d,#5ea27d);
+  color:#fff;
+  border-color:transparent;
+}
+
+.app-modal-btn-success:hover:not(:disabled){
+  background: linear-gradient(135deg,#66ab85,#559875);
+  box-shadow:0 10px 24px rgba(94,162,125,.22);
+}
+
+.app-modal-btn-success i{
+  color:inherit;
+}
+
+.app-modal-btn-danger{
+  background: linear-gradient(135deg,#cb7b86,#b86471);
+  color:#fff;
+  border-color:transparent;
+}
+
+.app-modal-btn-danger:hover:not(:disabled){
+  background: linear-gradient(135deg,#c06f7b,#aa5966);
+  box-shadow:0 10px 24px rgba(184,100,113,.22);
+}
+
+.app-modal-btn-danger i{
+  color:inherit;
+}
+
+.btn-tool{
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: #f5f7fb;
+  cursor: pointer;
+  transition:.25s;
+}
+
+.btn-tool i{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn-tool:hover{
+  background:#e8eefc;
+  transform:translateY(-4px);
+}
+
+.btn-tool.active{
+  background:#2563eb;
+  color:white;
+}
+
+.btn-tool-primary{
+  background:#2563eb;
+  color:white;
+}
+
+.btn-tool-primary:hover{
+  background:#1d4ed8;
+}
+
+.btn-tool:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ========================== BOTONES DEL MODAL DE LOTES ========================== */
+.btn-add-size{
+  padding: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border: none;
+  border-radius: 10px;
+  background:#3b82f6;
+  color:#fff;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(37,99,235,.22);
+  transition: all .25s ease;
+}
+
+.btn-add-size i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  line-height:1;
+}
+
+.btn-add-size:hover:not(:disabled){
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(37,99,235,.30);
+  background:linear-gradient(135deg,#1d4ed8,#2563eb);
+}
+
+.btn-add-size:active:not(:disabled){
+  transform:scale(.95);
+}
+
+.btn-add-size:disabled{
+  background:#e2e8f0;
+  color:#94a3b8;
+  box-shadow:none;
+  cursor:not-allowed;
+  transform:none;
+  opacity:.9;
+}
+
+.btn-add-size:disabled i{
+  opacity:.8;
+}
+
+.delete-size-btn,
+.size-btn{
+  padding: 15px;
+  border:1px solid #e2e8f0;
+  border-radius: 10px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 5px;
+  cursor:pointer;
+  transition:.25s ease;
+  font-size: 15px;
+  font-weight:600;
+  color:#334155;
+}
+
+.delete-size-btn:hover,
+.size-btn:hover{
+  border-color:#2563eb;
+  background:#eff6ff;
+  color:#2563eb;
+  box-shadow:0 6px 18px rgba(37,99,235,.12);
+}
+
+.delete-size-btn i,
+.size-btn i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  line-height:1;
+}
+
+.audit-toggle-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 12px;
+  border:none;
+  border-radius: 10px;
+  background:#f8fafc;
+  color:#64748b;
+  cursor:pointer;
+  line-height:1;
+  transition:
+    background .25s ease,
+    color .25s ease,
+    transform .15s ease;
+}
+
+.audit-toggle-btn:hover{
+  background:#eff6ff;
+  color:#2563eb;
+}
+
+.audit-toggle-btn:active{
+  transform:scale(.95);
+}
+
+.audit-toggle-btn i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:18px;
+  line-height:1;
+}
+
+.audit-toggle-btn.active{
+  background:#2563eb;
+  color:#fff;
+}
+
+.drawer-toggle-btn{
+  display:grid;
+  place-items:center;
+  padding: 12px;
+  border:1px solid #e5e7eb;
+  border-radius: 10px;
+  background:#ffffff;
+  color:#94a3b8;
+  cursor:pointer;
+  line-height:0;
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .15s ease;
+}
+
+.drawer-toggle-btn:hover{
+  color:#475569;
+  border-color:#cbd5e1;
+  background:#f8fafc;
+  box-shadow:0 4px 12px rgba(15,23,42,.06);
+}
+
+.drawer-toggle-btn:active{
+  transform:scale(.96);
+}
+
+.drawer-toggle-btn.open{
+  background:#eff6ff;
+  color:#2563eb;
+  border-color:#bfdbfe;
+}
+
+.drawer-toggle-btn i{
+  display:block;
+  font-size:18px;
+}

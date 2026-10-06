@@ -1,0 +1,118 @@
+<div class="custom-select custom-date" (click)="toggle($event)">
+
+  <div class="select-display">
+
+    <span class="selected-text" [class.placeholder]="!value">
+      {{ selectedLabel }}
+    </span>
+
+    <i class="fi fi-rr-calendar"></i>
+
+  </div>
+
+  <div
+    class="select-dropdown date-dropdown"
+    [class.open]="open"
+    (click)="$event.stopPropagation()">
+
+    <!-- VISTA DE DÍAS -->
+    <ng-container *ngIf="vista === 'dias'">
+
+      <div class="date-header">
+
+        <button
+          type="button"
+          class="date-nav"
+          (click)="mesAnterior($event)">
+          <i class="fi fi-rr-angle-small-left"></i>
+        </button>
+
+        <span class="date-label" (click)="abrirVistaAnios($event)">
+          {{ etiquetaMes }}
+        </span>
+
+        <button
+          type="button"
+          class="date-nav"
+          (click)="mesSiguiente($event)">
+          <i class="fi fi-rr-angle-small-right"></i>
+        </button>
+
+      </div>
+
+      <div class="date-weekdays">
+        <span *ngFor="let d of diasSemana">{{ d }}</span>
+      </div>
+
+      <div class="date-grid">
+
+        <div
+          *ngFor="let dia of diasDelMes"
+          class="date-cell"
+          [class.empty]="!dia"
+          [class.active]="esSeleccionado(dia)"
+          [class.today]="esHoy(dia) && !esSeleccionado(dia)"
+          (click)="seleccionarDia(dia, $event)">
+
+          <span *ngIf="dia">{{ dia.getDate() }}</span>
+
+        </div>
+
+      </div>
+
+      <div class="date-footer" *ngIf="value">
+        <button
+          type="button"
+          class="date-clear"
+          (click)="limpiar($event)">
+          Limpiar
+        </button>
+      </div>
+
+    </ng-container>
+
+    <!-- VISTA DE AÑOS -->
+    <ng-container *ngIf="vista === 'anios'">
+
+      <div class="date-header">
+
+        <button
+          type="button"
+          class="date-nav"
+          (click)="bloqueAnioAnterior($event)">
+          <i class="fi fi-rr-angle-small-left"></i>
+        </button>
+
+        <span class="date-label">
+          {{ etiquetaRangoAnios }}
+        </span>
+
+        <button
+          type="button"
+          class="date-nav"
+          (click)="bloqueAnioSiguiente($event)">
+          <i class="fi fi-rr-angle-small-right"></i>
+        </button>
+
+      </div>
+
+      <div class="date-grid years-grid">
+
+        <div
+          *ngFor="let anio of rangoAnios"
+          class="date-cell year-cell"
+          [class.active]="esAnioSeleccionado(anio)"
+          [class.today]="esAnioActual(anio) && !esAnioSeleccionado(anio)"
+          (click)="seleccionarAnio(anio, $event)">
+
+          <span>{{ anio }}</span>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+  </div>
+
+</div>

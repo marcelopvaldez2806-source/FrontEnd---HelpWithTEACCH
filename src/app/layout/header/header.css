@@ -1,0 +1,39 @@
+.global-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header-left{
+  flex: 1;
+  min-width: 0;
+}
+
+.header-title{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.header-title h1{
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.header-title p{
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.header-actions ::ng-deep > *{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

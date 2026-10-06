@@ -1,0 +1,153 @@
+<div class="sidebar" [class.expanded]="isExpanded">
+
+  <div class="sidebar-header">
+
+    <div class="brand">
+
+      <div class="logo-box">
+        <img src="/default2.png" alt="logo">
+      </div>
+
+      <div class="header-text">
+        <span class="title">
+          {{ usuario }}
+        </span>
+        <small class="subtitle">
+          {{ rol }}
+        </small>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sidebar-body">
+
+    <div class="menu-section">
+
+      <span class="section-title" *ngIf="isExpanded">
+        GENERAL
+      </span>
+
+      <div class="menu-item"
+           [class.active]="isActive('/home')"
+           (click)="goTo('/home')">
+
+        <div class="icon-box">
+          <i class="fi fi-br-house-chimney-blank"></i>
+        </div>
+
+        <span class="label">
+          Dashboard
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="menu-section">
+
+      <span class="section-title" *ngIf="isExpanded">
+        GESTIÓN
+      </span>
+
+      <div class="divider section-divider" *ngIf="!isExpanded"></div>
+
+      <div class="menu-item"
+           [class.active]="isActive('/PrendaHome')"
+           (click)="goTo('/PrendaHome')">
+
+        <div class="icon-box notification-parent">
+          <i class="fi fi-bs-shirt-long-sleeve"></i>
+          <span class="notification-badge" *ngIf="!isExpanded"></span>
+        </div>
+
+        <span class="label">
+          Prendas
+        </span>
+
+        <span class="notification-badge-right" *ngIf="isExpanded">
+          3
+        </span>
+
+      </div>
+
+      <div class="menu-item"
+           [class.active]="isActive('/CatalogoHome')"
+           (click)="goTo('/CatalogoHome')">
+
+        <div class="icon-box">
+          <i class="fi fi-br-layers"></i>
+        </div>
+
+        <span class="label">
+          Catálogo
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="menu-section">
+
+      <span class="section-title" *ngIf="isExpanded">
+        OPERACIONES
+      </span>
+
+      <div class="divider section-divider" *ngIf="!isExpanded"></div>
+
+      <div class="menu-item"
+           [class.active]="isActive('/VentaHome')"
+           (click)="goTo('/VentaHome')">
+
+        <div class="icon-box">
+          <i class="fi fi-br-shopping-cart"></i>
+        </div>
+
+        <span class="label">
+          Ventas
+        </span>
+
+      </div>
+
+      <div class="menu-item"
+           [class.active]="isActive('/reportes')"
+           (click)="goTo('/reportes')">
+
+        <div class="icon-box notification-parent">
+          <i class="fi fi-br-chart-line-up"></i>
+          <span class="notification-badge" *ngIf="!isExpanded"></span>
+        </div>
+
+        <span class="label">
+          Reportes
+        </span>
+
+        <span class="notification-badge-right" *ngIf="isExpanded">
+          5
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sidebar-footer">
+
+    <button class="toggle-btn"
+            type="button"
+            (click)="toggleSidebar()">
+
+      <i class="fi fi-br-circle-half-stroke"
+         [class.icon-mirror]="!isExpanded">
+      </i>
+    </button>
+
+  </div>
+
+</div>
