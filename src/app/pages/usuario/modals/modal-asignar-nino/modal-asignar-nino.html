@@ -1,0 +1,470 @@
+<div class="modal-overlay" (click)="cerrar()">
+
+  <div
+    class="modal-container"
+    (click)="detenerPropagacion($event)"
+  >
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <div class="modal-header">
+
+      <div class="header-content">
+
+        <div class="header-icon">
+          👶
+        </div>
+
+        <div>
+
+          <h2>
+            Asignar niños
+          </h2>
+
+          <p>
+            Selecciona un usuario y los niños que deseas asignarle.
+          </p>
+
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrar()"
+        [disabled]="guardando"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- BODY -->
+    <!-- ===================================================== -->
+
+    <div class="modal-body">
+
+      <!-- ERROR GENERAL -->
+
+      @if (mensajeError) {
+
+        <div class="error-message">
+
+          <span>⚠</span>
+
+          {{ mensajeError }}
+
+        </div>
+
+      }
+
+
+      @if (!mensajeError) {
+
+        <div class="assignment-layout">
+
+          <!-- ================================================= -->
+          <!-- COLUMNA IZQUIERDA - USUARIOS -->
+          <!-- ================================================= -->
+
+          <section class="usuarios-panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h3>
+                  Usuarios
+                </h3>
+
+                <p>
+                  Selecciona a quién asignar niños.
+                </p>
+
+              </div>
+
+              <span class="panel-count">
+                {{ usuarios.length }}
+              </span>
+
+            </div>
+
+
+            @if (cargandoUsuarios) {
+
+              <div class="panel-loading">
+
+                <div class="loading-spinner"></div>
+
+                <span>
+                  Cargando usuarios...
+                </span>
+
+              </div>
+
+            } @else {
+
+              @if (usuarios.length === 0) {
+
+                <div class="panel-empty">
+
+                  <div class="empty-icon">
+                    👤
+                  </div>
+
+                  <strong>
+                    No hay usuarios
+                  </strong>
+
+                  <span>
+                    No existen usuarios activos disponibles.
+                  </span>
+
+                </div>
+
+              } @else {
+
+                <div class="usuarios-list">
+
+                  @for (
+                    usuario of usuarios;
+                    track usuario.idUsuario
+                  ) {
+
+                    <button
+                      type="button"
+                      class="usuario-card"
+                      [class.seleccionado]="
+                        usuarioSeleccionadoId === usuario.idUsuario
+                      "
+                      [disabled]="guardando"
+                      (click)="seleccionarUsuario(usuario)"
+                    >
+
+                      <div class="usuario-avatar">
+
+                        <i class="fi fi-rr-user"></i>
+
+                      </div>
+
+
+                      <div class="usuario-info">
+
+                        <strong>
+                          {{ usuario.nombres }}
+                          {{ usuario.apellidos }}
+                        </strong>
+
+                        <span>
+                          {{ usuario.email }}
+                        </span>
+
+                      </div>
+
+
+                      @if (
+                        usuarioSeleccionadoId === usuario.idUsuario
+                      ) {
+
+                        <div class="usuario-check">
+                          ✓
+                        </div>
+
+                      }
+
+                    </button>
+
+                  }
+
+                </div>
+
+              }
+
+            }
+
+          </section>
+
+
+          <!-- ================================================= -->
+          <!-- COLUMNA DERECHA - NIÑOS -->
+          <!-- ================================================= -->
+
+          <section class="ninos-panel">
+
+            @if (usuarioSeleccionadoId === null) {
+
+              <!-- SIN USUARIO SELECCIONADO -->
+
+              <div class="ninos-placeholder">
+
+                <div class="placeholder-icon">
+                  👤
+                </div>
+
+                <h3>
+                  Selecciona un usuario
+                </h3>
+
+                <p>
+                  Elige un usuario de la lista para
+                  visualizar los niños disponibles.
+                </p>
+
+              </div>
+
+            } @else {
+
+              <!-- USUARIO SELECCIONADO -->
+
+              <div class="panel-header">
+
+                <div>
+
+                  <h3>
+                    Niños
+                  </h3>
+
+                  <p>
+                    Asignar a
+                    <strong>
+                      {{ usuarioSeleccionadoNombre }}
+                    </strong>
+                  </p>
+
+                </div>
+
+                <span class="selection-count">
+
+                  {{ cantidadSeleccionados() }}
+
+                  seleccionados
+
+                </span>
+
+              </div>
+
+
+              @if (
+                cargandoNinos ||
+                cargandoAsignaciones
+              ) {
+
+                <div class="panel-loading">
+
+                  <div class="loading-spinner"></div>
+
+                  <span>
+                    Cargando niños...
+                  </span>
+
+                </div>
+
+              } @else {
+
+                @if (ninos.length === 0) {
+
+                  <div class="panel-empty">
+
+                    <div class="empty-icon">
+                      👶
+                    </div>
+
+                    <strong>
+                      No hay niños registrados
+                    </strong>
+
+                    <span>
+                      Primero debes registrar un niño.
+                    </span>
+
+                  </div>
+
+                } @else {
+
+                  <div class="ninos-list">
+
+                    @for (
+                      nino of ninos;
+                      track nino.idNino
+                    ) {
+
+                      <div
+                        class="nino-card"
+                        [class.asignado]="
+                          estaAsignado(nino.idNino)
+                        "
+                        [class.seleccionado]="
+                          estaSeleccionado(nino.idNino)
+                        "
+                        [class.disabled]="
+                          estaAsignado(nino.idNino)
+                        "
+                        (click)="alternarSeleccion(nino)"
+                      >
+
+                        <!-- FOTO -->
+
+                        <div class="nino-avatar">
+
+                          @if (nino.fotoUrl) {
+
+                            <img
+                              [src]="nino.fotoUrl"
+                              [alt]="nino.nombres"
+                            />
+
+                          } @else {
+
+                            <span>
+                              👶
+                            </span>
+
+                          }
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="nino-info">
+
+                          <h3>
+                            {{ nino.nombres }}
+                            {{ nino.apellidos }}
+                          </h3>
+
+                          <div class="nino-details">
+
+                            <span>
+                              {{
+                                obtenerEdad(
+                                  nino.fechaNacimiento
+                                )
+                              }}
+                              años
+                            </span>
+
+                            <span>•</span>
+
+                            <span>
+                              {{ nino.sexo }}
+                            </span>
+
+                          </div>
+
+                        </div>
+
+
+                        <!-- CHECK -->
+
+                        <div class="nino-selection">
+
+                          @if (
+                            estaAsignado(nino.idNino)
+                          ) {
+
+                            <span class="assigned-badge">
+                              Ya asignado
+                            </span>
+
+                          } @else {
+
+                            <div
+                              class="checkbox"
+                              [class.checked]="
+                                estaSeleccionado(
+                                  nino.idNino
+                                )
+                              "
+                            >
+
+                              @if (
+                                estaSeleccionado(
+                                  nino.idNino
+                                )
+                              ) {
+                                ✓
+                              }
+
+                            </div>
+
+                          }
+
+                        </div>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+            }
+
+          </section>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- FOOTER -->
+    <!-- ===================================================== -->
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cerrar()"
+        [disabled]="guardando"
+      >
+        Cancelar
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="asignarNinos()"
+        [disabled]="
+          guardando ||
+          usuarioSeleccionadoId === null ||
+          cantidadSeleccionados() === 0
+        "
+      >
+
+        @if (guardando) {
+
+          <span class="button-spinner"></span>
+
+          Asignando...
+
+        } @else {
+
+          <span>✓</span>
+
+          Asignar
+          {{ cantidadSeleccionados() }}
+          niño(s)
+
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

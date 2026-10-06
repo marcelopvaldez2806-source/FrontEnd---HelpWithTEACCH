@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+<div class="main-layout" [class.expanded]="sidebarExpanded">
+
+  <app-navbar></app-navbar>
+
+  <div class="page-content">
+
+
+    <app-header
+      title="Gestión de Niños"
+      subtitle="Administra la información y los registros de los niños">
+      <div header-actions class="header-actions">
+        <button type="button" class="btn-primary" (click)="abrirModalNino()">
+          <i class="fi fi-br-plus"></i>
+          <span>Nuevo Niño</span>
+        </button>
+      </div>
+    </app-header>
+
+    <app-kpi-grid
+      [items]="items">
+    </app-kpi-grid>
+
+
+
+  </div>
+
+</div>
+
+
+<app-modal-nino
+  *ngIf="mostrarModalNino"
+  [modoEdicion]="modoEdicion"
+  [idNino]="ninoSeleccionado?.idNino ?? null"
+  [datosNino]="ninoSeleccionado"
+  (saved)="onNinoGuardado()"
+  (modalClose)="cerrarModalNino()">
+</app-modal-nino>

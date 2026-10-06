@@ -1,0 +1,316 @@
+<div class="ejercicio-wrapper">
+
+  <!-- ENCABEZADO -->
+  <div class="ejercicio-header">
+
+    <div class="ejercicio-numero">
+      <span>Ejercicio 4</span>
+      <strong>Ventana mágica</strong>
+    </div>
+
+    <div class="progreso-serie">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </div>
+
+  </div>
+
+
+  <!-- INSTRUCCIÓN TEACCH -->
+  <div class="instruccion-card">
+
+    <div class="instruccion-icono">
+      👀
+    </div>
+
+    <div class="instruccion-contenido">
+
+      <span class="instruccion-titulo">
+        ¿Qué tengo que hacer?
+      </span>
+
+      <p>
+        Observa la imagen a medida que aparece
+        y selecciona la respuesta correcta.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- PROCESO -->
+  <div class="pasos-card">
+
+    <div
+      class="paso"
+      [class.activo]="!imagenRevelada"
+      [class.completado]="imagenRevelada"
+    >
+
+      <span class="paso-numero">
+        1
+      </span>
+
+      <span>
+        Observa
+      </span>
+
+    </div>
+
+
+    <div class="paso-flecha">
+      →
+    </div>
+
+
+    <div
+      class="paso"
+      [class.activo]="imagenRevelada"
+      [class.completado]="opcionSeleccionada"
+    >
+
+      <span class="paso-numero">
+        2
+      </span>
+
+      <span>
+        Selecciona
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- VENTANA MÁGICA -->
+  <div class="ventana-card">
+
+    <div class="ventana-titulo">
+      <span class="ventana-icono">
+        🪟
+      </span>
+
+      <span>
+        Ventana mágica
+      </span>
+    </div>
+
+
+    <div class="ventana-contenedor">
+
+      <!-- ESTADO OCULTO -->
+      <div
+        class="ventana-oculta"
+        *ngIf="!imagenRevelada"
+      >
+
+        <div class="bloqueo-grid">
+
+          <span>▦</span>
+          <span>▦</span>
+          <span>▦</span>
+
+          <span>▦</span>
+          <span>❔</span>
+          <span>▦</span>
+
+          <span>▦</span>
+          <span>▦</span>
+          <span>▦</span>
+
+        </div>
+
+        <p>
+          La imagen está oculta
+        </p>
+
+        <button
+          type="button"
+          class="btn-revelar"
+          (click)="revelarImagen()"
+          [disabled]="enviando"
+        >
+          👀 Revelar imagen
+        </button>
+
+      </div>
+
+
+      <!-- ESTADO REVELADO -->
+      <div
+        class="ventana-revelada"
+        *ngIf="imagenRevelada"
+      >
+
+        <div class="estimulo-emoji">
+
+          {{ obtenerEstimulo() }}
+
+        </div>
+
+        <span class="estimulo-texto">
+          Observa con atención
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- OPCIONES -->
+  <div class="opciones-section">
+
+    <div class="opciones-titulo">
+
+      <span>
+        ¿Qué imagen viste?
+      </span>
+
+      <small>
+        Selecciona una opción
+      </small>
+
+    </div>
+
+
+    <div class="opciones-grid">
+
+      <button
+        *ngFor="let opcion of serie?.options ?? []"
+        type="button"
+        class="opcion-card"
+        [class.seleccionada]="estaSeleccionada(opcion)"
+        [disabled]="
+          enviando ||
+          !imagenRevelada
+        "
+        (click)="seleccionarOpcion(opcion)"
+      >
+
+        <div class="opcion-letra">
+
+          {{
+            opcion
+              .replace('opcion_', '')
+              .toUpperCase()
+          }}
+
+        </div>
+
+        <div class="opcion-emoji">
+
+          {{ obtenerVisualOpcion(opcion) }}
+
+        </div>
+
+        <div class="opcion-nombre">
+
+          {{ obtenerNombreOpcion(opcion) }}
+
+        </div>
+
+        <div
+          class="check-seleccion"
+          *ngIf="estaSeleccionada(opcion)"
+        >
+          ✓
+        </div>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESPUESTA -->
+  <div
+    class="respuesta-preview"
+    *ngIf="opcionSeleccionada"
+  >
+
+    <span class="respuesta-icono">
+      ✓
+    </span>
+
+    <div>
+
+      <strong>
+        Respuesta seleccionada
+      </strong>
+
+      <p>
+        Opción
+        {{
+          opcionSeleccionada
+            .replace('opcion_', '')
+            .toUpperCase()
+        }}
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- BOTÓN TERMINAR -->
+  <div class="acciones">
+
+    <button
+      type="button"
+      class="btn-terminar"
+      [disabled]="
+        enviando ||
+        !imagenRevelada ||
+        !opcionSeleccionada
+      "
+      (click)="enviar()"
+    >
+
+      <span>
+        ✓
+      </span>
+
+      Terminé
+
+    </button>
+
+  </div>
+
+
+  <!-- PIE -->
+  <div class="pie-ejercicio">
+
+    <span>
+      👀 Observa
+    </span>
+
+    <span>
+      →
+    </span>
+
+    <span>
+      🧠 Recuerda
+    </span>
+
+    <span>
+      →
+    </span>
+
+    <span>
+      ☝️ Selecciona
+    </span>
+
+    <span>
+      →
+    </span>
+
+    <span>
+      ✓ Terminé
+    </span>
+
+  </div>
+
+</div>

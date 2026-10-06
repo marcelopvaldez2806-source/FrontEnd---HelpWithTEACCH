@@ -1,0 +1,427 @@
+<div
+  class="modal-backdrop"
+  [class.fade-out]="closing"
+  (click)="cancelar()"
+>
+
+  <div
+    class="modal-container"
+    [class.modal-close]="closing"
+    (click)="$event.stopPropagation()"
+  >
+
+    <form [formGroup]="form">
+
+      <!-- ========================================================= -->
+      <!-- HEADER -->
+      <!-- ========================================================= -->
+
+      <div class="app-modal-header">
+
+        <div class="app-modal-header-left">
+
+          <div class="app-modal-header-icon">
+            <i class="fi fi-rr-user"></i>
+          </div>
+
+          <div class="app-modal-header-text">
+
+            <h2>
+              Crear usuario
+            </h2>
+
+            <p>
+              Completa los datos para registrar un nuevo usuario en el sistema
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="app-modal-header-right">
+
+          <div class="app-modal-badge">
+
+            <i class="fi fi-br-asterik"></i>
+
+            <span>
+              Campo Obligatorio
+            </span>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="app-modal-close-btn"
+            (click)="cancelar()"
+          >
+
+            <i class="fi fi-br-cross-small"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================= -->
+      <!-- BODY -->
+      <!-- ========================================================= -->
+
+      <div class="app-modal-body">
+
+        <div class="app-modal-grid">
+
+
+          <!-- ===================================================== -->
+          <!-- COLUMNA IZQUIERDA -->
+          <!-- ===================================================== -->
+
+          <div class="app-modal-column">
+
+            <div class="app-modal-section">
+
+
+              <!-- ================= NOMBRES / APELLIDOS ================= -->
+
+              <div class="row-2">
+
+
+                <!-- NOMBRES -->
+
+                <div class="form-group">
+
+                  <label>
+
+                    Nombres
+
+                    <span class="required">
+                      <i class="fi fi-sr-asterik"></i>
+                    </span>
+
+                  </label>
+
+
+                  <app-custom-imput
+                    formControlName="nombres"
+                    type="default"
+                    icon="fi fi-rr-user"
+                    placeholder="Ej: Marcelo"
+                    [invalid]="submitted && (form.get('nombres')?.invalid ?? false)"
+                  >
+                  </app-custom-imput>
+
+                </div>
+
+
+                <!-- APELLIDOS -->
+
+                <div class="form-group">
+
+                  <label>
+
+                    Apellidos
+
+                    <span class="required">
+                      <i class="fi fi-sr-asterik"></i>
+                    </span>
+
+                  </label>
+
+
+                  <app-custom-imput
+                    formControlName="apellidos"
+                    type="default"
+                    icon="fi fi-rr-user"
+                    placeholder="Ej: Palomino Valdez"
+                    [invalid]="submitted && (form.get('apellidos')?.invalid ?? false)"
+                  >
+                  </app-custom-imput>
+
+                </div>
+
+              </div>
+
+
+              <!-- ================= CORREO / ROL ================= -->
+
+              <div class="row-2">
+
+
+                <!-- CORREO -->
+
+                <div class="form-group">
+
+                  <label>
+
+                    Correo electrónico
+
+                    <span class="required">
+                      <i class="fi fi-sr-asterik"></i>
+                    </span>
+
+                  </label>
+
+
+                  <app-custom-imput
+                    formControlName="email"
+                    type="default"
+                    icon="fi fi-rr-envelope"
+                    placeholder="Ej: usuario@correo.com"
+                    [invalid]="submitted && (form.get('email')?.invalid ?? false)"
+                  >
+                  </app-custom-imput>
+
+                </div>
+
+
+                <!-- ROL -->
+
+                <div class="form-group">
+
+                  <label>
+
+                    Rol
+
+                    <span class="required">
+                      <i class="fi fi-sr-asterik"></i>
+                    </span>
+
+                  </label>
+
+
+                  <app-custom-select
+                    placeholder="Seleccionar rol"
+                    [options]="opcionesRol"
+                    [value]="form.get('idRol')?.value"
+                    (valueChange)="form.get('idRol')?.setValue($event)"
+                  >
+                  </app-custom-select>
+
+                  <span
+                    class="field-error"
+                    *ngIf="submitted && form.get('idRol')?.invalid"
+                  >
+                    Selecciona un rol.
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- ================================================= -->
+              <!-- SECCIÓN CREDENCIALES -->
+              <!-- ================================================= -->
+
+              <div class="section-title">
+
+                <h3>
+                  Credenciales de acceso
+                </h3>
+
+                <p>
+                  Datos que utilizará el usuario para ingresar al sistema
+                </p>
+
+              </div>
+
+
+              <!-- ================= CONTRASEÑA ================= -->
+
+              <div class="form-group password-group">
+
+                <label>
+
+                  Contraseña
+
+                  <span class="required">
+                    <i class="fi fi-sr-asterik"></i>
+                  </span>
+
+                </label>
+
+
+                <div class="password-wrapper">
+
+                  <app-custom-imput
+                    formControlName="password"
+                    [type]="mostrarPassword ? 'text' : 'password'"
+                    icon="fi fi-rr-lock"
+                    placeholder="Ingresa una contraseña"
+                    [invalid]="submitted && (form.get('password')?.invalid ?? false)"
+                  >
+                  </app-custom-imput>
+
+
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    (click)="alternarPassword()"
+                    [attr.aria-label]="mostrarPassword
+                      ? 'Ocultar contraseña'
+                      : 'Mostrar contraseña'"
+                  >
+
+                    <i
+                      [class]="mostrarPassword
+                        ? 'fi fi-rr-eye-crossed'
+                        : 'fi fi-rr-eye'"
+                    ></i>
+
+                  </button>
+
+                </div>
+
+
+                <span
+                  class="field-hint"
+                  *ngIf="!submitted || !form.get('password')?.invalid"
+                >
+                  La contraseña debe contener entre 8 y 100 caracteres.
+                </span>
+
+                <span
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    form.get('password')?.hasError('required')
+                  "
+                >
+                  La contraseña es obligatoria.
+                </span>
+
+                <span
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    form.get('password')?.hasError('minlength')
+                  "
+                >
+                  La contraseña debe tener al menos 8 caracteres.
+                </span>
+
+              </div>
+
+
+              <!-- ================================================= -->
+              <!-- INFORMACIÓN -->
+              <!-- ================================================= -->
+
+              <div class="user-info-card">
+
+                <div class="user-info-icon">
+
+                  <i class="fi fi-rr-shield-check"></i>
+
+                </div>
+
+                <div class="user-info-content">
+
+                  <span class="user-info-title">
+                    Cuenta activa
+                  </span>
+
+                  <span class="user-info-subtitle">
+                    El usuario será registrado como activo automáticamente.
+                  </span>
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================= -->
+      <!-- FOOTER -->
+      <!-- ========================================================= -->
+
+      <div class="app-modal-footer">
+
+
+        <!-- LIMPIAR -->
+
+        <div class="app-modal-footer-left">
+
+          <button
+            type="button"
+            class="app-modal-btn"
+            (click)="limpiarFormulario()"
+            [disabled]="guardando"
+          >
+
+            <i class="fi fi-br-broom"></i>
+
+            <span>
+              Limpiar
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- BOTONES DERECHA -->
+
+        <div class="app-modal-footer-right">
+
+
+          <!-- CANCELAR -->
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelar()"
+            [disabled]="guardando"
+          >
+
+            <i class="fi fi-br-cross-small"></i>
+
+            <span>
+              Cancelar
+            </span>
+
+          </button>
+
+
+          <!-- CREAR -->
+
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="guardar()"
+            [disabled]="guardando"
+          >
+
+            <i
+              [class]="guardando
+                ? 'fi fi-rr-spinner'
+                : 'fi fi-bs-disk'"
+            ></i>
+
+            <span>
+              {{ guardando ? 'Registrando...' : 'Crear usuario' }}
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

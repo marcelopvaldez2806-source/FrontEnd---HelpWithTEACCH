@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {NgIf} from '@angular/common';
+import {isPlatformBrowser, NgIf} from '@angular/common';
 import {filter} from 'rxjs';
 
 @Component({
@@ -11,35 +11,48 @@ import {filter} from 'rxjs';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
-
+export class Navbar implements OnInit {
   showUserMenu = false;
   showThemes = false;
-
   currentSection = 'General';
   currentPage = 'Dashboard';
-
   usuario: string = '';
   rol: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
 
-    this.usuario =
-      localStorage.getItem('username') || 'Administrador';
+  const usuarioGuardado = localStorage.getItem('usuario');
+  const rolGuardado = localStorage.getItem('rol');
 
-    this.rol =
-      (localStorage.getItem('role') || 'ROLE_ADMIN')
-        .replace('ROLE_', '')
-        .toLowerCase()
-        .replace(/^\w/, c => c.toUpperCase());
+  if (usuarioGuardado) {
+    try {
+      const response = JSON.parse(usuarioGuardado);
 
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme) {
-      document.body.className = savedTheme;
+      if (response.usuario) {
+        this.usuario =
+          `${response.usuario.nombres} ${response.usuario.apellidos}`;
+      }
+    } catch (error) {
+      console.error('Error al leer el usuario:', error);
     }
+  }
+
+  this.rol = rolGuardado
+    ?.replace('ROLE_', '')
+    .toUpperCase() || '';
+
+  const savedTheme = localStorage.getItem('theme');
+
+  if (savedTheme) {
+    document.body.className = savedTheme;
+  }
+}
 
     this.updateBreadcrumb();
 
@@ -67,61 +80,55 @@ export class Navbar {
   }
 
   changeTheme(theme: string): void {
-    document.body.className = theme;
-    localStorage.setItem('theme', theme);
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.className = theme;
+      localStorage.setItem('theme', theme);
+    }
     this.showThemes = false;
   }
 
-
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
-    localStorage.removeItem('userId');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
+      localStorage.removeItem('username');
+      localStorage.removeItem('userId');
+    }
 
     this.router.navigate(['/']);
   }
 
   updateBreadcrumb(): void {
-
     switch (this.router.url) {
-
       case '/home':
         this.currentSection = 'General';
         this.currentPage = 'Dashboard';
         break;
-
       case '/PrendaHome':
         this.currentSection = 'Gestión';
         this.currentPage = 'Prendas';
         break;
-
       case '/CatalogoHome':
         this.currentSection = 'Gestión';
         this.currentPage = 'Catálogo';
         break;
-
       case '/XDD':
         this.currentSection = 'Gestión';
         this.currentPage = 'Lotes FIFO';
         break;
-
       case '/VentaHome':
         this.currentSection = 'Operaciones';
         this.currentPage = 'Ventas';
         break;
-
       case '/reportes':
         this.currentSection = 'Operaciones';
         this.currentPage = 'Reportes';
         break;
-
       default:
         this.currentSection = 'General';
         this.currentPage = 'Dashboard';
         break;
     }
   }
-
 }

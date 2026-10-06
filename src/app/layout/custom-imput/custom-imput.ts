@@ -18,13 +18,12 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
   styleUrl: './custom-imput.css',
 })
 export class CustomImput  implements ControlValueAccessor {
+
   @Input({transform: booleanAttribute}) invalid = false;
   @Input() placeholder = '';
   @Input() type: 'default' | 'number' | 'password' | 'email' | 'text' = 'default';
   @Input() icon?: string;
   @Input() variant: 'default' | 'outline' = 'default';
-
-  // Compatibilidad con [(value)]
   @Input() value = '';
   @Output() valueChange = new EventEmitter<string>();
 

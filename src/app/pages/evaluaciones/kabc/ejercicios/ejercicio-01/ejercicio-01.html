@@ -1,0 +1,344 @@
+<div class="exercise-card">
+
+  <!-- =====================================================
+       ENCABEZADO
+       ===================================================== -->
+
+  <div class="exercise-header">
+
+    <div class="exercise-title">
+
+      <span class="exercise-code">
+        {{ item?.code || 'MM_01' }}
+      </span>
+
+      <h2>
+        {{ item?.subtest || 'Movimientos de manos' }}
+      </h2>
+
+    </div>
+
+
+    <div class="series-badge">
+
+      Serie
+      {{ numeroSerie }}
+      de
+      {{ totalSeries }}
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CONTENIDO
+       ===================================================== -->
+
+  <div class="exercise-content">
+
+
+    <!-- ===================================================
+         INSTRUCCIÓN
+         =================================================== -->
+
+    <div class="instruction-box">
+
+      <div class="instruction-icon">
+        👀
+      </div>
+
+      <div class="instruction-content">
+
+        <strong>
+          ¿Qué tiene que hacer el niño?
+        </strong>
+
+        <p>
+          {{
+            item?.instruction ||
+            'Observa la secuencia y realiza los movimientos en el mismo orden.'
+          }}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         SECUENCIA
+         =================================================== -->
+
+    <div class="sequence-section">
+
+      <div class="section-title">
+
+        <span>
+          👀
+        </span>
+
+        OBSERVA LA SECUENCIA
+
+      </div>
+
+
+      <div class="sequence-container">
+
+        <div
+          class="sequence-item"
+          *ngFor="
+            let movimiento of
+            obtenerSecuenciaVisual();
+            let i = index
+          "
+        >
+
+          <div class="sequence-number">
+
+            {{ i + 1 }}
+
+          </div>
+
+
+          <div class="movement-emoji">
+
+            {{ movimiento }}
+
+          </div>
+
+
+          <div class="movement-label">
+
+            Movimiento {{ i + 1 }}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           INDICACIÓN
+           ================================================= -->
+
+      <div class="sequence-help">
+
+        <span class="help-icon">
+          💡
+        </span>
+
+        <span>
+          Observa con atención y realiza
+          los movimientos en el mismo orden.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         PASOS TEACCH
+         =================================================== -->
+
+    <div class="steps-container">
+
+      <div class="step">
+
+        <div class="step-number">
+          1
+        </div>
+
+        <span>
+          Observa
+        </span>
+
+      </div>
+
+
+      <div class="step-arrow">
+        →
+      </div>
+
+
+      <div class="step">
+
+        <div class="step-number">
+          2
+        </div>
+
+        <span>
+          Repite
+        </span>
+
+      </div>
+
+
+      <div class="step-arrow">
+        →
+      </div>
+
+
+      <div class="step">
+
+        <div class="step-number">
+          3
+        </div>
+
+        <span>
+          Evalúa
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         EVALUACIÓN DEL PADRE / DOCENTE
+         =================================================== -->
+
+    <div class="evaluation-section">
+
+      <div class="evaluation-header">
+
+        <div class="evaluation-icon">
+          📝
+        </div>
+
+        <div>
+
+          <strong>
+            ¿El niño realizó correctamente
+            la actividad?
+          </strong>
+
+          <p>
+            Selecciona el resultado observado.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           OPCIONES
+           ================================================= -->
+
+      <div class="evaluation-options">
+
+
+        <!-- ===============================================
+             CORRECTA
+             =============================================== -->
+
+        <button
+          type="button"
+          class="evaluation-option correct-option"
+          [class.selected]="
+            estaSeleccionada('correcta')
+          "
+          [disabled]="enviando"
+          (click)="seleccionarCorrecta()"
+        >
+
+          <span class="option-icon">
+            ✓
+          </span>
+
+          <span class="option-content">
+
+            <strong>
+              Sí, lo realizó correctamente
+            </strong>
+
+            <small>
+              El niño siguió la secuencia
+              en el orden indicado.
+            </small>
+
+          </span>
+
+        </button>
+
+
+        <!-- ===============================================
+             INCORRECTA
+             =============================================== -->
+
+        <button
+          type="button"
+          class="evaluation-option incorrect-option"
+          [class.selected]="
+            estaSeleccionada('incorrecta')
+          "
+          [disabled]="enviando"
+          (click)="seleccionarIncorrecta()"
+        >
+
+          <span class="option-icon">
+            ✕
+          </span>
+
+          <span class="option-content">
+
+            <strong>
+              No, presentó dificultad
+            </strong>
+
+            <small>
+              El niño no realizó la secuencia
+              correctamente.
+            </small>
+
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           BOTÓN TERMINAR
+           ================================================= -->
+
+      <button
+        type="button"
+        class="finish-button"
+        [disabled]="
+          respuestaSeleccionada === null ||
+          enviando
+        "
+        (click)="enviar()"
+      >
+
+        <span
+          *ngIf="!enviando"
+        >
+          ✓
+        </span>
+
+        <span
+          *ngIf="enviando"
+          class="loading-dot"
+        >
+          ⏳
+        </span>
+
+
+        {{
+          enviando
+            ? 'Guardando respuesta...'
+            : 'Terminé'
+        }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

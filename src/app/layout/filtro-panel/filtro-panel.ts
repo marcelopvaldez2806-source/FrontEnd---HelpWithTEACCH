@@ -3,10 +3,9 @@ import {FormsModule} from '@angular/forms';
 
 import {NgForOf, NgIf} from '@angular/common';
 import {CustomSelect} from '../custom-select/custom-select';
-import {AdvancedField} from '../../model/AdvancedField';
-import {SelectOption} from '../../model/SelectOption';
 import {CustomDate} from '../custom-date/custom-date';
 import {CustomImput} from '../custom-imput/custom-imput';
+import {AdvancedField, SelectOption} from '../../models/SelectOption';
 
 @Component({
   selector: 'app-filtro-panel',

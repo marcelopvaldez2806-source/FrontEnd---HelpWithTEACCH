@@ -25,7 +25,8 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@flaticon/flaticon-uicons/css/all/all.css"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -35,16 +36,22 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+    {
+      "replace": "src/environments/environment.ts",
+      "with": "src/environments/environment.prod.ts"
+    }
+  ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
               "outputHashing": "all"
@@ -93,5 +100,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "f564d210-505b-4989-8fa6-8063e9f5b42f"
   }
 }

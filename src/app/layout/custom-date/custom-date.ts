@@ -20,14 +20,9 @@ export class CustomDate {
 
   constructor(private elementRef: ElementRef) {}
 
-  @Input()
-  placeholder = 'Seleccionar fecha';
-
-  @Input()
-  value: string | null = null;
-
-  @Output()
-  valueChange = new EventEmitter<string | null>();
+  @Input() placeholder = 'Seleccionar fecha';
+  @Input() value: string | null = null;
+  @Output() valueChange = new EventEmitter<string | null>();
 
   open = false;
 

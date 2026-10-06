@@ -1,0 +1,1143 @@
+:host {
+
+  display: block;
+
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+}
+
+
+.main-layout {
+
+  min-height: 100vh;
+
+  margin-left: 72px;
+
+  background: #f6f8fc;
+
+  transition:
+    margin-left 0.32s ease;
+
+}
+
+
+.main-layout.expanded {
+
+  margin-left: 230px;
+
+}
+
+
+.page-content {
+
+  min-height: 100vh;
+
+  padding:
+    0
+    28px
+    50px
+    28px;
+
+  box-sizing: border-box;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.content-header {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  padding-top: 30px;
+
+  margin-bottom: 28px;
+
+}
+
+
+.header-icon {
+
+  width: 54px;
+
+  height: 54px;
+
+  min-width: 54px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eef5ff,
+      #e0ecff
+    );
+
+}
+
+
+.header-icon span {
+
+  font-size: 27px;
+
+}
+
+
+.header-info h1 {
+
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+}
+
+
+.header-info p {
+
+  margin: 5px 0 0;
+
+  color: #718096;
+
+  font-size: 13px;
+
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.content-body {
+
+  width: 100%;
+
+  max-width: 1450px;
+
+  margin: 0 auto;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+
+}
+
+
+.result-card {
+
+  background: #ffffff;
+
+  border:
+    1px solid #e6edf7;
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(15, 23, 42, 0.04);
+
+}
+
+
+.card-header {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 22px;
+
+}
+
+
+.card-icon {
+
+  width: 45px;
+
+  height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: #eff6ff;
+
+  font-size: 22px;
+
+}
+
+
+.card-label {
+
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: .7px;
+
+}
+
+
+.card-header h2 {
+
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 20px;
+
+}
+
+
+/* =========================================================
+   QCHAT
+========================================================= */
+
+.qchat-result {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 25px;
+
+}
+
+
+.percentage-circle {
+
+  width: 130px;
+
+  height: 130px;
+
+  min-width: 130px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle,
+      #ffffff 58%,
+      #e8f1ff 59%,
+      #e8f1ff 68%,
+      #dbeafe 69%
+    );
+
+}
+
+
+.percentage-value {
+
+  color: #2563eb;
+
+  font-size: 29px;
+
+  font-weight: 700;
+
+}
+
+
+.percentage-label {
+
+  color: #94a3b8;
+
+  font-size: 11px;
+
+}
+
+
+.qchat-description h3 {
+
+  margin: 0 0 7px;
+
+  color: #334155;
+
+  font-size: 16px;
+
+}
+
+
+.qchat-description p {
+
+  margin: 0 0 10px;
+
+  max-width: 300px;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   DEMO BADGE
+========================================================= */
+
+.demo-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding:
+    5px
+    9px;
+
+  border-radius: 999px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+}
+
+
+/* =========================================================
+   KABC SUMMARY
+========================================================= */
+
+.kabc-summary-content {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 25px;
+
+}
+
+
+.kabc-average {
+
+  width: 130px;
+
+  min-width: 130px;
+
+  height: 130px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0fdf4,
+      #ecfeff
+    );
+
+}
+
+
+.kabc-average span {
+
+  color: #64748b;
+
+  font-size: 12px;
+
+}
+
+
+.kabc-average strong {
+
+  margin-top: 5px;
+
+  color: #0f766e;
+
+  font-size: 30px;
+
+}
+
+
+.kabc-summary-text p {
+
+  max-width: 300px;
+
+  margin: 0 0 10px;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.radar-card,
+.strategies-card {
+
+  margin-bottom: 20px;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  border:
+    1px solid #e6edf7;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(15, 23, 42, 0.04);
+
+}
+
+
+.section-heading {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 25px;
+
+}
+
+
+.section-kicker {
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #3b82f6;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: .8px;
+
+}
+
+
+.section-heading h2 {
+
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 20px;
+
+}
+
+
+.section-heading p {
+
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+}
+
+
+/* =========================================================
+   RADAR
+========================================================= */
+
+.radar-layout {
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(350px, 1fr)
+    minmax(300px, .8fr);
+
+  gap: 35px;
+
+  align-items: center;
+
+}
+
+
+.radar-container {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 430px;
+
+}
+
+
+.radar-svg {
+
+  width: 100%;
+
+  max-width: 500px;
+
+  height: auto;
+
+  overflow: visible;
+
+}
+
+
+.radar-grid {
+
+  fill: none;
+
+  stroke: #dbe4ef;
+
+  stroke-width: 1;
+
+}
+
+
+.radar-axis {
+
+  stroke: #dbe4ef;
+
+  stroke-width: 1;
+
+}
+
+
+.radar-profile {
+
+  fill: rgba(59, 130, 246, .18);
+
+  stroke: #2563eb;
+
+  stroke-width: 3;
+
+  stroke-linejoin: round;
+
+}
+
+
+.radar-point {
+
+  fill: #2563eb;
+
+  stroke: #ffffff;
+
+  stroke-width: 2;
+
+}
+
+
+.radar-label {
+
+  fill: #475569;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+}
+
+
+/* =========================================================
+   RADAR LEGEND
+========================================================= */
+
+.radar-legend {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 17px;
+
+}
+
+
+.legend-item {
+
+  width: 100%;
+
+}
+
+
+.legend-top {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 6px;
+
+}
+
+
+.legend-name {
+
+  color: #334155;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+
+.legend-top strong {
+
+  color: #2563eb;
+
+  font-size: 12px;
+
+}
+
+
+.progress-track {
+
+  width: 100%;
+
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #edf2f7;
+
+}
+
+
+.progress-value {
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #93c5fd,
+      #2563eb
+    );
+
+}
+
+
+.legend-bottom {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 5px;
+
+}
+
+
+.legend-bottom > span:first-child {
+
+  color: #94a3b8;
+
+  font-size: 10px;
+
+}
+
+
+/* =========================================================
+   PRIORIDADES
+========================================================= */
+
+.priority {
+
+  display: inline-flex;
+
+  padding:
+    3px
+    7px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+}
+
+
+.priority-high {
+
+  background: #fee2e2;
+
+  color: #dc2626;
+
+}
+
+
+.priority-medium {
+
+  background: #fef3c7;
+
+  color: #d97706;
+
+}
+
+
+.priority-low {
+
+  background: #dcfce7;
+
+  color: #16a34a;
+
+}
+
+
+/* =========================================================
+   ESTRATEGIAS
+========================================================= */
+
+.strategies-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 15px;
+
+}
+
+
+.strategy-card {
+
+  display: flex;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  border:
+    1px solid #edf2f7;
+
+  border-radius: 14px;
+
+  background: #fbfdff;
+
+}
+
+
+.strategy-icon {
+
+  width: 43px;
+
+  height: 43px;
+
+  min-width: 43px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #eff6ff;
+
+  font-size: 21px;
+
+}
+
+
+.strategy-title {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+}
+
+
+.strategy-title h3 {
+
+  margin: 0;
+
+  color: #334155;
+
+  font-size: 14px;
+
+}
+
+
+.strategy-content p {
+
+  margin: 8px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   TEACCH
+========================================================= */
+
+.teacch-card {
+
+  display: flex;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+
+  padding: 20px;
+
+  border:
+    1px solid #dbeafe;
+
+  border-radius: 16px;
+
+  background: #f8fbff;
+
+}
+
+
+.teacch-icon {
+
+  width: 40px;
+
+  height: 40px;
+
+  min-width: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #e0edff;
+
+  font-size: 19px;
+
+}
+
+
+.teacch-card h3 {
+
+  margin: 0 0 6px;
+
+  color: #334155;
+
+  font-size: 14px;
+
+}
+
+
+.teacch-card p {
+
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+  line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   DISCLAIMER
+========================================================= */
+
+.disclaimer-card {
+
+  display: flex;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  margin-bottom: 20px;
+
+  border:
+    1px solid #fde68a;
+
+  border-radius: 14px;
+
+  background: #fffbeb;
+
+}
+
+
+.disclaimer-icon {
+
+  font-size: 20px;
+
+}
+
+
+.disclaimer-card strong {
+
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #92400e;
+
+  font-size: 13px;
+
+}
+
+
+.disclaimer-card p {
+
+  margin: 0 0 5px;
+
+  color: #92400e;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.actions {
+
+  display: flex;
+
+  justify-content: flex-start;
+
+  margin-top: 10px;
+
+}
+
+
+.btn-secondary {
+
+  padding:
+    11px
+    18px;
+
+  border:
+    1px solid #dbe3ef;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #475569;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .2s;
+
+}
+
+
+.btn-secondary:hover {
+
+  background: #f8fafc;
+
+  border-color: #bfdbfe;
+
+  color: #2563eb;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .summary-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .radar-layout {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .radar-container {
+
+    min-height: 380px;
+
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .main-layout {
+
+    margin-left: 72px;
+
+  }
+
+
+  .main-layout.expanded {
+
+    margin-left: 72px;
+
+  }
+
+
+  .page-content {
+
+    padding:
+      0
+      15px
+      35px;
+
+  }
+
+
+  .content-header {
+
+    padding-top: 22px;
+
+  }
+
+
+  .header-info h1 {
+
+    font-size: 22px;
+
+  }
+
+
+  .qchat-result,
+  .kabc-summary-content {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+
+  .strategies-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .strategy-title {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+}

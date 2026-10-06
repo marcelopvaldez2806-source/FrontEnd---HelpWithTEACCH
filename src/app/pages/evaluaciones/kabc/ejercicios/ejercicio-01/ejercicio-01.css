@@ -1,0 +1,878 @@
+/* =========================================================
+   TARJETA PRINCIPAL
+   ========================================================= */
+
+.exercise-card {
+
+  width: 100%;
+
+  background: #ffffff;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid #e6eee9;
+
+  box-shadow:
+    0 8px 24px
+    rgba(46, 72, 61, 0.06);
+
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.exercise-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 24px 28px;
+
+  border-bottom:
+    1px solid #edf2ef;
+
+}
+
+
+.exercise-title {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+}
+
+
+.exercise-code {
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  color: #63917c;
+
+}
+
+
+.exercise-title h2 {
+
+  margin: 0;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: #263b33;
+
+}
+
+
+.series-badge {
+
+  padding: 9px 15px;
+
+  border-radius: 999px;
+
+  background: #edf8f1;
+
+  color: #4f8a6c;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+.exercise-content {
+
+  padding: 24px;
+
+}
+
+
+/* =========================================================
+   INSTRUCCIÓN
+   ========================================================= */
+
+.instruction-box {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding: 17px 18px;
+
+  margin-bottom: 25px;
+
+  background: #f5faf7;
+
+  border: 1px solid #dceee3;
+
+  border-radius: 15px;
+
+}
+
+
+.instruction-icon {
+
+  width: 38px;
+
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #ffffff;
+
+  border-radius: 11px;
+
+  font-size: 19px;
+
+}
+
+
+.instruction-content strong {
+
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 14px;
+
+  color: #294238;
+
+}
+
+
+.instruction-content p {
+
+  margin: 0;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  color: #6c8177;
+
+}
+
+
+/* =========================================================
+   TÍTULO DE SECCIÓN
+   ========================================================= */
+
+.sequence-section {
+
+  margin-top: 5px;
+
+}
+
+
+.section-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+
+  color: #5d7469;
+
+}
+
+
+/* =========================================================
+   SECUENCIA
+   ========================================================= */
+
+.sequence-container {
+
+  min-height: 210px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 20px;
+
+  padding: 28px 20px;
+
+  border: 1px dashed #cfe1d7;
+
+  border-radius: 16px;
+
+  background: #fcfefd;
+
+}
+
+
+.sequence-item {
+
+  width: 130px;
+
+  min-height: 145px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  position: relative;
+
+  padding: 15px;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1ebe5;
+
+  box-shadow:
+    0 4px 12px
+    rgba(50, 80, 66, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+}
+
+
+.sequence-item:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 7px 18px
+    rgba(50, 80, 66, 0.09);
+
+}
+
+
+.sequence-number {
+
+  position: absolute;
+
+  top: 9px;
+
+  left: 10px;
+
+  width: 25px;
+
+  height: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #edf8f1;
+
+  color: #5c8d74;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+}
+
+
+.movement-emoji {
+
+  font-size: 58px;
+
+  line-height: 1;
+
+  margin-top: 8px;
+
+}
+
+
+.movement-label {
+
+  font-size: 11px;
+
+  color: #80928a;
+
+  font-weight: 600;
+
+}
+
+
+/* =========================================================
+   AYUDA
+   ========================================================= */
+
+.sequence-help {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 13px;
+
+  font-size: 12px;
+
+  color: #71867b;
+
+  text-align: center;
+
+}
+
+
+.help-icon {
+
+  font-size: 15px;
+
+}
+
+
+/* =========================================================
+   PASOS
+   ========================================================= */
+
+.steps-container {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 18px 10px;
+
+  margin-top: 5px;
+
+}
+
+
+.step {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: #71867b;
+
+}
+
+
+.step-number {
+
+  width: 25px;
+
+  height: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #edf8f1;
+
+  color: #5c8d74;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+}
+
+
+.step-arrow {
+
+  color: #a9bbb2;
+
+  font-size: 15px;
+
+}
+
+
+/* =========================================================
+   EVALUACIÓN
+   ========================================================= */
+
+.evaluation-section {
+
+  margin-top: 8px;
+
+  padding-top: 23px;
+
+  border-top:
+    1px solid #edf2ef;
+
+}
+
+
+.evaluation-header {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 13px;
+
+  margin-bottom: 17px;
+
+}
+
+
+.evaluation-icon {
+
+  width: 38px;
+
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #f6f3ee;
+
+  border-radius: 11px;
+
+  font-size: 18px;
+
+}
+
+
+.evaluation-header strong {
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 14px;
+
+  color: #294238;
+
+}
+
+
+.evaluation-header p {
+
+  margin: 0;
+
+  font-size: 12px;
+
+  color: #84958d;
+
+}
+
+
+/* =========================================================
+   OPCIONES
+   ========================================================= */
+
+.evaluation-options {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
+}
+
+
+.evaluation-option {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 15px;
+
+  text-align: left;
+
+  background: #ffffff;
+
+  border: 1.5px solid #e1e9e4;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+}
+
+
+.evaluation-option:hover:not(:disabled) {
+
+  transform: translateY(-1px);
+
+}
+
+
+.evaluation-option:disabled {
+
+  cursor: not-allowed;
+
+  opacity: 0.75;
+
+}
+
+
+.option-icon {
+
+  width: 35px;
+
+  height: 35px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 10px;
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+}
+
+
+.option-content {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+
+.option-content strong {
+
+  font-size: 12px;
+
+  color: #354c42;
+
+}
+
+
+.option-content small {
+
+  font-size: 10px;
+
+  line-height: 1.4;
+
+  color: #8a9b93;
+
+}
+
+
+/* =========================================================
+   OPCIÓN CORRECTA
+   ========================================================= */
+
+.correct-option .option-icon {
+
+  background: #edf8f1;
+
+  color: #4d906d;
+
+}
+
+
+.correct-option:hover:not(:disabled),
+.correct-option.selected {
+
+  border-color: #86bda0;
+
+  background: #f6fbf8;
+
+}
+
+
+/* =========================================================
+   OPCIÓN INCORRECTA
+   ========================================================= */
+
+.incorrect-option .option-icon {
+
+  background: #fff2ef;
+
+  color: #bd776b;
+
+}
+
+
+.incorrect-option:hover:not(:disabled),
+.incorrect-option.selected {
+
+  border-color: #d9a39a;
+
+  background: #fff9f7;
+
+}
+
+
+/* =========================================================
+   BOTÓN TERMINAR
+   ========================================================= */
+
+.finish-button {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-top: 16px;
+
+  padding: 13px 18px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #65967d;
+
+  color: #ffffff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+}
+
+
+.finish-button:hover:not(:disabled) {
+
+  background: #56876e;
+
+  transform: translateY(-1px);
+
+}
+
+
+.finish-button:disabled {
+
+  background: #c5d4cc;
+
+  cursor: not-allowed;
+
+}
+
+
+.loading-dot {
+
+  animation:
+    pulse 1s infinite;
+
+}
+
+
+/* =========================================================
+   ANIMACIÓN
+   ========================================================= */
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .exercise-header {
+
+    padding: 20px;
+
+  }
+
+
+  .exercise-content {
+
+    padding: 18px;
+
+  }
+
+
+  .exercise-title h2 {
+
+    font-size: 19px;
+
+  }
+
+
+  .sequence-container {
+
+    gap: 8px;
+
+    padding: 20px 10px;
+
+  }
+
+
+  .sequence-item {
+
+    width: 90px;
+
+    min-height: 120px;
+
+    padding: 10px;
+
+  }
+
+
+  .movement-emoji {
+
+    font-size: 42px;
+
+  }
+
+
+  .movement-label {
+
+    font-size: 9px;
+
+  }
+
+
+  .evaluation-options {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}
+
+
+@media (max-width: 450px) {
+
+  .series-badge {
+
+    padding: 7px 10px;
+
+    font-size: 10px;
+
+  }
+
+
+  .sequence-container {
+
+    gap: 5px;
+
+  }
+
+
+  .sequence-item {
+
+    width: 78px;
+
+    min-height: 105px;
+
+  }
+
+
+  .movement-emoji {
+
+    font-size: 35px;
+
+  }
+
+
+  .step {
+
+    font-size: 10px;
+
+  }
+
+}

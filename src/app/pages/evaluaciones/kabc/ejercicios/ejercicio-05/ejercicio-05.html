@@ -1,0 +1,270 @@
+<div class="ejercicio-container">
+
+  <!-- HEADER -->
+
+  <div class="ejercicio-header">
+
+    <div>
+
+      <span class="ejercicio-numero">
+        Ejercicio 5
+      </span>
+
+      <h2>
+        Reconocimiento de caras
+      </h2>
+
+    </div>
+
+    <div class="serie-indicador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </div>
+
+  </div>
+
+
+  <!-- INSTRUCCIÓN -->
+
+  <section class="instruction-box">
+
+    <div class="instruction-icon">
+      👀
+    </div>
+
+    <div class="instruction-content">
+
+      <span class="instruction-title">
+        ¿Qué tengo que hacer?
+      </span>
+
+      <p>
+        Observa y recuerda las caras.
+        Después selecciona la cara que viste.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- PASOS -->
+
+  <div class="steps">
+
+    <div class="step active">
+
+      <span>1</span>
+
+      <strong>
+        Observa
+      </strong>
+
+    </div>
+
+    <div class="step-line"></div>
+
+    <div class="step active">
+
+      <span>2</span>
+
+      <strong>
+        Recuerda
+      </strong>
+
+    </div>
+
+    <div class="step-line"></div>
+
+    <div
+      class="step"
+      [class.active]="opcionSeleccionada"
+    >
+
+      <span>3</span>
+
+      <strong>
+        Selecciona
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- CARAS A RECORDAR -->
+
+  <section class="stimulus-section">
+
+    <div class="section-title">
+
+      Observa y recuerda estas caras
+
+    </div>
+
+    <div class="memory-grid">
+
+      <div
+        class="memory-face"
+        *ngFor="
+          let cara of obtenerEstimulos()
+        "
+      >
+
+        <div class="face-visual">
+
+          {{ obtenerCara(cara) }}
+
+        </div>
+
+        <span>
+          {{ obtenerNombreCara(cara) }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- OPCIONES -->
+
+  <section class="options-section">
+
+    <div class="section-title">
+
+      Ahora selecciona la cara que viste
+
+    </div>
+
+    <div class="options-grid">
+
+      <button
+        *ngFor="
+          let opcion of obtenerOpciones()
+        "
+        type="button"
+
+        class="face-option"
+
+        [class.selected]="
+          estaSeleccionada(opcion)
+        "
+
+        [disabled]="enviando"
+
+        (click)="
+          seleccionarCara(opcion)
+        "
+      >
+
+        <div class="selection-number">
+
+          <span
+            *ngIf="
+              estaSeleccionada(opcion)
+            "
+          >
+            ✓
+          </span>
+
+        </div>
+
+        <div class="face-visual">
+
+          {{ obtenerCara(opcion) }}
+
+        </div>
+
+        <div class="face-name">
+
+          {{ obtenerNombreCara(opcion) }}
+
+        </div>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- RESPUESTA -->
+
+  <section
+    class="answer-preview"
+    *ngIf="opcionSeleccionada"
+  >
+
+    <span class="preview-icon">
+      ✓
+    </span>
+
+    <div>
+
+      <strong>
+        Tu respuesta
+      </strong>
+
+      <p>
+        {{ obtenerNombreCara(
+          opcionSeleccionada
+        ) }}
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- TERMINAR -->
+
+  <div class="action-section">
+
+    <button
+      type="button"
+
+      class="finish-button"
+
+      [disabled]="
+        !opcionSeleccionada ||
+        enviando
+      "
+
+      (click)="enviar()"
+    >
+
+      <span *ngIf="!enviando">
+        ✓
+      </span>
+
+      <span *ngIf="enviando">
+        ⏳
+      </span>
+
+      {{
+        enviando
+          ? 'Guardando...'
+          : 'Terminé'
+      }}
+
+    </button>
+
+  </div>
+
+
+  <!-- FOOTER -->
+
+  <div class="exercise-footer">
+
+    <span>
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+
+    <span>
+      Selecciona una sola respuesta
+    </span>
+
+  </div>
+
+</div>

@@ -1,0 +1,337 @@
+<div class="app-shell">
+
+  <!-- NAVBAR -->
+  <app-navbar></app-navbar>
+
+  <!-- SIDEBAR -->
+  <app-sidebar
+    (sidebarToggle)="onSidebarToggle($event)">
+  </app-sidebar>
+
+
+  <!-- CONTENIDO -->
+  <main
+    class="main-content"
+    [class.sidebar-expanded]="sidebarExpanded">
+
+    <div class="results-container">
+
+      <!-- ENCABEZADO -->
+      <section class="page-header">
+
+        <div class="header-icon">
+          📊
+        </div>
+
+        <div class="header-text">
+
+          <h1>
+            Resultados
+          </h1>
+
+          <p>
+            Consulta los resultados de las evaluaciones
+            Q-CHAT realizadas.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- CONTROLES -->
+      <section class="controls-card">
+
+        <div class="search-wrapper">
+
+          <span class="search-icon">
+            🔎
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="textoBusqueda"
+            (input)="buscar()"
+            placeholder="Buscar por nombre o ID de evaluación..."
+            class="search-input"
+          />
+
+        </div>
+
+
+        <div class="test-badge">
+
+          <span class="test-dot"></span>
+
+          Q-CHAT
+
+        </div>
+
+      </section>
+
+
+      <!-- CARGANDO -->
+      <section
+        *ngIf="cargando"
+        class="state-card loading-card">
+
+        <div class="spinner"></div>
+
+        <p>
+          Cargando resultados...
+        </p>
+
+      </section>
+
+
+      <!-- ERROR -->
+      <section
+        *ngIf="!cargando && mensajeError"
+        class="state-card error-card">
+
+        <div class="state-icon">
+          ⚠️
+        </div>
+
+        <h3>
+          No se pudieron cargar los resultados
+        </h3>
+
+        <p>
+          {{ mensajeError }}
+        </p>
+
+        <button
+          type="button"
+          class="retry-button"
+          (click)="cargarResultados()">
+
+          Intentar nuevamente
+
+        </button>
+
+      </section>
+
+
+      <!-- SIN RESULTADOS -->
+      <section
+        *ngIf="
+          !cargando &&
+          !mensajeError &&
+          resultadosFiltrados.length === 0
+        "
+        class="state-card empty-card">
+
+        <div class="empty-icon">
+          📋
+        </div>
+
+        <h3>
+          No hay resultados disponibles
+        </h3>
+
+        <p *ngIf="!textoBusqueda">
+          Cuando completes una evaluación Q-CHAT,
+          sus resultados aparecerán aquí.
+        </p>
+
+        <p *ngIf="textoBusqueda">
+          No encontramos evaluaciones que coincidan
+          con tu búsqueda.
+        </p>
+
+      </section>
+
+
+      <!-- TABLA -->
+      <section
+        *ngIf="
+          !cargando &&
+          !mensajeError &&
+          resultadosFiltrados.length > 0
+        "
+        class="results-card">
+
+        <div class="table-header">
+
+          <div>
+
+            <h2>
+              Evaluaciones Q-CHAT
+            </h2>
+
+            <span>
+              {{ resultadosFiltrados.length }}
+              resultado(s)
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Niño
+                </th>
+
+                <th>
+                  Evaluación
+                </th>
+
+                <th>
+                  Fecha
+                </th>
+
+                <th>
+                  Estado
+                </th>
+
+                <th>
+                  Acción
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr
+                *ngFor="
+                  let resultado of resultadosFiltrados
+                ">
+
+                <!-- NIÑO -->
+                <td>
+
+                  <div class="child-cell">
+
+                    <div class="child-avatar">
+                      👦
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ resultado.nombreNino }}
+                      </strong>
+
+                      <small>
+                        Niño registrado
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- EVALUACIÓN -->
+                <td>
+
+                  <div class="evaluation-cell">
+
+                    <span class="evaluation-title">
+                      Q-CHAT
+                    </span>
+
+                    <span class="evaluation-id">
+                      Evaluación #{{ resultado.idEvaluacion }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- FECHA -->
+                <td>
+
+                  <div class="date-cell">
+
+                    <span>
+                      {{ formatearFecha(
+                        resultado.fechaEvaluacion
+                      ) }}
+                    </span>
+
+                    <small>
+                      {{ formatearHora(
+                        resultado.fechaEvaluacion
+                      ) }}
+                    </small>
+
+                  </div>
+
+                </td>
+
+
+                <!-- ESTADO -->
+                <td>
+
+                  <span class="status-badge">
+
+                    <span class="status-icon">
+                      ✓
+                    </span>
+
+                    {{
+                      obtenerTextoEstado(
+                        resultado.estado
+                      )
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- ACCIÓN -->
+                <td>
+
+                  <button
+                    type="button"
+                    class="view-button"
+                    (click)="
+                      verResultado(
+                        resultado.idEvaluacion
+                      )
+                    ">
+
+                    <span>
+                      Ver resultado
+                    </span>
+
+                    <span class="arrow">
+                      →
+                    </span>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>

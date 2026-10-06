@@ -1,0 +1,158 @@
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+<div class="main-layout" [class.expanded]="sidebarExpanded">
+
+  <app-navbar></app-navbar>
+
+  <div class="page-content">
+
+    <app-header
+      title="Evaluaciones"
+      subtitle="Selecciona una evaluación para comenzar">
+    </app-header>
+
+    <section class="evaluaciones-section">
+
+      <div class="section-heading">
+
+        <span class="section-label">
+          EVALUACIONES DISPONIBLES
+        </span>
+
+        <h1>
+          ¿Qué evaluación deseas realizar?
+        </h1>
+
+        <p>
+          Selecciona una de las siguientes evaluaciones para comenzar
+          el proceso con el niño.
+        </p>
+
+      </div>
+
+
+      <div class="evaluaciones-grid">
+
+        <!-- Q-CHAT -->
+        <button
+          type="button"
+          class="evaluacion-card qchat-card"
+          (click)="hacerQChat()">
+
+          <div class="card-top">
+
+            <div class="evaluacion-icon">
+              <i class="fi fi-rr-brain"></i>
+            </div>
+
+            <span class="evaluacion-badge">
+              CUESTIONARIO
+            </span>
+
+          </div>
+
+          <div class="card-content">
+
+            <h2>
+              Hacer test Q-CHAT
+            </h2>
+
+            <p>
+              Cuestionario de evaluación compuesto por 10 preguntas
+              sobre el comportamiento y desarrollo del niño.
+            </p>
+
+          </div>
+
+          <div class="card-footer">
+
+            <span>
+              10 preguntas
+            </span>
+
+            <span class="card-arrow">
+              <i class="fi fi-rr-arrow-right"></i>
+            </span>
+
+          </div>
+
+        </button>
+
+
+        <!-- K-ABC -->
+        <button
+          type="button"
+          class="evaluacion-card kabc-card"
+          (click)="hacerKabc()">
+
+          <div class="card-top">
+
+            <div class="evaluacion-icon">
+              <i class="fi fi-rr-gamepad"></i>
+            </div>
+
+            <span class="evaluacion-badge">
+              INTERACTIVO
+            </span>
+
+          </div>
+
+          <div class="card-content">
+
+            <h2>
+              Hacer test K-ABC
+            </h2>
+
+            <p>
+              Evaluación mediante actividades interactivas y pequeños
+              juegos adaptados para el niño.
+            </p>
+
+          </div>
+
+          <div class="card-footer">
+
+            <span>
+              Actividades interactivas
+            </span>
+
+            <span class="card-arrow">
+              <i class="fi fi-rr-arrow-right"></i>
+            </span>
+
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- INFORMACIÓN -->
+      <div class="evaluation-info">
+
+        <div class="info-icon">
+          <i class="fi fi-rr-info"></i>
+        </div>
+
+        <div class="info-content">
+
+          <strong>
+            Antes de comenzar
+          </strong>
+
+          <span>
+            Asegúrate de seleccionar correctamente al niño que realizará
+            la evaluación.
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

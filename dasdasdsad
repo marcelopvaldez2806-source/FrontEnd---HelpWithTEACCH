@@ -1,0 +1,47 @@
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+ angular.json                                       |  20 [32m+[m[31m-[m
+ package-lock.json                                  |  26 [32m+[m
+ package.json                                       |   1 [32m+[m
+ src/app/app.config.ts                              |  34 [32m+[m[31m-[m
+ src/app/app.html                                   | 337 [32m+[m[31m-----------[m
+ src/app/app.routes.server.ts                       |  10 [32m+[m[31m-[m
+ src/app/app.routes.ts                              | 148 [32m+++++[m[31m-[m
+ src/app/core/interceptors/auth.interceptor.ts      |  24 [32m+[m
+ src/app/core/services/auth.service.ts              | 179 [32m+++++++[m
+ src/app/core/services/nino.service.ts              |  65 [32m+++[m
+ src/app/layout/custom-date/custom-date.ts          |  11 [32m+[m[31m-[m
+ src/app/layout/custom-imput/custom-imput.ts        |   3 [32m+[m[31m-[m
+ src/app/layout/custom-select/custom-select.css     |   2 [32m+[m[31m-[m
+ src/app/layout/custom-select/custom-select.ts      |  19 [32m+[m[31m-[m
+ src/app/layout/custom-toogle/custom-toogle.css     | 161 [32m++++++[m
+ src/app/layout/custom-toogle/custom-toogle.html    |  61 [32m++[m[31m-[m
+ src/app/layout/custom-toogle/custom-toogle.ts      |  52 [32m++[m
+ src/app/layout/filtro-panel/filtro-panel.ts        |   3 [32m+[m[31m-[m
+ src/app/layout/kpi-grid/kpi-grid.ts                |   2 [32m+[m[31m-[m
+ src/app/layout/navbar/navbar.ts                    |  77 [32m+[m[31m--[m
+ src/app/layout/sidebar/sidebar.css                 |   2 [32m+[m[31m-[m
+ src/app/layout/sidebar/sidebar.html                | 390 [32m++++++++++++[m[31m--[m
+ src/app/layout/sidebar/sidebar.ts                  |  91 [32m+++[m[31m-[m
+ src/app/models/AuditoriaResponse.ts                |   7 [32m+[m
+ src/app/models/NinoEditRequest.ts                  |  10 [32m+[m
+ src/app/models/NinoRequest.ts                      |  10 [32m+[m
+ src/app/models/NinoResponse.ts                     |  14 [32m+[m
+ src/app/models/PageResponse.ts                     |  11 [32m+[m
+ src/app/models/SelectOption.ts                     |  22 [32m+[m
+ src/app/models/auth.models.ts                      |  40 [32m++[m
+ src/app/models/estado.models.ts                    |  10 [32m+[m[31m-[m
+ src/app/pages/login/login.css                      |  73 [32m+[m[31m--[m
+ src/app/pages/login/login.html                     | 258 [32m+++++++[m[31m--[m
+ src/app/pages/login/login.ts                       | 420 [32m+++++++++++++[m[31m--[m
+ .../pages/nino/modals/modal-nino/modal-nino.css    | 339 [32m+++++[m[31m-------[m
+ .../pages/nino/modals/modal-nino/modal-nino.html   | 521 [32m++++++++++++[m[31m------[m
+ src/app/pages/nino/modals/modal-nino/modal-nino.ts | 585 [32m++++++++[m[31m-------------[m
+ src/app/pages/nino/nino.html                       |  51 [32m+[m[31m-[m
+ src/app/pages/nino/nino.ts                         | 117 [32m+++++[m
+ src/index.html                                     |   3 [32m+[m
+ src/main.server.ts                                 |   5 [32m+[m[31m-[m
+ src/styles.css                                     |  11 [32m+[m
+ src/styles/botones.css                             |  45 [32m++[m
+ src/styles/layout.css                              |   3 [32m+[m[31m-[m
+ 44 files changed, 2883 insertions(+), 1390 deletions(-)

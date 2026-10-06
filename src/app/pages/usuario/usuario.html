@@ -1,0 +1,199 @@
+<!-- ========================================================= -->
+<!-- SIDEBAR -->
+<!-- ========================================================= -->
+
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+
+<!-- ========================================================= -->
+<!-- CONTENIDO PRINCIPAL -->
+<!-- ========================================================= -->
+
+<div
+  class="main-layout"
+  [class.expanded]="sidebarExpanded"
+>
+
+  <!-- NAVBAR -->
+
+  <app-navbar></app-navbar>
+
+
+  <!-- CONTENIDO DE LA PÁGINA -->
+
+  <div class="page-content">
+
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <app-header
+      title="Gestión de usuarios"
+      subtitle="Administra los usuarios y sus relaciones con los niños"
+    >
+
+      <div
+        header-actions
+        class="header-actions"
+      >
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="abrirModalUsuario()"
+        >
+
+          <i class="fi fi-br-user-add"></i>
+
+          <span>
+            Nuevo usuario
+          </span>
+
+        </button>
+
+      </div>
+
+    </app-header>
+
+
+    <!-- ===================================================== -->
+    <!-- CONTENIDO -->
+    <!-- ===================================================== -->
+
+    <div class="usuario-content">
+
+
+      <!-- =================================================== -->
+      <!-- TARJETA CREAR USUARIO -->
+      <!-- =================================================== -->
+
+      <section class="gestion-card">
+
+        <div class="gestion-card-icon">
+
+          <i class="fi fi-br-user-add"></i>
+
+        </div>
+
+
+        <div class="gestion-card-content">
+
+          <span class="gestion-card-label">
+            USUARIOS
+          </span>
+
+          <h2>
+            Crear usuario
+          </h2>
+
+          <p>
+            Registra un nuevo usuario en el sistema
+            y asigna el rol correspondiente.
+          </p>
+
+
+          <button
+            type="button"
+            class="gestion-card-button"
+            (click)="abrirModalUsuario()"
+          >
+
+            <i class="fi fi-br-user-add"></i>
+
+            <span>
+              Crear usuario
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================== -->
+      <!-- TARJETA ASIGNAR NIÑOS -->
+      <!-- =================================================== -->
+
+      <section class="gestion-card">
+
+        <div class="gestion-card-icon">
+
+          <i class="fi fi-br-child-head"></i>
+
+        </div>
+
+
+        <div class="gestion-card-content">
+
+          <span class="gestion-card-label">
+            RELACIÓN USUARIO - NIÑO
+          </span>
+
+          <h2>
+            Asignar niños
+          </h2>
+
+          <p>
+            Relaciona uno o más niños existentes
+            con un usuario registrado.
+          </p>
+
+
+          <button
+            type="button"
+            class="gestion-card-button"
+            (click)="abrirModalAsignarNino()"
+          >
+
+            <i class="fi fi-br-child-head"></i>
+
+            <span>
+              Asignar niños
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL CREAR USUARIO -->
+<!-- ========================================================= -->
+
+@if (mostrarModalUsuario) {
+
+  <app-modal-usuario
+    (cerrarModal)="cerrarModalUsuario()"
+    (usuarioCreado)="usuarioCreado()"
+  >
+  </app-modal-usuario>
+
+}
+
+
+<!-- ========================================================= -->
+<!-- MODAL ASIGNAR NIÑOS -->
+<!-- ========================================================= -->
+
+@if (mostrarModalAsignarNino) {
+
+  <app-modal-asignar-nino
+    (cerrarModal)="cerrarModalAsignarNino()"
+    (asignacionRealizada)="asignacionRealizada()"
+  >
+  </app-modal-asignar-nino>
+
+}

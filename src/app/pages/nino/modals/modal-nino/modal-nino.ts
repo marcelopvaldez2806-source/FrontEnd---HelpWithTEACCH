@@ -1,448 +1,256 @@
 import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {PrendaService} from '../../../../services/prenda-service';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {CategoriaResponseDTO} from '../../../../model/CategoriaResponseDTO';
-import {MarcaResponseDTO} from '../../../../model/MarcaResponseDTO';
-import {CategoriaService} from '../../../../services/categoria-service';
-import {MarcaService} from '../../../../services/marca-service';
-import {PrendaUpdateDTO} from '../../../../model/PrendaUpdateDTO';
-import {PrendaRegistroDTO} from '../../../../model/PrendaRegistroDTO';
-import {SelectOption} from '../../../../model/SelectOption';
 import {CustomSelect} from '../../../../layout/custom-select/custom-select';
 import {CustomImput} from '../../../../layout/custom-imput/custom-imput';
+import {SelectOption} from '../../../../models/SelectOption';
+import {DatePipe, NgIf} from '@angular/common';
+import {NinoService} from '../../../../core/services/nino.service';
+import {CustomToggle} from '../../../../layout/custom-toogle/custom-toogle';
+import {NinoRequest} from '../../../../models/NinoRequest';
+import {CustomDate} from '../../../../layout/custom-date/custom-date';
 
 @Component({
-  selector: 'app-modal-prenda',
+  selector: 'app-modal-nino',
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    NgForOf,
-    NgIf,
+    CustomImput,
     DatePipe,
+    NgIf,
     CustomSelect,
-    CustomImput
+    CustomToggle,
+    CustomDate,
   ],
-  templateUrl: './modal-prenda.html',
-  styleUrl: './modal-prenda.css',
+  templateUrl: './modal-nino.html',
+  styleUrl: './modal-nino.css',
 })
-export class ModalPrenda  implements OnInit {
+export class ModalNino implements OnInit {
+
   private datosOriginales = '';
 
-  categoriaOptions: SelectOption[] = [];
-  marcaOptions: SelectOption[] = [];
-
-  @Output()
-  buscar = new EventEmitter<any>();
-
-  buscarPrenda(): void {
-
-    const nombre = this.form.value.nombre?.trim() ?? '';
-
-    const categoria = this.categorias.find(
-      c => c.idCategoria === this.form.value.categoriaId
-    )?.nombre ?? '';
-
-    const marca = this.marcas.find(
-      m => m.idMarca === this.form.value.marcaId
-    )?.nombre ?? '';
-
-    if (!nombre && !categoria && !marca) {
-      return;
-    }
-
-    this.buscar.emit({
-      search: nombre,
-      categoria,
-      marca
-    });
-
-    this.cerrarModal();
-
-  }
-
-  puedeBuscar(): boolean {
-    return (
-      this.form.value.nombre?.trim().length > 0 &&
-      this.form.value.categoriaId !== null &&
-      this.form.value.marcaId !== null
-    );
-  }
-
   @Input() modoEdicion = false;
-
-  @Input() idPrenda: number | null = null;
-
-  @Input() datosPrenda: any = null;
+  @Input() idNino: number | null = null;
+  @Input() datosNino: any = null;
 
   @Output() modalClose = new EventEmitter<void>();
-
   @Output() saved = new EventEmitter<void>();
 
   form!: FormGroup;
 
-  categorias: CategoriaResponseDTO[] = [];
-
-  marcas: MarcaResponseDTO[] = [];
-
-  colores: string[] = [];
-
   submitted = false;
-
   closing = false;
-
-  loading = false;
+  guardando: boolean = false;
 
   fechaActual = '';
 
+  opcionesSexo: SelectOption[] = [
+    { label: 'Masculino', value: 'MASCULINO' },
+    { label: 'Femenino', value: 'FEMENINO' }
+  ];
+
+  opcionesEtnia: SelectOption[] = [
+    { label: 'Middle Eastern', value: 'Middle Eastern' },
+    { label: 'White European', value: 'White-European' },
+    { label: 'Hispanic', value: 'Hispanic' },
+    { label: 'Black', value: 'Black' },
+    { label: 'Asian', value: 'Asian' },
+    { label: 'South Asian', value: 'South Asian' },
+    { label: 'Native Indian', value: 'Native Indian' },
+    { label: 'Others', value: 'Others' },
+    { label: 'Latino', value: 'Latino' },
+    { label: 'Mixed', value: 'Mixed' },
+    { label: 'Pacifica', value: 'Pacifica' },
+    { label: 'Turkish', value: 'Turkish' },
+    { label: 'No especificado', value: '?' }
+  ];
+
   constructor(
     private fb: FormBuilder,
-    private categoriaService: CategoriaService,
-    private marcaService: MarcaService,
-    private prendaService: PrendaService
+    private ninoService: NinoService
   ) {}
 
-
   ngOnInit(): void {
-    this.fechaActual = new Date().toLocaleString(
-      'es-PE',
-      {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }
-    );
-    this.form = this.fb.group({
-      nombre: ['', [Validators.required, Validators.maxLength(100)]],
-      material: ['', [Validators.required, Validators.maxLength(50)]],
-      descripcion: ['', [Validators.maxLength(255)]],
-      imagenUrl: ['', [Validators.maxLength(500), Validators.pattern(/^https?:\/\/.+/i)]],
-      categoriaId: [null, Validators.required],
-      marcaId: [null, Validators.required]
+
+    this.fechaActual = new Date().toLocaleString('es-PE', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
     });
-    this.loadCategorias();
-    this.loadMarcas();
-    if (this.datosPrenda) {
-      this.form.patchValue({
-        nombre: this.datosPrenda.nombre ?? '',
-        material: this.datosPrenda.material ?? '',
-        descripcion: this.datosPrenda.descripcion ?? '',
-        imagenUrl: this.datosPrenda.imagenUrl ?? '',
-        categoriaId: this.datosPrenda.categoriaId ?? null,
-        marcaId: this.datosPrenda.marcaId ?? null
-      });
-      this.colores = [...(this.datosPrenda.colores || [])];
-      this.datosOriginales = JSON.stringify({...this.form.getRawValue(),
-        colores: [...this.colores]
-      });
+
+    this.form = this.fb.group({
+      nombres: ['', [
+        Validators.required,
+        Validators.maxLength(100)
+      ]],
+
+      apellidos: ['', [
+        Validators.required,
+        Validators.maxLength(100)
+      ]],
+
+      fechaNacimiento: ['', [
+        Validators.required
+      ]],
+
+      sexo: ['', [
+        Validators.required,
+        Validators.maxLength(20)
+      ]],
+
+      etnia: ['', [
+        Validators.maxLength(100)
+      ]],
+
+
+        ictericia: [false],
+        familiarConTea: [false],
+
+
+      fotoUrl: ['', [
+        Validators.maxLength(500)
+      ]]
+    });
+
+    if (this.modoEdicion && this.datosNino) {
+      this.cargarDatosNino();
     }
   }
 
-  private huboCambios(): boolean {
-
-    const actual = JSON.stringify({
-
-      ...this.form.getRawValue(),
-
-      colores: [...this.colores]
-
-    });
-
-    return actual !== this.datosOriginales;
-
-  }
-
-  loadCategorias(): void {
-
-    this.categoriaService.listarCategorias().subscribe({
-
-      next: data => {
-
-        this.categorias = data;
-
-        this.categoriaOptions = data.map(c => ({
-          label: c.nombre,
-          value: c.idCategoria
-        }));
-
-        if (this.modoEdicion && this.datosPrenda) {
-          this.form.patchValue({
-            categoriaId: this.datosPrenda.categoriaId
-          });
-        }
-
-      },
-
-      error: error => console.error(error)
-
-    });
-
-  }
-
-  loadMarcas(): void {
-
-    this.marcaService.listarMarcas().subscribe({
-
-      next: data => {
-
-        this.marcas = data;
-
-        this.marcaOptions = data.map(m => ({
-          label: m.nombre,
-          value: m.idMarca
-        }));
-
-        if (this.modoEdicion && this.datosPrenda) {
-          this.form.patchValue({
-            marcaId: this.datosPrenda.marcaId
-          });
-        }
-
-      },
-
-      error: error => console.error(error)
-
-    });
-
-  }
-
-  onCategoriaChange(value: number | null): void {
-
-    this.form.get('categoriaId')?.setValue(value);
-
-  }
-
-  onMarcaChange(value: number | null): void {
-
-    this.form.get('marcaId')?.setValue(value);
-
-  }
-
-  animAgregar = false;
-  animEliminar = false;
-
-  agregarColor(): void {
-    this.colores.push('');
-
-    this.animAgregar = true;
-
-    setTimeout(() => {
-      this.animAgregar = false;
-    }, 180);
-  }
-
-  eliminarColor(index: number): void {
-    this.colores.splice(index, 1);
-
-    this.animEliminar = true;
-
-    setTimeout(() => {
-      this.animEliminar = false;
-    }, 180);
-  }
-
-  eliminarImagen(): void {
+  private cargarDatosNino(): void {
     this.form.patchValue({
-      imagenUrl: ''
+      nombres: this.datosNino.nombres ?? '',
+      apellidos: this.datosNino.apellidos ?? '',
+      fechaNacimiento: this.datosNino.fechaNacimiento ? this.datosNino.fechaNacimiento.substring(0, 10) : '',
+      sexo: this.datosNino.sexo ?? '',
+      etnia: this.datosNino.etnia ?? '',
+      ictericia: this.datosNino.ictericia ?? null,
+      familiarConTea: this.datosNino.familiarConTea ?? null,
+      fotoUrl: this.datosNino.fotoUrl ?? ''
     });
+
+    this.datosOriginales = JSON.stringify(
+      this.form.getRawValue()
+    );
+
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
+
+  guardar(): void {
+
+    this.submitted = true;
+    
+    console.log('FORMULARIO:', this.form.getRawValue());
+    console.log('FORM VÁLIDO:', this.form.valid);
+    console.log('ERRORES DE CAMPOS:', {
+  nombres: this.form.get('nombres')?.errors,
+  apellidos: this.form.get('apellidos')?.errors,
+  fechaNacimiento: this.form.get('fechaNacimiento')?.errors,
+  sexo: this.form.get('sexo')?.errors,
+  etnia: this.form.get('etnia')?.errors,
+  ictericia: this.form.get('ictericia')?.errors,
+  familiarConTea: this.form.get('familiarConTea')?.errors,
+  fotoUrl: this.form.get('fotoUrl')?.errors
+});
+
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    if (this.guardando) {
+      return;
+    }
+
+    if (this.modoEdicion && !this.formularioModificado()) {
+      this.saved.emit();
+      return;
+    }
+
+    const request: NinoRequest = {
+      nombres: this.form.get('nombres')?.value,
+      apellidos: this.form.get('apellidos')?.value,
+      fechaNacimiento: this.form.get('fechaNacimiento')?.value,
+      sexo: this.form.get('sexo')?.value,
+      etnia: this.form.get('etnia')?.value || undefined,
+      ictericia: this.form.get('ictericia')?.value,
+      familiarConTea: this.form.get('familiarConTea')?.value,
+      fotoUrl: this.form.get('fotoUrl')?.value || undefined
+    };
+
+    this.guardando = true;
+
+    if (this.modoEdicion && this.idNino !== null) {
+      this.editar(this.idNino, request);
+    } else {
+      this.registrar(request);
+    }
+  }
+
+  private registrar(request: NinoRequest): void {
+
+    this.ninoService.crear(request).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.saved.emit();
+      },
+      error: (error) => {
+        this.guardando = false;
+        console.error('Error al registrar niño:', error);
+      }
+    });
+  }
+
+  private editar(idNino: number, request: NinoRequest): void {
+
+    this.ninoService.editar(idNino, request).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.saved.emit();
+      },
+      error: (error) => {
+        this.guardando = false;
+        console.error('Error al editar niño:', error);
+      }
+    });
+  }
+
+  private formularioModificado(): boolean {
+    return JSON.stringify(this.form.getRawValue()) !== this.datosOriginales;
   }
 
   limpiarFormulario(): void {
+
     this.submitted = false;
-    this.colores = [];
+
     this.form.reset({
-      nombre: '',
-      material: '',
-      descripcion: '',
-      imagenUrl: '',
-      categoriaId: null,
-      marcaId: null
+      nombres: '',
+      apellidos: '',
+      fechaNacimiento: '',
+      sexo: '',
+      etnia: '',
+      ictericia: null,
+      familiarConTea: null,
+      fotoUrl: ''
     });
+
+    this.datosOriginales = '';
+    this.guardando = false;
   }
 
   cancelar(): void {
     this.cerrarModal();
   }
 
-  guardar(): void {
-    if (this.form.invalid) {
-      this.submitted = false;
+  cerrarModal(limpiar = true): void {
 
-      setTimeout(() => {
-        this.submitted = true;
-        this.form.markAllAsTouched();
-      });
-
+    if (this.closing) {
       return;
     }
-
-    this.submitted = true;
-
-    let imagenUrl =
-      this.form.value.imagenUrl?.trim() ?? '';
-
-    if (
-      imagenUrl &&
-      !this.esUrlValida(imagenUrl)
-    ) {
-
-      imagenUrl = '';
-
-      this.form.patchValue({
-        imagenUrl: ''
-      });
-
-    }
-
-    if (
-      this.modoEdicion &&
-      this.idPrenda
-    ) {
-
-      if (!this.huboCambios()) {
-
-        this.cerrarModal(false);
-
-        return;
-
-      }
-
-    }
-
-    this.loading = true;
-
-    if (
-      this.modoEdicion &&
-      this.idPrenda
-    ) {
-
-      const dto: PrendaUpdateDTO = {
-
-        nombre:
-        this.form.value.nombre,
-
-        material:
-        this.form.value.material,
-
-        descripcion:
-        this.form.value.descripcion,
-
-        imagenUrl:
-        imagenUrl,
-
-        categoriaId:
-        this.form.value.categoriaId,
-
-        marcaId:
-        this.form.value.marcaId,
-
-        colores:
-          this.colores
-            .filter(
-              c => c.trim() !== ''
-            )
-            .map(
-              c => c.trim()
-            )
-
-      };
-
-      this.prendaService
-        .actualizarPrenda(
-          this.idPrenda,
-          dto
-        )
-        .subscribe({
-
-          next: () => {
-
-            this.loading = false;
-
-            this.saved.emit();
-
-            this.limpiarFormulario();
-
-            this.cerrarModal();
-
-          },
-
-          error: error => {
-
-            console.error(error);
-
-            this.loading = false;
-
-          }
-
-        });
-
-    } else {
-
-      const dto: PrendaRegistroDTO = {
-
-        nombre:
-        this.form.value.nombre,
-
-        material:
-        this.form.value.material,
-
-        descripcion:
-        this.form.value.descripcion,
-
-        imagenUrl:
-        imagenUrl,
-
-        categoriaId:
-        this.form.value.categoriaId,
-
-        marcaId:
-        this.form.value.marcaId,
-
-        colores:
-          this.colores
-            .filter(
-              c => c.trim() !== ''
-            )
-            .map(
-              c => c.trim()
-            )
-
-      };
-
-      this.prendaService
-        .registrarPrenda(dto)
-        .subscribe({
-
-          next: () => {
-
-            this.loading = false;
-
-            this.saved.emit();
-
-            this.limpiarFormulario();
-
-            this.cerrarModal();
-
-          },
-
-          error: error => {
-
-            console.error(error);
-
-            this.loading = false;
-
-          }
-
-        });
-
-    }
-
-  }
-
-  cerrarModal(limpiar = true): void {
 
     if (limpiar) {
       this.limpiarFormulario();
@@ -453,14 +261,11 @@ export class ModalPrenda  implements OnInit {
     setTimeout(() => {
       this.modalClose.emit();
     }, 250);
-
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-
     this.cancelar();
-
   }
 
   esUrlValida(url: string): boolean {
@@ -470,26 +275,50 @@ export class ModalPrenda  implements OnInit {
     }
 
     try {
-
-      const parsed =
-        new URL(url);
+      const parsed = new URL(url);
 
       return (
         parsed.protocol === 'http:' ||
         parsed.protocol === 'https:'
       );
-
     } catch {
-
       return false;
+    }
+  }
 
+  fotoPreview: string | null = null;
+  fotoArchivo: File | null = null;
+
+  onFotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      return;
     }
 
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
+
+    this.fotoArchivo = file;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.fotoPreview = reader.result as string;
+    };
+
+    reader.readAsDataURL(file);
   }
 
-  trackByIndex(index: number): number {
-    return index;
-  }
+  removeImage(): void {
+    this.fotoArchivo = null;
+    this.fotoPreview = null;
 
-  protected readonly Math = Math;
+    this.form.patchValue({
+      imagenUrl: null
+    });
+  }
 }

@@ -1,0 +1,604 @@
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+
+<div
+  class="main-layout"
+  [class.expanded]="sidebarExpanded"
+>
+
+  <app-navbar></app-navbar>
+
+
+  <div class="page-content">
+
+    <app-header
+      title="Q-CHAT"
+      subtitle="Cuestionario de evaluación del comportamiento infantil">
+    </app-header>
+
+
+    <!-- ===================================================== -->
+    <!-- CARGANDO -->
+    <!-- ===================================================== -->
+
+    <div
+      class="loading-state"
+      *ngIf="cargandoPreguntas"
+    >
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando evaluación...
+      </p>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- SELECCIÓN DE NIÑO -->
+    <!-- ===================================================== -->
+
+    <section
+      class="qchat-selection"
+      *ngIf="
+        !evaluacionCreada &&
+        !cargandoPreguntas
+      "
+    >
+
+      <div class="selection-header">
+
+        <span class="section-label">
+          Q-CHAT
+        </span>
+
+        <h1>
+          Selecciona al niño
+        </h1>
+
+        <p>
+          Selecciona el niño al que deseas realizar
+          la evaluación Q-CHAT.
+        </p>
+
+      </div>
+
+
+      <div class="ninos-grid">
+
+        <button
+          type="button"
+          class="nino-card"
+          *ngFor="let nino of ninos"
+          [class.selected]="
+            ninoSeleccionado?.idNino === nino.idNino
+          "
+          (click)="seleccionarNino(nino)"
+        >
+
+          <div class="nino-avatar">
+
+            <i class="fi fi-rr-child-head"></i>
+
+          </div>
+
+
+          <div class="nino-info">
+
+            <strong>
+              {{ nino.nombres }}
+              {{ nino.apellidos }}
+            </strong>
+
+            <span>
+              Niño registrado
+            </span>
+
+          </div>
+
+
+          <div
+            class="selection-check"
+            *ngIf="
+              ninoSeleccionado?.idNino ===
+              nino.idNino
+            "
+          >
+
+            <i class="fi fi-rr-check"></i>
+
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="error-message"
+        *ngIf="mensajeError"
+      >
+
+        <i class="fi fi-rr-exclamation"></i>
+
+        {{ mensajeError }}
+
+      </div>
+
+
+      <div class="selection-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="volver()"
+        >
+          Cancelar
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          [disabled]="!ninoSeleccionado"
+          (click)="comenzarQChat()"
+        >
+
+          Comenzar Q-CHAT
+
+          <i class="fi fi-rr-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================== -->
+    <!-- CUESTIONARIO -->
+    <!-- ===================================================== -->
+
+    <section
+      class="qchat-container"
+      *ngIf="
+        evaluacionCreada &&
+        !cargandoPreguntas &&
+        preguntas.length > 0
+      "
+    >
+
+
+      <!-- ================================================= -->
+      <!-- CABECERA -->
+      <!-- ================================================= -->
+
+      <div class="qchat-top">
+
+        <div class="qchat-title">
+
+          <div class="qchat-icon">
+
+            <i class="fi fi-rr-document"></i>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Evaluación Q-CHAT
+            </span>
+
+            <h1>
+              Cuestionario Q-CHAT
+            </h1>
+
+          </div>
+
+        </div>
+
+
+        <div class="qchat-child">
+
+          <span>
+            Niño evaluado
+          </span>
+
+          <strong>
+            {{ ninoSeleccionado?.nombres }}
+            {{ ninoSeleccionado?.apellidos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- BARRA DE PROGRESO -->
+      <!-- ================================================= -->
+
+      <div class="progress-section">
+
+        <div class="progress-header">
+
+          <span>
+            Pregunta {{ numeroPreguntaActual }}
+            de {{ preguntas.length }}
+          </span>
+
+          <strong>
+            {{ progresoVisual }}% completado
+          </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+            [style.width.%]="progresoVisual"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- CONTENIDO -->
+      <!-- ================================================= -->
+
+      <div class="qchat-content">
+
+
+        <!-- =============================================== -->
+        <!-- LISTA DE PREGUNTAS -->
+        <!-- =============================================== -->
+
+        <aside class="questions-sidebar">
+
+          <div class="questions-sidebar-title">
+
+            <span>
+              PREGUNTAS
+            </span>
+
+            <small>
+              {{ preguntas.length }} ítems
+            </small>
+
+          </div>
+
+
+          <div class="question-list">
+
+            <div
+              class="question-item"
+              *ngFor="
+                let pregunta of preguntas;
+                let i = index
+              "
+              [class.active]="
+                i === indicePregunta
+              "
+              [class.completed]="
+                respuestasRegistradas[pregunta.id] !== undefined
+              "
+            >
+
+              <div class="question-number">
+
+                <span>
+                  {{ i + 1 }}
+                </span>
+
+              </div>
+
+
+              <div class="question-info">
+
+                <strong>
+                  Pregunta {{ i + 1 }}
+                </strong>
+
+                <span>
+                  {{ pregunta.categoria }}
+                </span>
+
+              </div>
+
+
+              <i
+                class="fi fi-rr-check completed-icon"
+                *ngIf="
+                  respuestasRegistradas[pregunta.id]
+                  !== undefined
+                "
+              ></i>
+
+            </div>
+
+          </div>
+
+        </aside>
+
+
+        <!-- =============================================== -->
+        <!-- PREGUNTA -->
+        <!-- =============================================== -->
+
+        <main class="question-area">
+
+          <div class="question-card">
+
+
+            <!-- CATEGORÍA -->
+
+            <div class="question-category">
+
+              <i class="fi fi-rr-sparkles"></i>
+
+              {{ preguntaActual?.categoria }}
+
+            </div>
+
+
+            <!-- PREGUNTA -->
+
+            <div class="question-number-title">
+
+              {{ numeroPreguntaActual }}.
+
+            </div>
+
+
+            <h2>
+
+              {{ preguntaActual?.texto }}
+
+            </h2>
+
+
+            <p class="question-instruction">
+
+              Observa el comportamiento habitual del niño
+              y selecciona la respuesta que mejor describa
+              la situación.
+
+            </p>
+
+
+            <!-- ========================================= -->
+            <!-- RESPUESTAS -->
+            <!-- ========================================= -->
+
+            <div class="answers">
+
+
+              <!-- SÍ -->
+
+              <button
+                type="button"
+                class="answer-button yes"
+                [class.selected]="
+                  esRespuestaSeleccionada(1)
+                "
+                [disabled]="enviandoRespuesta"
+                (click)="
+                  seleccionarRespuesta(1)
+                "
+              >
+
+                <div class="answer-icon">
+
+                  <i class="fi fi-rr-check"></i>
+
+                </div>
+
+
+                <div class="answer-text">
+
+                  <strong>
+                    Sí
+                  </strong>
+
+                  <span>
+                    Se observa habitualmente
+                  </span>
+
+                </div>
+
+
+                <div class="answer-radio">
+
+                  <span></span>
+
+                </div>
+
+              </button>
+
+
+              <!-- NO -->
+
+              <button
+                type="button"
+                class="answer-button no"
+                [class.selected]="
+                  esRespuestaSeleccionada(0)
+                "
+                [disabled]="enviandoRespuesta"
+                (click)="
+                  seleccionarRespuesta(0)
+                "
+              >
+
+                <div class="answer-icon">
+
+                  <i class="fi fi-rr-cross"></i>
+
+                </div>
+
+
+                <div class="answer-text">
+
+                  <strong>
+                    No
+                  </strong>
+
+                  <span>
+                    No se observa habitualmente
+                  </span>
+
+                </div>
+
+
+                <div class="answer-radio">
+
+                  <span></span>
+
+                </div>
+
+              </button>
+
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+              class="question-error"
+              *ngIf="mensajeError"
+            >
+
+              <i class="fi fi-rr-exclamation"></i>
+
+              {{ mensajeError }}
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- BOTONES -->
+            <!-- ========================================= -->
+
+            <div class="question-actions">
+
+
+              <button
+                type="button"
+                class="btn-secondary"
+                [disabled]="
+                  indicePregunta === 0 ||
+                  enviandoRespuesta
+                "
+                (click)="anteriorPregunta()"
+              >
+
+                <i class="fi fi-rr-arrow-left"></i>
+
+                Anterior
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn-primary"
+                [disabled]="
+                  respuestaSeleccionada === null ||
+                  enviandoRespuesta
+                "
+                (click)="siguientePregunta()"
+              >
+
+                <span
+                  *ngIf="
+                    !enviandoRespuesta &&
+                    indicePregunta <
+                    preguntas.length - 1
+                  "
+                >
+                  Siguiente
+                </span>
+
+
+                <span
+                  *ngIf="
+                    !enviandoRespuesta &&
+                    indicePregunta ===
+                    preguntas.length - 1
+                  "
+                >
+                  Finalizar
+                </span>
+
+
+                <span
+                  *ngIf="enviandoRespuesta"
+                >
+                  Guardando...
+                </span>
+
+
+                <i
+                  *ngIf="
+                    !enviandoRespuesta
+                  "
+                  class="fi fi-rr-arrow-right"
+                ></i>
+
+              </button>
+
+            </div>
+
+
+          </div>
+
+        </main>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- COMPLETADA -->
+      <!-- ================================================= -->
+
+      <div
+        class="completion-card"
+        *ngIf="evaluacionCompletada"
+      >
+
+        <div class="completion-icon">
+
+          <i class="fi fi-rr-check"></i>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            ¡Q-CHAT completado!
+          </h2>
+
+          <p>
+            Las 10 respuestas fueron registradas
+            correctamente.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

@@ -1,0 +1,624 @@
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+
+<div
+  class="main-layout"
+  [class.expanded]="sidebarExpanded"
+>
+
+  <app-navbar></app-navbar>
+
+
+  <div class="page-content">
+
+    <app-header
+      title="K-ABC"
+      subtitle="Evaluación interactiva de habilidades cognitivas">
+    </app-header>
+
+
+    <!-- =====================================================
+         CARGANDO
+         ===================================================== -->
+
+    <div
+      class="loading-state"
+      *ngIf="cargando"
+    >
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando niños...
+      </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         SELECCIÓN DEL NIÑO
+         ===================================================== -->
+
+    <section
+      class="kabc-selection"
+
+      *ngIf="
+        !cargando &&
+        !evaluacionCreada
+      "
+    >
+
+      <div class="selection-header">
+
+        <span class="section-label">
+          K-ABC
+        </span>
+
+        <h1>
+          Selecciona al niño
+        </h1>
+
+        <p>
+          Selecciona al niño al que deseas realizar
+          la evaluación K-ABC.
+        </p>
+
+      </div>
+
+
+      <!-- SIN NIÑOS -->
+
+      <div
+        class="empty-state"
+        *ngIf="ninos.length === 0"
+      >
+
+        <div class="empty-icon">
+          👶
+        </div>
+
+        <h3>
+          No hay niños disponibles
+        </h3>
+
+        <p>
+          No tienes niños activos asignados
+          para realizar una evaluación.
+        </p>
+
+      </div>
+
+
+      <!-- NIÑOS -->
+
+      <div
+        class="ninos-grid"
+        *ngIf="ninos.length > 0"
+      >
+
+        <button
+          type="button"
+          class="nino-card"
+
+          *ngFor="
+            let nino of ninos
+          "
+
+          [class.selected]="
+            ninoSeleccionado?.idNino ===
+            nino.idNino
+          "
+
+          (click)="
+            seleccionarNino(nino)
+          "
+        >
+
+          <div class="nino-avatar">
+
+            <i
+              class="fi fi-rr-child-head">
+            </i>
+
+          </div>
+
+
+          <div class="nino-info">
+
+            <strong>
+
+              {{ nino.nombres }}
+              {{ nino.apellidos }}
+
+            </strong>
+
+            <span>
+              Niño registrado
+            </span>
+
+          </div>
+
+
+          <div
+            class="selection-check"
+
+            *ngIf="
+              ninoSeleccionado?.idNino ===
+              nino.idNino
+            "
+          >
+
+            <i
+              class="fi fi-rr-check">
+            </i>
+
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- ERROR -->
+
+      <div
+        class="error-message"
+        *ngIf="mensajeError"
+      >
+
+        <i
+          class="fi fi-rr-exclamation">
+        </i>
+
+        {{ mensajeError }}
+
+      </div>
+
+
+      <!-- ACCIONES -->
+
+      <div class="selection-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+
+          (click)="volver()"
+        >
+          Cancelar
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+
+          [disabled]="
+            !ninoSeleccionado ||
+            cargandoEvaluacion
+          "
+
+          (click)="
+            comenzarKabc()
+          "
+        >
+
+          <span
+            *ngIf="
+              !cargandoEvaluacion
+            "
+          >
+            Comenzar K-ABC
+          </span>
+
+
+          <span
+            *ngIf="
+              cargandoEvaluacion
+            "
+          >
+            Iniciando...
+          </span>
+
+
+          <i
+            class="fi fi-rr-arrow-right"
+
+            *ngIf="
+              !cargandoEvaluacion
+            "
+          ></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CARGANDO CONFIGURACIÓN
+         ===================================================== -->
+
+    <div
+      class="loading-state"
+
+      *ngIf="
+        evaluacionCreada &&
+        cargandoConfiguracion
+      "
+    >
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Preparando evaluación K-ABC...
+      </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTENEDOR GENERAL DE LA EVALUACIÓN
+         ===================================================== -->
+
+    <section
+      class="kabc-container"
+
+      *ngIf="
+        evaluacionCreada &&
+        !cargandoConfiguracion &&
+        !evaluacionCompletada &&
+        itemActual &&
+        serieActual
+      "
+    >
+
+      <!-- =====================================================
+           CABECERA
+           ===================================================== -->
+
+      <div class="kabc-top">
+
+        <div class="kabc-title">
+
+          <div class="kabc-icon">
+            <i class="fi fi-rr-gamepad"></i>
+          </div>
+
+          <div>
+
+            <span>
+              Evaluación K-ABC
+            </span>
+
+            <h1>
+              {{ itemActual?.subtest }}
+            </h1>
+
+          </div>
+
+        </div>
+
+
+        <div class="kabc-child">
+
+          <span>
+            Niño evaluado
+          </span>
+
+          <strong>
+
+            {{ ninoSeleccionado?.nombres }}
+            {{ ninoSeleccionado?.apellidos }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           PROGRESO
+           ===================================================== -->
+
+      <div class="progress-section">
+
+        <div class="progress-header">
+
+          <span>
+
+            Serie
+            {{ serieGlobalActual }}
+            de
+            {{ totalSeries }}
+
+          </span>
+
+          <strong>
+
+            {{ progresoVisual }}%
+            completado
+
+          </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+
+            [style.width.%]="
+              progresoVisual
+            "
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           EJERCICIO 01 - MOVIMIENTOS DE MANOS
+           MM_01
+           ===================================================== -->
+
+      <app-ejercicio-01
+
+        *ngIf="
+          itemActual?.code === 'MM_01'
+        "
+
+        [item]="ejercicio01Item!"
+
+        [serie]="ejercicio01Serie!"
+
+        [numeroSerie]="
+          indiceSerie + 1
+        "
+
+        [totalSeries]="
+          itemActual?.series?.length ?? 3
+        "
+
+        [enviando]="
+          enviandoRespuesta
+        "
+
+        (respuesta)="
+          guardarRespuestaEjercicio01($event)
+        "
+
+      ></app-ejercicio-01>
+
+
+      <!-- =====================================================
+           EJERCICIO 02 - RECUERDO DE NÚMEROS
+           RN_01
+           ===================================================== -->
+
+      <app-ejercicio-02
+
+        *ngIf="
+          itemActual?.code === 'RN_01'
+        "
+
+        [item]="itemActual!"
+
+        [serie]="serieActual!"
+
+        [numeroSerie]="
+          indiceSerie + 1
+        "
+
+        [totalSeries]="
+          itemActual?.series?.length ?? 3
+        "
+
+        [enviando]="
+          enviandoRespuesta
+        "
+
+        (respuesta)="
+          guardarRespuestaEjercicio02($event)
+        "
+
+      ></app-ejercicio-02>
+
+      <app-ejercicio-03
+        *ngIf="itemActual?.code === 'OP_01'"
+        [item]="itemActual!"
+        [serie]="serieActual!"
+        [numeroSerie]="indiceSerie + 1"
+        [totalSeries]="itemActual?.series?.length ?? 3"
+        [enviando]="enviandoRespuesta"
+        (respuesta)="guardarRespuestaEjercicio03($event)">
+      </app-ejercicio-03>
+
+      <!-- EJERCICIO 04 -->
+<app-ejercicio-04
+  *ngIf="itemActual?.code === 'VM_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio04($event)">
+</app-ejercicio-04>
+<!-- =====================================================
+     EJERCICIO 05 - RECONOCIMIENTO DE CARAS
+     RC_01
+     ===================================================== -->
+
+<app-ejercicio-05
+  *ngIf="itemActual?.code === 'RC_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio05($event)">
+</app-ejercicio-05>
+<!-- =====================================================
+     EJERCICIO 06 - CIERRE GESTÁLTICO
+     CG_01
+     ===================================================== -->
+
+<app-ejercicio-06
+  *ngIf="itemActual?.code === 'CG_01'"
+
+  [item]="itemActual!"
+
+  [serie]="serieActual!"
+
+  [numeroSerie]="indiceSerie + 1"
+
+  [totalSeries]="
+    itemActual?.series?.length ?? 3
+  "
+
+  [enviando]="
+    enviandoRespuesta
+  "
+
+  (respuesta)="
+    guardarRespuestaEjercicio06($event)
+  "
+
+></app-ejercicio-06>
+
+      <!-- =====================================================
+           ERROR
+           ===================================================== -->
+
+      <div
+        class="error-message"
+        *ngIf="mensajeError"
+      >
+
+        <i
+          class="fi fi-rr-exclamation">
+        </i>
+
+        {{ mensajeError }}
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CONFIGURACIÓN VACÍA
+         ===================================================== -->
+
+    <section
+      class="empty-config-section"
+
+      *ngIf="
+        evaluacionCreada &&
+        !cargandoConfiguracion &&
+        !evaluacionCompletada &&
+        items.length === 0
+      "
+    >
+
+      <div class="empty-config-card">
+
+        <div class="empty-config-icon">
+          ⚠️
+        </div>
+
+        <h2>
+          No se pudo cargar la evaluación
+        </h2>
+
+        <p>
+          La evaluación K-ABC fue creada,
+          pero no se encontraron actividades
+          en su configuración.
+        </p>
+
+
+        <div
+          class="error-message"
+          *ngIf="mensajeError"
+        >
+
+          {{ mensajeError }}
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+
+          (click)="volver()"
+        >
+          Volver a evaluaciones
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         COMPLETADO
+         ===================================================== -->
+
+    <section
+      class="completion-section"
+
+      *ngIf="
+        evaluacionCompletada
+      "
+    >
+
+      <div class="completion-card">
+
+        <div class="completion-icon">
+          ✓
+        </div>
+
+
+        <div>
+
+          <h2>
+            ¡K-ABC completado!
+          </h2>
+
+          <p>
+            Se registraron todas las actividades
+            de la evaluación correctamente.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="completion-actions">
+
+        <button
+          type="button"
+          class="btn-primary"
+
+          (click)="volver()"
+        >
+          Volver a evaluaciones
+        </button>
+
+      </div>
+
+    </section>
+
+
+  </div>
+
+</div>

@@ -1,0 +1,446 @@
+/* =========================================================
+   PÁGINA
+   ========================================================= */
+
+.evaluaciones-page {
+  min-height: 100vh;
+  padding: 32px 40px 50px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8fbff 0%,
+      #f5f9fc 50%,
+      #f8fbff 100%
+    );
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  margin-bottom: 35px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.header-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #e8f2ff;
+  color: #4b83c4;
+
+  font-size: 25px;
+}
+
+.header-text h1 {
+  margin: 0;
+
+  color: #263746;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header-text p {
+  margin: 6px 0 0;
+
+  color: #7b8b99;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+.evaluaciones-content {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.intro {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.intro-label {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: #6f9bc5;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+}
+
+.intro h2 {
+  margin: 0 0 10px;
+
+  color: #263746;
+
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.intro p {
+  max-width: 620px;
+
+  margin: 0 auto;
+
+  color: #7b8b99;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.evaluaciones-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 25px;
+}
+
+
+/* =========================================================
+   TARJETA
+   ========================================================= */
+
+.evaluacion-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: 330px;
+
+  padding: 30px;
+
+  border: 1px solid #e6edf3;
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 25px rgba(61, 83, 102, 0.06);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  overflow: hidden;
+}
+
+
+/* Línea superior */
+
+.evaluacion-card::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  transition: height 0.25s ease;
+}
+
+
+.qchat-card::before {
+  background: #76a9dc;
+}
+
+.kabc-card::before {
+  background: #8ab7a1;
+}
+
+
+/* Hover */
+
+.evaluacion-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 15px 35px rgba(61, 83, 102, 0.11);
+}
+
+.evaluacion-card:hover::before {
+  height: 6px;
+}
+
+
+/* =========================================================
+   PARTE SUPERIOR
+   ========================================================= */
+
+.card-top {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+}
+
+.card-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  font-size: 27px;
+}
+
+.qchat-card .card-icon {
+  background: #edf5ff;
+  color: #5c91c7;
+}
+
+.kabc-card .card-icon {
+  background: #edf8f1;
+  color: #659c7d;
+}
+
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
+.card-badge {
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.qchat-card .card-badge {
+  background: #edf5ff;
+  color: #5c91c7;
+}
+
+.kabc-card .card-badge {
+  background: #edf8f1;
+  color: #659c7d;
+}
+
+
+/* =========================================================
+   CONTENIDO TARJETA
+   ========================================================= */
+
+.card-content {
+  flex: 1;
+}
+
+.card-content h3 {
+  margin: 0 0 12px;
+
+  color: #2d3e4d;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.card-content p {
+  max-width: 440px;
+
+  margin: 0;
+
+  color: #7b8b99;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   FOOTER TARJETA
+   ========================================================= */
+
+.card-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 30px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #edf1f4;
+
+  color: #8b99a5;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.card-arrow {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.qchat-card .card-arrow {
+  background: #edf5ff;
+  color: #5c91c7;
+}
+
+.kabc-card .card-arrow {
+  background: #edf8f1;
+  color: #659c7d;
+}
+
+.evaluacion-card:hover .card-arrow {
+  transform: translateX(4px);
+}
+
+
+/* =========================================================
+   INFO BOX
+   ========================================================= */
+
+.info-box {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 30px;
+  padding: 18px 22px;
+
+  border: 1px solid #e5edf4;
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.info-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #f0f6fb;
+  color: #7197b7;
+}
+
+.info-text strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #435665;
+
+  font-size: 13px;
+}
+
+.info-text p {
+  margin: 0;
+
+  color: #8795a0;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .evaluaciones-page {
+    padding: 25px 20px 40px;
+  }
+
+  .evaluaciones-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .evaluaciones-page {
+    padding: 20px 15px 35px;
+  }
+
+  .header-text h1 {
+    font-size: 23px;
+  }
+
+  .intro h2 {
+    font-size: 21px;
+  }
+
+  .evaluacion-card {
+    min-height: 300px;
+
+    padding: 25px;
+  }
+
+}

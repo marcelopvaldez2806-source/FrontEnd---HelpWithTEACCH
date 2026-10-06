@@ -6,7 +6,7 @@ import {
   Output
 } from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
-import {SelectOption} from '../../model/SelectOption';
+import {SelectOption} from '../../models/SelectOption';
 
 @Component({
   selector: 'app-custom-select',
@@ -21,18 +21,10 @@ export class CustomSelect implements OnDestroy {
 
   @Input() variant: 'default' | 'compact' | 'paginator' = 'default';
   @Input() invalid = false;
-
-  @Input()
-  placeholder = 'Seleccionar';
-
-  @Input()
-  options: SelectOption[] = [];
-
-  @Input()
-  value: any = null;
-
-  @Output()
-  valueChange = new EventEmitter<any>();
+  @Input() placeholder = 'Seleccionar';
+  @Input() options: SelectOption[] = [];
+  @Input() value: any = null;
+  @Output() valueChange = new EventEmitter<any>();
 
   open = false;
 
@@ -111,5 +103,4 @@ export class CustomSelect implements OnDestroy {
     }
 
   }
-
 }

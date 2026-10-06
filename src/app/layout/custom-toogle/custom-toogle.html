@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div
+  class="custom-toggle"
+  [class.variant-default]="variant === 'default'"
+  [class.variant-button]="variant === 'button'"
+  [class.disabled]="disabled"
+  [class.active]="value === true"
+>
+  <span *ngIf="label" class="toggle-label">
+    {{ label }}
+  </span>
+
+  <button
+    type="button"
+    class="toggle-button"
+    [disabled]="disabled"
+    [attr.aria-checked]="value === true"
+    (click)="toggle()"
+  >
+
+    <!-- DEFAULT -->
+    <ng-container *ngIf="variant === 'default'">
+      <span class="toggle-default-content">
+
+        <span
+          *ngIf="showIcon"
+          class="toggle-circle"
+        >
+          <i
+            [class.fi-rr-lock]="value === true"
+            [class.fi-rr-lock-open-alt]="value !== true"
+            class="toggle-icon"
+          ></i>
+        </span>
+
+        <span class="toggle-status">
+          {{ value === true ? 'ON' : 'OFF' }}
+        </span>
+
+      </span>
+    </ng-container>
+
+
+    <!-- BUTTON -->
+    <ng-container *ngIf="variant === 'button'">
+      <span class="toggle-track">
+        <span class="toggle-thumb"></span>
+      </span>
+    </ng-container>
+
+  </button>
+</div>

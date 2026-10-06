@@ -1,0 +1,662 @@
+<div
+  class="main-layout"
+  [class.expanded]="sidebarExpanded"
+>
+
+
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
+  <app-sidebar
+    (sidebarToggle)="onSidebarToggle($event)"
+  ></app-sidebar>
+
+
+
+  <!-- =====================================================
+       CONTENIDO
+  ====================================================== -->
+
+  <div class="page-content">
+
+
+    <!-- ===================================================
+         NAVBAR
+    ==================================================== -->
+
+    <app-navbar></app-navbar>
+
+
+
+    <!-- ===================================================
+         HEADER
+    ==================================================== -->
+
+    <div class="content-header">
+
+
+      <div class="header-icon">
+
+        <span>
+          📊
+        </span>
+
+      </div>
+
+
+      <div class="header-info">
+
+        <h1>
+          Resultados finales
+        </h1>
+
+        <p>
+          Consulta los resultados integrados de las evaluaciones
+          Q-CHAT y K-ABC.
+        </p>
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- ===================================================
+         CONTENIDO
+    ==================================================== -->
+
+    <main class="content-body">
+
+
+      <!-- =================================================
+           RESUMEN SUPERIOR
+      ================================================== -->
+
+      <section class="summary-grid">
+
+
+        <!-- ===============================================
+             Q-CHAT
+        ================================================ -->
+
+        <article class="result-card qchat-card">
+
+
+          <div class="card-header">
+
+
+            <div class="card-icon">
+              🧠
+            </div>
+
+
+            <div>
+
+              <span class="card-label">
+                EVALUACIÓN
+              </span>
+
+              <h2>
+                Q-CHAT
+              </h2>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="qchat-result">
+
+
+            <div class="percentage-circle">
+
+              <span class="percentage-value">
+                {{ porcentajeQChat }}%
+              </span>
+
+              <span class="percentage-label">
+                resultado
+              </span>
+
+            </div>
+
+
+            <div class="qchat-description">
+
+              <h3>
+                Resultado Q-CHAT
+              </h3>
+
+              <p>
+                Resultado obtenido en la evaluación
+                Q-CHAT realizada al niño.
+              </p>
+
+              <span class="demo-badge">
+                Datos de demostración
+              </span>
+
+            </div>
+
+
+          </div>
+
+
+        </article>
+
+
+
+        <!-- ===============================================
+             K-ABC
+        ================================================ -->
+
+        <article class="result-card kabc-summary">
+
+
+          <div class="card-header">
+
+
+            <div class="card-icon">
+              🧩
+            </div>
+
+
+            <div>
+
+              <span class="card-label">
+                PERFIL DE DESEMPEÑO
+              </span>
+
+              <h2>
+                K-ABC
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="kabc-summary-content">
+
+
+            <div class="kabc-average">
+
+              <span>
+                Promedio
+              </span>
+
+              <strong>
+                {{ obtenerPromedioKabc() }}%
+              </strong>
+
+            </div>
+
+
+            <div class="kabc-summary-text">
+
+              <p>
+                Perfil construido a partir de las actividades
+                K-ABC implementadas en el prototipo.
+              </p>
+
+              <span class="demo-badge">
+                Datos de demostración
+              </span>
+
+            </div>
+
+          </div>
+
+
+        </article>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           RADAR
+      ================================================== -->
+
+      <section class="radar-card">
+
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-kicker">
+              PERFIL DE DESEMPEÑO
+            </span>
+
+            <h2>
+              Perfil de actividades K-ABC
+            </h2>
+
+            <p>
+              Representación visual del desempeño obtenido
+              en las actividades implementadas.
+            </p>
+
+          </div>
+
+
+          <div class="demo-badge">
+            Prototipo
+          </div>
+
+        </div>
+
+
+
+        <div class="radar-layout">
+
+
+          <!-- =============================================
+               GRÁFICO
+          ============================================== -->
+
+          <div class="radar-container">
+
+
+            <svg
+              viewBox="0 0 400 400"
+              class="radar-svg"
+              role="img"
+              aria-label="Gráfico de radar del perfil K-ABC"
+            >
+
+
+              <!-- =========================================
+                   CUADRÍCULA
+              ========================================== -->
+
+              <polygon
+                *ngFor="let nivel of [20,40,60,80,100]"
+                [attr.points]="obtenerPuntosNivel(nivel)"
+                class="radar-grid"
+              ></polygon>
+
+
+
+              <!-- =========================================
+                   EJES
+              ========================================== -->
+
+              <line
+                *ngFor="
+                  let item of perfilKabc;
+                  let i = index
+                "
+                [attr.x1]="radarCentro"
+                [attr.y1]="radarCentro"
+                [attr.x2]="obtenerX(i, 100)"
+                [attr.y2]="obtenerY(i, 100)"
+                class="radar-axis"
+              ></line>
+
+
+
+              <!-- =========================================
+                   PERFIL
+              ========================================== -->
+
+              <polygon
+                [attr.points]="obtenerPuntosPerfil()"
+                class="radar-profile"
+              ></polygon>
+
+
+
+              <!-- =========================================
+                   PUNTOS
+              ========================================== -->
+
+              <circle
+                *ngFor="
+                  let item of perfilKabc;
+                  let i = index
+                "
+                [attr.cx]="obtenerX(i, item.porcentaje)"
+                [attr.cy]="obtenerY(i, item.porcentaje)"
+                r="5"
+                class="radar-point"
+              ></circle>
+
+
+
+              <!-- =========================================
+                   ETIQUETAS
+              ========================================== -->
+
+              <text
+                *ngFor="
+                  let item of perfilKabc;
+                  let i = index
+                "
+                [attr.x]="obtenerLabelX(i)"
+                [attr.y]="obtenerLabelY(i)"
+                class="radar-label"
+                text-anchor="middle"
+              >
+
+                {{ item.nombre }}
+
+              </text>
+
+
+            </svg>
+
+
+          </div>
+
+
+
+          <!-- =============================================
+               LEYENDA
+          ============================================== -->
+
+          <div class="radar-legend">
+
+
+            <div
+              class="legend-item"
+              *ngFor="
+                let item of perfilKabc
+              "
+            >
+
+
+              <div class="legend-top">
+
+                <span class="legend-name">
+                  {{ item.nombre }}
+                </span>
+
+                <strong>
+                  {{ item.porcentaje }}%
+                </strong>
+
+              </div>
+
+
+              <div class="progress-track">
+
+                <div
+                  class="progress-value"
+                  [style.width.%]="item.porcentaje"
+                ></div>
+
+              </div>
+
+
+              <div class="legend-bottom">
+
+                <span>
+                  {{ item.codigo }}
+                </span>
+
+                <span
+                  class="priority"
+                  [ngClass]="
+                    obtenerClasePrioridad(
+                      item.prioridad
+                    )
+                  "
+                >
+                  {{ item.prioridad }}
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           ORIENTACIONES EDUCATIVAS
+      ================================================== -->
+
+      <section class="strategies-card">
+
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-kicker">
+              APOYO EDUCATIVO
+            </span>
+
+            <h2>
+              Orientaciones educativas sugeridas
+            </h2>
+
+            <p>
+              Estrategias orientativas basadas en las áreas
+              que presentan mayor necesidad de apoyo.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="strategies-grid">
+
+
+          <article
+            class="strategy-card"
+            *ngFor="
+              let item of obtenerAreasPrioritarias()
+            "
+          >
+
+
+            <div class="strategy-icon">
+
+              <span
+                *ngIf="item.codigo === 'MM_01'"
+              >
+                👋
+              </span>
+
+              <span
+                *ngIf="item.codigo === 'RN_01'"
+              >
+                🔢
+              </span>
+
+              <span
+                *ngIf="item.codigo === 'OP_01'"
+              >
+                🧩
+              </span>
+
+              <span
+                *ngIf="item.codigo === 'VM_01'"
+              >
+                👁️
+              </span>
+
+              <span
+                *ngIf="item.codigo === 'RC_01'"
+              >
+                🙂 
+              </span>
+
+              <span
+                *ngIf="item.codigo === 'CG_01'"
+              >
+                🖼️
+              </span>
+
+            </div>
+
+
+            <div class="strategy-content">
+
+
+              <div class="strategy-title">
+
+                <h3>
+                  {{ item.nombre }}
+                </h3>
+
+                <span
+                  class="priority"
+                  [ngClass]="
+                    obtenerClasePrioridad(
+                      item.prioridad
+                    )
+                  "
+                >
+                  Prioridad {{ item.prioridad }}
+                </span>
+
+              </div>
+
+
+              <p>
+                {{ item.estrategia }}
+              </p>
+
+
+            </div>
+
+
+          </article>
+
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           BASE TEACCH
+      ================================================== -->
+
+      <section class="teacch-card">
+
+
+        <div class="teacch-icon">
+          💡
+        </div>
+
+
+        <div>
+
+          <h3>
+            Base de las orientaciones
+          </h3>
+
+
+          <p>
+
+            Las orientaciones consideran principios de
+            Structured TEACCHing, como la organización física,
+            el uso de apoyos visuales, la estructuración de
+            actividades, la secuenciación de tareas y los
+            sistemas de trabajo que permiten identificar qué
+            hacer, cuánto realizar, cómo saber que una actividad
+            terminó y qué ocurre después.
+
+          </p>
+
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           ADVERTENCIA
+      ================================================== -->
+
+      <section class="disclaimer-card">
+
+
+        <div class="disclaimer-icon">
+          ⚠️
+        </div>
+
+
+        <div>
+
+          <strong>
+            Información importante
+          </strong>
+
+
+          <p>
+
+            El perfil mostrado corresponde únicamente a las
+            actividades K-ABC implementadas en el prototipo.
+            No constituye una puntuación estandarizada oficial,
+            una medida de CI ni un diagnóstico clínico.
+
+          </p>
+
+
+          <p>
+
+            Las orientaciones educativas son sugerencias de
+            apoyo y deben individualizarse de acuerdo con las
+            características y necesidades de cada niño.
+
+          </p>
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           BOTONES
+      ================================================== -->
+
+      <div class="actions">
+
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="volverListado()"
+        >
+
+          ← Volver a evaluaciones
+
+        </button>
+
+
+      </div>
+
+
+    </main>
+
+
+  </div>
+
+</div>

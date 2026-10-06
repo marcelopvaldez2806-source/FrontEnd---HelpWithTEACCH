@@ -1,0 +1,695 @@
+/* ==========================================================
+   EJERCICIO 02 - RECUERDO DE NÚMEROS
+   K-ABC + TEACCH
+   ========================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+
+/* ==========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================== */
+
+.ejercicio-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 0 30px;
+}
+
+
+/* ==========================================================
+   CABECERA
+   ========================================================== */
+
+.ejercicio-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.ejercicio-icon {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid #dce6fb;
+  border-radius: 14px;
+
+  background: #eef4ff;
+
+  font-size: 26px;
+}
+
+.ejercicio-label {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #7b8aa5;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ejercicio-header h1 {
+  margin: 0;
+
+  color: #26354d;
+
+  font-size: 25px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+
+/* ==========================================================
+   PROGRESO DE SERIE
+   ========================================================== */
+
+.serie-progress {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-bottom: 16px;
+
+  color: #687890;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   INSTRUCCIÓN
+   ========================================================== */
+
+.instruction-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 20px;
+
+  margin-bottom: 16px;
+
+  border: 1px solid #dfe7f3;
+  border-radius: 16px;
+
+  background: #f8fafd;
+}
+
+.instruction-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  font-size: 21px;
+
+  box-shadow:
+    0 2px 8px
+    rgba(60, 80, 110, 0.06);
+}
+
+.instruction-card h2 {
+  margin: 0 0 7px;
+
+  color: #29384f;
+
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.instruction-card p {
+  margin: 0;
+
+  color: #6f7e95;
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* ==========================================================
+   AUDIO
+   ========================================================== */
+
+.audio-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 22px;
+
+  margin-bottom: 14px;
+
+  border: 1px solid #dce5f1;
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(45, 65, 95, 0.06);
+}
+
+.audio-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid #d8e4fb;
+  border-radius: 14px;
+
+  background: #edf3ff;
+
+  font-size: 25px;
+}
+
+.audio-content {
+  flex: 1;
+}
+
+.audio-content h2 {
+  margin: 0 0 5px;
+
+  color: #2a394f;
+
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.audio-content p {
+  margin: 0 0 13px;
+
+  color: #7a879b;
+
+  font-size: 13px;
+}
+
+
+/* Ocultamos el reproductor nativo.
+   El botón personalizado controla el audio. */
+
+.audio-card audio {
+  display: none;
+}
+
+
+.audio-button {
+  min-width: 120px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 10px 18px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #6f8fd8;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.audio-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 12px
+    rgba(75, 105, 170, 0.20);
+}
+
+.audio-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.audio-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+.audio-status {
+  display: inline-flex;
+
+  margin-left: 10px;
+
+  color: #5c9873;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   RECORDATORIO
+   ========================================================== */
+
+.reminder-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 16px;
+
+  margin-bottom: 18px;
+
+  border: 1px solid #f0dfb9;
+  border-radius: 12px;
+
+  background: #fffaf0;
+}
+
+.reminder-card span {
+  flex-shrink: 0;
+
+  font-size: 16px;
+}
+
+.reminder-card p {
+  margin: 0;
+
+  color: #89744c;
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+
+/* ==========================================================
+   TARJETA DE RESPUESTA
+   ========================================================== */
+
+.respuesta-card {
+  padding: 24px;
+
+  border: 1px solid #dce5f1;
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(45, 65, 95, 0.06);
+}
+
+.respuesta-header {
+  margin-bottom: 18px;
+}
+
+.respuesta-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #7c8aa1;
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.respuesta-header h2 {
+  margin: 0;
+
+  color: #29384f;
+
+  font-size: 16px;
+  font-weight: 750;
+}
+
+
+/* ==========================================================
+   DISPLAY DE RESPUESTA
+   ========================================================== */
+
+.numeros-display {
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 12px 16px;
+
+  margin-bottom: 18px;
+
+  border: 2px dashed #d6dfed;
+  border-radius: 14px;
+
+  background: #f9fbfe;
+
+  overflow-x: auto;
+}
+
+.numero-vacio {
+  color: #a1adbf;
+
+  font-size: 13px;
+}
+
+.numero-seleccionado {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid #cddaf2;
+  border-radius: 11px;
+
+  background: #edf3ff;
+
+  color: #456bb2;
+
+  font-size: 20px;
+  font-weight: 750;
+
+  animation: numeroEntrada 0.15s ease;
+}
+
+@keyframes numeroEntrada {
+
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+
+/* ==========================================================
+   TECLADO NUMÉRICO
+   ========================================================== */
+
+.teclado-numerico {
+  width: 100%;
+  max-width: 430px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 10px;
+
+  margin: 0 auto;
+}
+
+.tecla {
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dbe3ef;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  color: #34445c;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 5px
+    rgba(45, 65, 95, 0.04);
+
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.tecla:hover:not(:disabled) {
+  background: #f5f8fd;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 9px
+    rgba(45, 65, 95, 0.09);
+}
+
+.tecla:active:not(:disabled) {
+  transform: scale(0.95);
+
+  background: #edf3ff;
+}
+
+.tecla:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+
+/* C */
+
+.tecla-accion {
+  background: #fffaf1;
+
+  border-color: #f1dfbc;
+
+  color: #c28a3e;
+}
+
+
+/* ← */
+
+.tecla-borrar {
+  background: #fff7f7;
+
+  border-color: #efdada;
+
+  color: #bd7272;
+}
+
+
+/* ==========================================================
+   CONTADOR
+   ========================================================== */
+
+.cantidad-numeros {
+  margin-top: 12px;
+
+  text-align: center;
+
+  color: #8996aa;
+
+  font-size: 12px;
+}
+
+
+/* ==========================================================
+   BOTÓN TERMINAR
+   ========================================================== */
+
+.acciones-ejercicio {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 18px;
+}
+
+.btn-terminar {
+  min-width: 125px;
+
+  padding: 11px 20px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #6f8fd8;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.btn-terminar:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 12px
+    rgba(75, 105, 170, 0.20);
+}
+
+.btn-terminar:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-terminar:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================
+   FOOTER TEACCH
+   ========================================================== */
+
+.help-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 18px;
+
+  color: #8492a7;
+
+  font-size: 11px;
+}
+
+.help-footer:first-letter {
+  font-size: 14px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+  .ejercicio-container {
+    padding: 5px 0 25px;
+  }
+
+  .ejercicio-header h1 {
+    font-size: 22px;
+  }
+
+  .instruction-card {
+    padding: 16px;
+  }
+
+  .audio-card {
+    padding: 18px;
+  }
+
+  .respuesta-card {
+    padding: 18px;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .ejercicio-header {
+    gap: 11px;
+  }
+
+  .ejercicio-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ejercicio-header h1 {
+    font-size: 20px;
+  }
+
+  .audio-card {
+    align-items: flex-start;
+  }
+
+  .audio-icon {
+    width: 44px;
+    height: 44px;
+
+    font-size: 21px;
+  }
+
+  .audio-status {
+    display: block;
+
+    margin: 8px 0 0;
+  }
+
+  .teclado-numerico {
+    gap: 8px;
+  }
+
+  .tecla {
+    height: 54px;
+  }
+
+  .numero-seleccionado {
+    width: 42px;
+    height: 42px;
+
+    font-size: 18px;
+  }
+
+  .acciones-ejercicio {
+    justify-content: stretch;
+  }
+
+  .btn-terminar {
+    width: 100%;
+  }
+
+}

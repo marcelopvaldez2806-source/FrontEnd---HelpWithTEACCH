@@ -1,132 +1,410 @@
-<div class="sidebar" [class.expanded]="isExpanded">
+<div
+  class="sidebar"
+  [class.expanded]="isExpanded"
+>
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
 
   <div class="sidebar-header">
 
     <div class="brand">
 
       <div class="logo-box">
-        <img src="/default2.png" alt="logo">
+
+        <img
+          src="/favicon.ico"
+          alt="logo"
+        >
+
       </div>
 
       <div class="header-text">
+
         <span class="title">
-          {{ usuario }}
+          HelpWithTEACCH
         </span>
+
         <small class="subtitle">
-          {{ rol }}
+          Apoyo educativo
         </small>
+
       </div>
 
     </div>
 
   </div>
 
+
   <div class="divider"></div>
+
+
+  <!-- ===================================================== -->
+  <!-- MENU -->
+  <!-- ===================================================== -->
 
   <div class="sidebar-body">
 
+
+    <!-- =================================================== -->
+    <!-- GENERAL -->
+    <!-- =================================================== -->
+
     <div class="menu-section">
 
-      <span class="section-title" *ngIf="isExpanded">
+      <span
+        class="section-title"
+        *ngIf="isExpanded"
+      >
         GENERAL
       </span>
 
-      <div class="menu-item"
-           [class.active]="isActive('/home')"
-           (click)="goTo('/home')">
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/home')"
+        (click)="goTo('/home')"
+      >
 
         <div class="icon-box">
+
           <i class="fi fi-br-house-chimney-blank"></i>
+
         </div>
 
         <span class="label">
-          Dashboard
+          Inicio
         </span>
 
       </div>
 
     </div>
 
-    <div class="menu-section">
 
-      <span class="section-title" *ngIf="isExpanded">
-        GESTIÓN
+    <!-- =================================================== -->
+    <!-- USUARIOS -->
+    <!-- =================================================== -->
+
+    <div
+      class="menu-section"
+      *ngIf="isAdmin"
+    >
+
+      <span
+        class="section-title"
+        *ngIf="isExpanded"
+      >
+        USUARIOS
       </span>
 
-      <div class="divider section-divider" *ngIf="!isExpanded"></div>
 
-      <div class="menu-item"
-           [class.active]="isActive('/PrendaHome')"
-           (click)="goTo('/PrendaHome')">
+      <div
+        class="divider section-divider"
+        *ngIf="!isExpanded"
+      ></div>
 
-        <div class="icon-box notification-parent">
-          <i class="fi fi-bs-shirt-long-sleeve"></i>
-          <span class="notification-badge" *ngIf="!isExpanded"></span>
+
+      <!-- GESTIÓN DE USUARIOS -->
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/usuario')"
+        (click)="goTo('/usuario')"
+      >
+
+        <div class="icon-box">
+
+          <i class="fi fi-br-users"></i>
+
         </div>
 
         <span class="label">
-          Prendas
-        </span>
-
-        <span class="notification-badge-right" *ngIf="isExpanded">
-          3
+          Gestión de usuarios
         </span>
 
       </div>
 
-      <div class="menu-item"
-           [class.active]="isActive('/CatalogoHome')"
-           (click)="goTo('/CatalogoHome')">
+
+      <!-- ROLES / PERMISOS -->
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/roles')"
+        (click)="goTo('/roles')"
+      >
 
         <div class="icon-box">
-          <i class="fi fi-br-layers"></i>
+
+          <i class="fi fi-br-shield-check"></i>
+
         </div>
 
         <span class="label">
-          Catálogo
+          Roles / Permisos
         </span>
 
       </div>
 
     </div>
 
+
+    <!-- =================================================== -->
+    <!-- NIÑOS -->
+    <!-- =================================================== -->
+
     <div class="menu-section">
 
-      <span class="section-title" *ngIf="isExpanded">
-        OPERACIONES
+      <span
+        class="section-title"
+        *ngIf="isExpanded"
+      >
+        NIÑOS
       </span>
 
-      <div class="divider section-divider" *ngIf="!isExpanded"></div>
 
-      <div class="menu-item"
-           [class.active]="isActive('/VentaHome')"
-           (click)="goTo('/VentaHome')">
+      <div
+        class="divider section-divider"
+        *ngIf="!isExpanded"
+      ></div>
+
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/nino')"
+        (click)="goTo('/nino')"
+      >
 
         <div class="icon-box">
-          <i class="fi fi-br-shopping-cart"></i>
+
+          <i class="fi fi-br-child-head"></i>
+
         </div>
 
         <span class="label">
-          Ventas
+          Gestión de niños
         </span>
 
       </div>
 
-      <div class="menu-item"
-           [class.active]="isActive('/reportes')"
-           (click)="goTo('/reportes')">
+    </div>
 
-        <div class="icon-box notification-parent">
-          <i class="fi fi-br-chart-line-up"></i>
-          <span class="notification-badge" *ngIf="!isExpanded"></span>
+
+    <!-- =================================================== -->
+    <!-- EVALUACIONES -->
+    <!-- =================================================== -->
+
+    <div class="menu-section">
+
+      <span
+        class="section-title"
+        *ngIf="isExpanded"
+      >
+        EVALUACIONES
+      </span>
+
+
+      <div
+        class="divider section-divider"
+        *ngIf="!isExpanded"
+      ></div>
+
+
+      <!-- EVALUACIONES -->
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/evaluaciones')"
+        (click)="goTo('/evaluaciones')"
+      >
+
+        <div class="icon-box">
+
+          <i class="fi fi-br-brain"></i>
+
         </div>
 
         <span class="label">
-          Reportes
+          Evaluaciones
         </span>
 
-        <span class="notification-badge-right" *ngIf="isExpanded">
-          5
+      </div>
+
+
+      <!-- PRUEBAS -->
+
+      <div
+        class="menu-item"
+        *ngIf="isAdmin"
+        [class.active]="isActive('/pruebas')"
+        (click)="goTo('/pruebas')"
+      >
+
+        <div class="icon-box">
+
+          <i class="fi fi-br-clipboard-list-check"></i>
+
+        </div>
+
+        <span class="label">
+          Pruebas
+        </span>
+
+      </div>
+
+
+      <!-- VERSIONES -->
+
+      <div
+        class="menu-item"
+        *ngIf="isAdmin"
+        [class.active]="isActive('/versiones')"
+        (click)="goTo('/versiones')"
+      >
+
+        <div class="icon-box">
+
+          <i class="fi fi-br-document"></i>
+
+        </div>
+
+        <span class="label">
+          Versiones
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+<!-- RESULTADOS -->
+<!-- =================================================== -->
+
+<div class="menu-section">
+
+  <span
+    class="section-title"
+    *ngIf="isExpanded"
+  >
+    RESULTADOS
+  </span>
+
+
+  <div
+    class="divider section-divider"
+    *ngIf="!isExpanded"
+  ></div>
+
+
+  <!-- ================================================= -->
+  <!-- RESULTADOS Q-CHAT -->
+  <!-- ================================================= -->
+
+  <div
+    class="menu-item"
+    [class.active]="isActive('/resultados')"
+    (click)="goTo('/resultados')"
+  >
+
+    <div class="icon-box">
+
+      <i class="fi fi-br-chart-histogram"></i>
+
+    </div>
+
+    <span class="label">
+      Resultados
+    </span>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- RESULTADOS FINALES -->
+  <!-- ================================================= -->
+
+  <div
+    class="menu-item"
+    [class.active]="
+      isActive('/evaluaciones/resultados-finales')
+    "
+    (click)="goTo('/evaluaciones/resultados-finales')"
+  >
+
+    <div class="icon-box">
+
+      <i class="fi fi-br-chart-pie"></i>
+
+    </div>
+
+    <span class="label">
+      Resultados finales
+    </span>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- PREDICCIONES ML -->
+  <!-- ================================================= -->
+
+  <div
+    class="menu-item"
+    [class.active]="isActive('/predicciones')"
+    (click)="goTo('/predicciones')"
+  >
+
+    <div class="icon-box">
+
+      <i class="fi fi-br-chart-line-up"></i>
+
+    </div>
+
+    <span class="label">
+      Predicciones ML
+    </span>
+
+  </div>
+
+</div>
+    <!-- =================================================== -->
+    <!-- SISTEMA -->
+    <!-- =================================================== -->
+
+    <div
+      class="menu-section"
+      *ngIf="isAdmin"
+    >
+
+      <span
+        class="section-title"
+        *ngIf="isExpanded"
+      >
+        SISTEMA
+      </span>
+
+
+      <div
+        class="divider section-divider"
+        *ngIf="!isExpanded"
+      ></div>
+
+
+      <div
+        class="menu-item"
+        [class.active]="isActive('/auditoria')"
+        (click)="goTo('/auditoria')"
+      >
+
+        <div class="icon-box">
+
+          <i class="fi fi-br-time-past"></i>
+
+        </div>
+
+        <span class="label">
+          Auditoría
         </span>
 
       </div>
@@ -135,17 +413,27 @@
 
   </div>
 
+
+  <!-- ===================================================== -->
+  <!-- FOOTER -->
+  <!-- ===================================================== -->
+
   <div class="divider"></div>
+
 
   <div class="sidebar-footer">
 
-    <button class="toggle-btn"
-            type="button"
-            (click)="toggleSidebar()">
+    <button
+      class="toggle-btn"
+      type="button"
+      (click)="toggleSidebar()"
+    >
 
-      <i class="fi fi-br-circle-half-stroke"
-         [class.icon-mirror]="!isExpanded">
-      </i>
+      <i
+        class="fi fi-br-circle-half-stroke"
+        [class.icon-mirror]="!isExpanded"
+      ></i>
+
     </button>
 
   </div>

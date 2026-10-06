@@ -1,0 +1,466 @@
+<div class="ejercicio-container">
+
+  <!-- =====================================================
+       CABECERA
+       ===================================================== -->
+
+  <div class="ejercicio-header">
+
+    <div class="ejercicio-icon">
+      🧠
+    </div>
+
+    <div>
+
+      <span class="ejercicio-label">
+        Ejercicio 2
+      </span>
+
+      <h1>
+        Recuerdo de números
+      </h1>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       PROGRESO
+       ===================================================== -->
+
+  <div class="serie-progress">
+
+    <span>
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       INSTRUCCIÓN
+       ===================================================== -->
+
+  <div class="instruction-card">
+
+    <div class="instruction-icon">
+      👂
+    </div>
+
+    <div>
+
+      <h2>
+        ¿Qué tiene que hacer el niño?
+      </h2>
+
+      <p>
+        Escucha atentamente los números que se
+        reproducirán y luego pídele al niño que
+        los repita en el mismo orden.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       AUDIO
+       ===================================================== -->
+
+  <div class="audio-card">
+
+    <div class="audio-icon">
+      🔊
+    </div>
+
+    <div class="audio-content">
+
+      <h2>
+        Escucha atentamente
+      </h2>
+
+      <p>
+        Reproduce el audio y escucha la secuencia
+        de números.
+      </p>
+
+
+      <audio
+        #audioPlayer
+
+        [src]="audioUrl"
+
+        preload="auto"
+
+        (play)="audioIniciado()"
+
+        (ended)="audioTerminado()"
+
+        (error)="audioError($event)"
+      ></audio>
+
+
+      <button
+        type="button"
+
+        class="audio-button"
+
+        [disabled]="
+          !audioUrl ||
+          reproduciendo
+        "
+
+        (click)="escucharAudio()"
+      >
+
+        <span
+          *ngIf="!reproduciendo"
+        >
+          ▶ Escuchar
+        </span>
+
+        <span
+          *ngIf="reproduciendo"
+        >
+          🔊 Reproduciendo...
+        </span>
+
+      </button>
+
+
+      <div
+        class="audio-status"
+
+        *ngIf="audioReproducido"
+      >
+
+        ✓ Audio reproducido
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       RECORDATORIO
+       ===================================================== -->
+
+  <div class="reminder-card">
+
+    <span>
+      💡
+    </span>
+
+    <p>
+      No es necesario mostrar los números al niño.
+      Solo debe escucharlos y repetirlos.
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       RESPUESTA REGISTRADA
+       ===================================================== -->
+
+  <div class="respuesta-card">
+
+    <div class="respuesta-header">
+
+      <div>
+
+        <span class="respuesta-label">
+          Respuesta del niño
+        </span>
+
+        <h2>
+          Registra los números en el orden
+          en que los repitió.
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NÚMEROS INGRESADOS
+         ================================================= -->
+
+    <div class="numeros-display">
+
+      <div
+        class="numero-vacio"
+
+        *ngIf="
+          numerosIngresados.length === 0
+        "
+      >
+
+        Ingresa los números...
+
+      </div>
+
+
+      <div
+        class="numero-seleccionado"
+
+        *ngFor="
+          let numero of numerosIngresados;
+          let i = index
+        "
+      >
+
+        {{ numero }}
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         TECLADO NUMÉRICO
+         ================================================= -->
+
+    <div class="teclado-numerico">
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(1)"
+
+        [disabled]="enviando"
+      >
+        1
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(2)"
+
+        [disabled]="enviando"
+      >
+        2
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(3)"
+
+        [disabled]="enviando"
+      >
+        3
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(4)"
+
+        [disabled]="enviando"
+      >
+        4
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(5)"
+
+        [disabled]="enviando"
+      >
+        5
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(6)"
+
+        [disabled]="enviando"
+      >
+        6
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(7)"
+
+        [disabled]="enviando"
+      >
+        7
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(8)"
+
+        [disabled]="enviando"
+      >
+        8
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(9)"
+
+        [disabled]="enviando"
+      >
+        9
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla tecla-accion"
+
+        (click)="limpiarNumeros()"
+
+        [disabled]="
+          enviando ||
+          numerosIngresados.length === 0
+        "
+      >
+        C
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla"
+
+        (click)="agregarNumero(0)"
+
+        [disabled]="enviando"
+      >
+        0
+      </button>
+
+
+      <button
+        type="button"
+
+        class="tecla tecla-borrar"
+
+        (click)="borrarNumero()"
+
+        [disabled]="
+          enviando ||
+          numerosIngresados.length === 0
+        "
+      >
+        ←
+      </button>
+
+    </div>
+
+
+    <!-- =================================================
+         INDICADOR
+         ================================================= -->
+
+    <div class="cantidad-numeros">
+
+      <span>
+        {{ numerosIngresados.length }}
+        /
+        {{
+          serie?.expectedAnswer?.length ?? 0
+        }}
+        números registrados
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       BOTÓN TERMINAR
+       ===================================================== -->
+
+  <div class="acciones-ejercicio">
+
+    <button
+      type="button"
+
+      class="btn-terminar"
+
+      [disabled]="
+        enviando ||
+        numerosIngresados.length === 0
+      "
+
+      (click)="enviar()"
+    >
+
+      <span
+        *ngIf="!enviando"
+      >
+        ✓ Terminé
+      </span>
+
+      <span
+        *ngIf="enviando"
+      >
+        Guardando...
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       AYUDA TEACCH
+       ===================================================== -->
+
+  <div class="help-footer">
+
+    🧩
+
+    <span>
+      Observa → Escucha → Repite → Registra
+    </span>
+
+  </div>
+
+</div>

@@ -1,0 +1,560 @@
+<div class="app-layout">
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+
+  <app-sidebar
+    [class.collapsed]="!sidebarAbierto">
+  </app-sidebar>
+
+
+  <!-- =====================================================
+       CONTENIDO PRINCIPAL
+       ===================================================== -->
+
+  <main
+    class="main-content"
+    [class.sidebar-collapsed]="!sidebarAbierto">
+
+    <!-- ===================================================
+         NAVBAR
+         =================================================== -->
+
+    <app-navbar
+      (toggleSidebar)="toggleSidebar()">
+    </app-navbar>
+
+
+    <!-- ===================================================
+         CONTENIDO
+         =================================================== -->
+
+    <div class="page-container">
+
+      <!-- =================================================
+           HEADER
+           ================================================= -->
+
+      <div class="page-header">
+
+        <div>
+
+          <button
+            class="back-button"
+            type="button"
+            (click)="volver()">
+
+            ← Volver al Q-CHAT
+
+          </button>
+
+          <h1>
+            Resultados de evaluación
+          </h1>
+
+          <p>
+            Resultados del análisis automático mediante
+            Machine Learning
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           LOADING
+           ================================================= -->
+
+      <div
+        *ngIf="cargando"
+        class="loading-container">
+
+        <div class="spinner"></div>
+
+        <p>
+          Analizando resultados...
+        </p>
+
+      </div>
+
+
+      <!-- =================================================
+           ERROR
+           ================================================= -->
+
+      <div
+        *ngIf="!cargando && error"
+        class="error-container">
+
+        <div class="error-icon">
+          !
+        </div>
+
+        <h3>
+          No se pudieron cargar los resultados
+        </h3>
+
+        <p>
+          {{ error }}
+        </p>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="cargarPredicciones()">
+
+          Intentar nuevamente
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           RESULTADOS
+           ================================================= -->
+
+      <div
+        *ngIf="!cargando && !error"
+        class="results-container">
+
+
+        <!-- ===============================================
+             ENSEMBLE
+             =============================================== -->
+
+        <section class="ensemble-card">
+
+          <div class="ensemble-header">
+
+            <div>
+
+              <span class="section-label">
+                RESULTADO COMBINADO
+              </span>
+
+              <h2>
+                Ensemble Learning
+              </h2>
+
+              <p>
+                Soft Voting entre Random Forest y XGBoost
+              </p>
+
+            </div>
+
+            <div class="ensemble-icon">
+              ML
+            </div>
+
+          </div>
+
+
+          <div class="ensemble-content">
+
+            <!-- =========================================
+                 PORCENTAJE
+                 ========================================= -->
+
+            <div class="ensemble-score">
+
+              <div class="ensemble-circle">
+
+                <div class="circle-content">
+
+                  <strong>
+                    {{ porcentajeEnsemble | number:'1.2-2' }}%
+                  </strong>
+
+                  <span>
+                    probabilidad
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 RESULTADO
+                 ========================================= -->
+
+            <div class="ensemble-result">
+
+              <span class="result-title">
+                Resultado combinado
+              </span>
+
+              <div
+                class="result-badge large"
+                [ngClass]="claseResultadoEnsemble">
+
+                {{ resultadoEnsemble }}
+
+              </div>
+
+              <p class="result-description">
+
+                El resultado se obtiene combinando las
+                probabilidades generadas por ambos modelos
+                mediante Soft Voting.
+
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- ===========================================
+               ECUACIÓN
+               =========================================== -->
+
+          <div class="formula-container">
+
+            <span class="formula-label">
+              Cálculo utilizado
+            </span>
+
+            <div class="formula">
+
+              P<sub>Ensemble</sub> =
+              (P<sub>RF</sub> × 0.50) +
+              (P<sub>XGBoost</sub> × 0.50)
+
+            </div>
+
+            <div class="formula-result">
+
+              ({{ porcentajeRandomForest | number:'1.2-2' }}%
+              × 0.50)
+              +
+              ({{ porcentajeXGBoost | number:'1.2-2' }}%
+              × 0.50)
+              =
+              <strong>
+                {{ porcentajeEnsemble | number:'1.2-2' }}%
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===============================================
+             MODELOS INDIVIDUALES
+             =============================================== -->
+
+        <section class="models-section">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                MODELOS DE MACHINE LEARNING
+              </span>
+
+              <h2>
+                Predicciones individuales
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="models-grid">
+
+
+            <!-- =========================================
+                 RANDOM FOREST
+                 ========================================= -->
+
+            <article
+              *ngIf="randomForest"
+              class="model-card">
+
+              <div class="model-header">
+
+                <div>
+
+                  <span class="model-label">
+                    MODELO 01
+                  </span>
+
+                  <h3>
+                    Random Forest
+                  </h3>
+
+                </div>
+
+                <span
+                  class="result-badge"
+                  [ngClass]="claseRandomForest">
+
+                  {{ randomForest.resultado }}
+
+                </span>
+
+              </div>
+
+
+              <div class="model-score">
+
+                <strong>
+                  {{ porcentajeRandomForest | number:'1.2-2' }}%
+                </strong>
+
+                <span>
+                  probabilidad
+                </span>
+
+              </div>
+
+
+              <div class="progress-container">
+
+                <div class="progress-track">
+
+                  <div
+                    class="progress-fill"
+                    [style.width.%]="porcentajeRandomForest">
+                  </div>
+
+                </div>
+
+              </div>
+
+            </article>
+
+
+            <!-- =========================================
+                 XGBOOST
+                 ========================================= -->
+
+            <article
+              *ngIf="xgboost"
+              class="model-card">
+
+              <div class="model-header">
+
+                <div>
+
+                  <span class="model-label">
+                    MODELO 02
+                  </span>
+
+                  <h3>
+                    XGBoost
+                  </h3>
+
+                </div>
+
+                <span
+                  class="result-badge"
+                  [ngClass]="claseXGBoost">
+
+                  {{ xgboost.resultado }}
+
+                </span>
+
+              </div>
+
+
+              <div class="model-score">
+
+                <strong>
+                  {{ porcentajeXGBoost | number:'1.2-2' }}%
+                </strong>
+
+                <span>
+                  probabilidad
+                </span>
+
+              </div>
+
+
+              <div class="progress-container">
+
+                <div class="progress-track">
+
+                  <div
+                    class="progress-fill"
+                    [style.width.%]="porcentajeXGBoost">
+                  </div>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===============================================
+             COMPARACIÓN
+             =============================================== -->
+
+        <section class="comparison-card">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                COMPARACIÓN
+              </span>
+
+              <h2>
+                Análisis de las predicciones
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="comparison-row">
+
+            <div class="comparison-info">
+
+              <span>
+                Random Forest
+              </span>
+
+              <strong>
+                {{ porcentajeRandomForest | number:'1.2-2' }}%
+              </strong>
+
+            </div>
+
+            <div class="comparison-bar">
+
+              <div
+                class="comparison-fill"
+                [style.width.%]="porcentajeRandomForest">
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="comparison-row">
+
+            <div class="comparison-info">
+
+              <span>
+                XGBoost
+              </span>
+
+              <strong>
+                {{ porcentajeXGBoost | number:'1.2-2' }}%
+              </strong>
+
+            </div>
+
+            <div class="comparison-bar">
+
+              <div
+                class="comparison-fill"
+                [style.width.%]="porcentajeXGBoost">
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="comparison-row ensemble-row">
+
+            <div class="comparison-info">
+
+              <span>
+                Ensemble Learning
+              </span>
+
+              <strong>
+                {{ porcentajeEnsemble | number:'1.2-2' }}%
+              </strong>
+
+            </div>
+
+            <div class="comparison-bar">
+
+              <div
+                class="comparison-fill ensemble-fill"
+                [style.width.%]="porcentajeEnsemble">
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===============================================
+             AVISO
+             =============================================== -->
+
+        <div class="disclaimer">
+
+          <span class="disclaimer-icon">
+            i
+          </span>
+
+          <p>
+
+            Este resultado corresponde a una predicción
+            automatizada basada en modelos de Machine Learning.
+            No constituye por sí mismo un diagnóstico clínico.
+
+          </p>
+
+        </div>
+
+
+        <!-- ===============================================
+             BOTONES
+             =============================================== -->
+
+        <div class="actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="volver()">
+
+            ← Volver al Q-CHAT
+
+          </button>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="volverResultados()">
+
+            Ver resultados
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

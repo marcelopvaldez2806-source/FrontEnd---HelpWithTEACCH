@@ -1,6 +1,11 @@
 <div class="auth-container" [class.login-success]="animandoLogin">
 
+  <!-- ======================================== -->
+  <!-- PANEL DE BIENVENIDA -->
+  <!-- ======================================== -->
+
   <section class="welcome-panel">
+
     <div class="overlay"></div>
 
     <div class="welcome-content">
@@ -9,44 +14,76 @@
         <i class="fi fi-rr-shirt-long-sleeve"></i>
       </div>
 
-      <span class="tag">Sistema de Inventario</span>
+      <span class="tag">
+        Plataforma Educativa
+      </span>
 
-      <h1>Boutique Norca</h1>
+      <h1>
+        HelpWithTEACCH
+      </h1>
 
       <p class="subtitle">
-        Gestiona tu catálogo, stock y ventas de prendas desde una sola plataforma.
+        Apoya la evaluación y el aprendizaje de niños con TEA mediante estrategias educativas personalizadas.
       </p>
 
       <div class="features">
 
         <div class="feature-item">
+
           <i class="fi fi-rr-box-open-full"></i>
-          <span>Control de inventario en tiempo real</span>
+
+          <span>
+            Evaluaciones educativas basadas en TEACCH
+          </span>
+
         </div>
 
+
         <div class="feature-item">
+
           <i class="fi fi-rr-tags"></i>
-          <span>Gestión de prendas, marcas y categorías</span>
+
+          <span>
+            Recomendación de estrategias educativas personalizadas
+          </span>
+
         </div>
 
+
         <div class="feature-item">
+
           <i class="fi fi-rr-chart-line-up"></i>
-          <span>Seguimiento de lotes y movimientos</span>
+
+          <span>
+            Predicción mediante Machine Learning
+          </span>
+
         </div>
 
       </div>
 
     </div>
+
   </section>
+
+
+  <!-- ======================================== -->
+  <!-- PANEL DE FORMULARIO -->
+  <!-- ======================================== -->
 
   <section class="form-panel">
 
     <div class="login-card">
 
+
+      <!-- ==================================== -->
+      <!-- HEADER -->
+      <!-- ==================================== -->
+
       <div class="login-header">
 
         <span class="login-badge">
-          Acceso al Sistema
+          Acceso a HelpWithTEACCH
         </span>
 
         <h2>
@@ -56,14 +93,17 @@
         <p>
           {{
             modoRegistro
-              ? 'Registra un nuevo usuario para acceder al sistema.'
-              : 'Ingresa tus credenciales para continuar.'
+              ? 'Registra una nueva cuenta para acceder a la plataforma educativa.'
+              : 'Ingresa tus credenciales para continuar con tu sesión.'
           }}
         </p>
 
       </div>
 
+
+      <!-- ==================================== -->
       <!-- LOGIN -->
+      <!-- ==================================== -->
 
       <form
         *ngIf="!modoRegistro"
@@ -71,28 +111,34 @@
         (ngSubmit)="login()"
         class="form-content">
 
+
+        <!-- EMAIL -->
+
         <div class="input-group">
 
-          <label for="username">
-            Usuario
+          <label for="email">
+            Correo electrónico
           </label>
 
           <div class="input-wrapper">
 
-            <i class="fi fi-rr-user"></i>
+            <i class="fi fi-rr-envelope"></i>
 
             <input
-              id="username"
-              type="text"
-              formControlName="username"
-              placeholder="Ingresa tu usuario"
-              autocomplete="off"
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Ingresa tu correo electrónico"
+              autocomplete="email"
               autocapitalize="off"
               spellcheck="false">
 
           </div>
 
         </div>
+
+
+        <!-- PASSWORD -->
 
         <div class="input-group">
 
@@ -108,7 +154,8 @@
               id="password"
               [type]="hidePassword ? 'password' : 'text'"
               formControlName="password"
-              placeholder="Ingresa tu contraseña">
+              placeholder="Ingresa tu contraseña"
+              autocomplete="current-password">
 
             <button
               type="button"
@@ -117,8 +164,8 @@
 
               <i
                 [class]="hidePassword
-                ? 'fi fi-rr-eye-crossed'
-                : 'fi fi-rr-eye'">
+                  ? 'fi fi-rr-eye-crossed'
+                  : 'fi fi-rr-eye'">
               </i>
 
             </button>
@@ -126,6 +173,9 @@
           </div>
 
         </div>
+
+
+        <!-- ERROR -->
 
         <div
           *ngIf="errorLogin"
@@ -139,6 +189,9 @@
 
         </div>
 
+
+        <!-- SUCCESS -->
+
         <div
           *ngIf="successLogin"
           class="alert-success">
@@ -151,6 +204,9 @@
 
         </div>
 
+
+        <!-- BOTÓN -->
+
         <button
           type="submit"
           class="btn-login"
@@ -160,6 +216,9 @@
 
         </button>
 
+
+        <!-- LINKS -->
+
         <div class="login-links">
 
           <a href="javascript:void(0)">
@@ -168,7 +227,7 @@
 
           <p>
 
-            ¿Nuevo en Boutique Norca?
+            ¿Aún no tienes una cuenta?
 
             <a
               href="javascript:void(0)"
@@ -185,7 +244,10 @@
 
       </form>
 
+
+      <!-- ==================================== -->
       <!-- REGISTRO -->
+      <!-- ==================================== -->
 
       <form
         *ngIf="modoRegistro"
@@ -193,10 +255,13 @@
         (ngSubmit)="register()"
         class="form-content">
 
+
+        <!-- NOMBRES -->
+
         <div class="input-group">
 
-          <label>
-            Usuario
+          <label for="register-nombres">
+            Nombres
           </label>
 
           <div class="input-wrapper">
@@ -204,17 +269,103 @@
             <i class="fi fi-rr-user"></i>
 
             <input
+              id="register-nombres"
               type="text"
-              formControlName="username"
-              placeholder="Ingresa un usuario">
+              formControlName="nombres"
+              placeholder="Ingresa tus nombres"
+              autocomplete="given-name">
 
           </div>
 
         </div>
 
+
+        <!-- APELLIDOS -->
+
         <div class="input-group">
 
-          <label>
+          <label for="register-apellidos">
+            Apellidos
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fi fi-rr-user"></i>
+
+            <input
+              id="register-apellidos"
+              type="text"
+              formControlName="apellidos"
+              placeholder="Ingresa tus apellidos"
+              autocomplete="family-name">
+
+          </div>
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="input-group">
+
+          <label for="register-email">
+            Correo electrónico
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fi fi-rr-envelope"></i>
+
+            <input
+              id="register-email"
+              type="email"
+              formControlName="email"
+              placeholder="Ingresa tu correo electrónico"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false">
+
+          </div>
+
+        </div>
+
+
+        <!-- ROL -->
+
+        <div class="input-group">
+
+          <label for="register-rol">
+            Tipo de usuario
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fi fi-rr-users"></i>
+
+            <select
+              id="register-rol"
+              formControlName="idRol">
+
+              <option [ngValue]="3">
+                Padre / Madre de familia
+              </option>
+
+              <option [ngValue]="2">
+                Docente
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="input-group">
+
+          <label for="register-password">
             Contraseña
           </label>
 
@@ -223,9 +374,11 @@
             <i class="fi fi-rr-lock"></i>
 
             <input
+              id="register-password"
               [type]="hideRegisterPassword ? 'password' : 'text'"
               formControlName="password"
-              placeholder="Mínimo 6 caracteres">
+              placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password">
 
             <button
               type="button"
@@ -234,8 +387,8 @@
 
               <i
                 [class]="hideRegisterPassword
-                ? 'fi fi-rr-eye-crossed'
-                : 'fi fi-rr-eye'">
+                  ? 'fi fi-rr-eye-crossed'
+                  : 'fi fi-rr-eye'">
               </i>
 
             </button>
@@ -243,6 +396,33 @@
           </div>
 
         </div>
+
+
+        <!-- CONFIRMAR PASSWORD -->
+
+        <div class="input-group">
+
+          <label for="register-confirmar-password">
+            Confirmar contraseña
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fi fi-rr-lock"></i>
+
+            <input
+              id="register-confirmar-password"
+              [type]="hideRegisterPassword ? 'password' : 'text'"
+              formControlName="confirmarPassword"
+              placeholder="Repite tu contraseña"
+              autocomplete="new-password">
+
+          </div>
+
+        </div>
+
+
+        <!-- ERROR -->
 
         <div
           *ngIf="errorLogin"
@@ -256,6 +436,9 @@
 
         </div>
 
+
+        <!-- SUCCESS -->
+
         <div
           *ngIf="successLogin"
           class="alert-success">
@@ -268,6 +451,9 @@
 
         </div>
 
+
+        <!-- BOTÓN REGISTRO -->
+
         <button
           type="submit"
           class="btn-login">
@@ -275,6 +461,9 @@
           Registrarme
 
         </button>
+
+
+        <!-- VOLVER AL LOGIN -->
 
         <div class="login-links">
 
@@ -301,6 +490,11 @@
 
   </section>
 
+
+  <!-- ======================================== -->
+  <!-- LOADING -->
+  <!-- ======================================== -->
+
   <div
     class="loading-overlay"
     [class.active]="animandoLogin">
@@ -310,11 +504,11 @@
       <div class="loader"></div>
 
       <h3>
-        Ingresando al sistema
+        Ingresando a HelpWithTEACCH
       </h3>
 
       <p>
-        Preparando tu espacio de trabajo...
+        Preparando tu espacio educativo...
       </p>
 
     </div>

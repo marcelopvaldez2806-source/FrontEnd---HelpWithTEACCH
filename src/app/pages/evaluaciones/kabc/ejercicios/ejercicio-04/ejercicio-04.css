@@ -1,0 +1,688 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ejercicio-wrapper {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.ejercicio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.ejercicio-numero {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ejercicio-numero span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6f8094;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ejercicio-numero strong {
+  font-size: 26px;
+  color: #263b53;
+}
+
+.progreso-serie {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #eef7f2;
+  color: #4c9271;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   INSTRUCCIÓN
+   ===================================================== */
+
+.instruccion-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 18px 20px;
+  margin-bottom: 18px;
+
+  border: 1px solid #e4eee9;
+  border-radius: 18px;
+
+  background: #f8fcfa;
+}
+
+.instruccion-icono {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: #e7f6ee;
+
+  font-size: 27px;
+  flex-shrink: 0;
+}
+
+.instruccion-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.instruccion-titulo {
+  font-size: 14px;
+  font-weight: 800;
+  color: #4c9271;
+}
+
+.instruccion-contenido p {
+  margin: 0;
+  color: #536679;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   PASOS
+   ===================================================== */
+
+.pasos-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  padding: 14px;
+  margin-bottom: 18px;
+
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e8edf1;
+}
+
+.paso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 15px;
+
+  border-radius: 12px;
+
+  color: #9aa7b4;
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.paso.activo {
+  background: #eef7f2;
+  color: #4c9271;
+}
+
+.paso.completado {
+  background: #e7f6ee;
+  color: #438866;
+}
+
+.paso-numero {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+  border: 1px solid #dbe5df;
+
+  font-size: 12px;
+}
+
+.paso-flecha {
+  color: #b4bec8;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   VENTANA MÁGICA
+   ===================================================== */
+
+.ventana-card {
+  padding: 22px;
+  margin-bottom: 22px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+  border: 1px solid #e3e9ed;
+
+  box-shadow: 0 5px 18px rgba(50, 70, 90, 0.05);
+}
+
+.ventana-titulo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 18px;
+
+  color: #344a60;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.ventana-icono {
+  font-size: 21px;
+}
+
+.ventana-contenedor {
+  min-height: 245px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  background: #f7faf9;
+  border: 2px dashed #dce9e2;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   IMAGEN OCULTA
+   ===================================================== */
+
+.ventana-oculta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  padding: 25px;
+}
+
+.bloqueo-grid {
+  width: 145px;
+  height: 145px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-radius: 18px;
+  overflow: hidden;
+
+  background: #e5eee9;
+
+  box-shadow:
+    inset 0 0 0 1px #d6e2dc;
+}
+
+.bloqueo-grid span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d5e1db;
+
+  color: #a9b9b1;
+
+  font-size: 25px;
+}
+
+.bloqueo-grid span:nth-child(5) {
+  background: #f1f7f4;
+  color: #719181;
+}
+
+.ventana-oculta p {
+  margin: 0;
+
+  color: #71808d;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-revelar {
+  border: none;
+
+  padding: 11px 20px;
+
+  border-radius: 11px;
+
+  background: #e5f4ec;
+  color: #468768;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-revelar:hover:not(:disabled) {
+  background: #d8eee3;
+  transform: translateY(-1px);
+}
+
+.btn-revelar:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   IMAGEN REVELADA
+   ===================================================== */
+
+.ventana-revelada {
+  width: 100%;
+  min-height: 245px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  animation: aparecer 0.45s ease;
+}
+
+.estimulo-emoji {
+  width: 155px;
+  height: 155px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe9e4;
+
+  box-shadow:
+    0 8px 20px rgba(60, 80, 70, 0.08);
+
+  font-size: 90px;
+}
+
+.estimulo-texto {
+  color: #6c7c88;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =====================================================
+   OPCIONES
+   ===================================================== */
+
+.opciones-section {
+  margin-bottom: 20px;
+}
+
+.opciones-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  margin-bottom: 13px;
+}
+
+.opciones-titulo span {
+  color: #344a60;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.opciones-titulo small {
+  color: #81909d;
+  font-size: 13px;
+}
+
+.opciones-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.opcion-card {
+  position: relative;
+
+  min-height: 175px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border: 2px solid #e2e8ec;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.opcion-card:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: #a9d5bd;
+  box-shadow: 0 8px 20px rgba(60, 90, 75, 0.08);
+}
+
+.opcion-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.opcion-card.seleccionada {
+  border-color: #62a982;
+  background: #f0f9f4;
+  box-shadow: 0 7px 18px rgba(75, 140, 105, 0.12);
+}
+
+.opcion-letra {
+  position: absolute;
+
+  top: 10px;
+  left: 11px;
+
+  width: 27px;
+  height: 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #edf2f4;
+  color: #667783;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.opcion-emoji {
+  font-size: 62px;
+  line-height: 1;
+}
+
+.opcion-nombre {
+  color: #566875;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.check-seleccion {
+  position: absolute;
+
+  top: 10px;
+  right: 10px;
+
+  width: 27px;
+  height: 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #62a982;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   PREVISUALIZACIÓN RESPUESTA
+   ===================================================== */
+
+.respuesta-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 17px;
+  margin-bottom: 18px;
+
+  border-radius: 14px;
+
+  background: #f3faf6;
+  border: 1px solid #dceee4;
+}
+
+.respuesta-icono {
+  width: 35px;
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #dff2e7;
+  color: #4c9271;
+
+  font-weight: 900;
+}
+
+.respuesta-preview strong {
+  color: #4a6270;
+  font-size: 14px;
+}
+
+.respuesta-preview p {
+  margin: 2px 0 0;
+
+  color: #74838e;
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   ACCIONES
+   ===================================================== */
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-bottom: 18px;
+}
+
+.btn-terminar {
+  min-width: 145px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 13px 22px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #5d9f7b;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-terminar:hover:not(:disabled) {
+  background: #4f8e6c;
+  transform: translateY(-1px);
+}
+
+.btn-terminar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   PIE
+   ===================================================== */
+
+.pie-ejercicio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  padding: 14px;
+
+  border-top: 1px solid #edf0f2;
+
+  color: #8a98a3;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 800px) {
+
+  .opciones-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ejercicio-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .progreso-serie {
+    align-self: flex-start;
+  }
+}
+
+
+@media (max-width: 520px) {
+
+  .instruccion-card {
+    align-items: flex-start;
+  }
+
+  .instruccion-icono {
+    width: 45px;
+    height: 45px;
+  }
+
+  .pasos-card {
+    gap: 5px;
+  }
+
+  .paso {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .paso-flecha {
+    font-size: 12px;
+  }
+
+  .ventana-card {
+    padding: 15px;
+  }
+
+  .estimulo-emoji {
+    width: 125px;
+    height: 125px;
+    font-size: 72px;
+  }
+
+  .bloqueo-grid {
+    width: 125px;
+    height: 125px;
+  }
+
+  .opcion-card {
+    min-height: 150px;
+  }
+
+  .opcion-emoji {
+    font-size: 52px;
+  }
+
+  .acciones {
+    justify-content: stretch;
+  }
+
+  .btn-terminar {
+    width: 100%;
+  }
+
+  .pie-ejercicio {
+    font-size: 11px;
+  }
+}

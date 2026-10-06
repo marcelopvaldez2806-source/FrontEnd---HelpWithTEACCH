@@ -1,0 +1,410 @@
+<div class="ejercicio-container">
+
+  <!-- =====================================================
+       CABECERA
+       ===================================================== -->
+
+  <div class="ejercicio-header">
+
+    <div class="ejercicio-icon">
+      🧠
+    </div>
+
+    <div>
+
+      <span class="ejercicio-label">
+        Ejercicio 3
+      </span>
+
+      <h1>
+        Orden de palabras
+      </h1>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       PROGRESO
+       ===================================================== -->
+
+  <div class="serie-progress">
+
+    Serie {{ numeroSerie }} de {{ totalSeries }}
+
+  </div>
+
+
+  <!-- =====================================================
+       INSTRUCCIÓN
+       ===================================================== -->
+
+  <div class="instruction-card">
+
+    <div class="instruction-icon">
+      👂
+    </div>
+
+    <div>
+
+      <h2>
+        ¿Qué tiene que hacer el niño?
+      </h2>
+
+      <p>
+        Escucha las palabras y selecciona los
+        objetos en el mismo orden en que fueron
+        mencionados.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       AUDIO
+       ===================================================== -->
+
+  <div class="audio-card">
+
+    <div class="audio-icon">
+      🔊
+    </div>
+
+    <div class="audio-content">
+
+      <h2>
+        Escucha atentamente
+      </h2>
+
+      <p>
+        Reproduce el audio antes de comenzar
+        la actividad.
+      </p>
+
+
+      <button
+        type="button"
+        class="audio-button"
+
+        [disabled]="enviando"
+
+        (click)="reproducirAudio()"
+      >
+
+        ▶ Escuchar
+
+      </button>
+
+
+      <span
+        class="audio-status"
+
+        *ngIf="audioReproducido"
+      >
+
+        ✓ Audio reproducido
+
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       AYUDA
+       ===================================================== -->
+
+  <div class="visual-instruction">
+
+    <span class="visual-instruction-icon">
+      👆
+    </span>
+
+    <div>
+
+      <strong>
+        Selecciona los objetos en orden
+      </strong>
+
+      <span>
+        Pulsa cada objeto siguiendo el orden
+        en que lo escuchaste.
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       OPCIONES
+       ===================================================== -->
+
+  <div class="opciones-section">
+
+    <div class="section-title">
+
+      <span>
+        Opciones
+      </span>
+
+      <span class="contador">
+
+        {{ imagenesSeleccionadas.length }}
+
+        /
+
+        {{
+          serie?.expectedAnswer?.length ?? 0
+        }}
+
+      </span>
+
+    </div>
+
+
+    <div class="imagenes-grid">
+
+      <button
+        type="button"
+
+        class="imagen-option"
+
+        *ngFor="
+          let opcion of serie?.options ?? []
+        "
+
+        [class.seleccionada]="
+          estaSeleccionada(opcion)
+        "
+
+        [disabled]="
+          enviando ||
+          estaSeleccionada(opcion) ||
+          imagenesSeleccionadas.length >=
+          (serie?.expectedAnswer?.length ?? 0)
+        "
+
+        (click)="
+          seleccionarImagen(opcion)
+        "
+      >
+
+        <!-- Número de orden -->
+
+        <div class="numero-seleccion">
+
+          <span
+            *ngIf="
+              estaSeleccionada(opcion)
+            "
+          >
+
+            {{ obtenerPosicion(opcion) }}
+
+          </span>
+
+        </div>
+
+
+        <!-- Emoji -->
+
+        <div class="emoji-wrapper">
+
+          {{
+            obtenerEmoji(opcion)
+          }}
+
+        </div>
+
+
+        <!-- Nombre -->
+
+        <span class="imagen-nombre">
+
+          {{
+            obtenerNombre(opcion)
+          }}
+
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       RESPUESTA
+       ===================================================== -->
+
+  <div class="respuesta-card">
+
+    <div class="respuesta-header">
+
+      <span class="respuesta-label">
+        Orden seleccionado
+      </span>
+
+      <h2>
+        Así ha respondido el niño
+      </h2>
+
+    </div>
+
+
+    <div
+      class="respuesta-vacia"
+
+      *ngIf="
+        imagenesSeleccionadas.length === 0
+      "
+    >
+
+      Selecciona los objetos en el orden
+      correspondiente.
+
+    </div>
+
+
+    <div
+      class="respuesta-orden"
+
+      *ngIf="
+        imagenesSeleccionadas.length > 0
+      "
+    >
+
+      <div
+        class="respuesta-item"
+
+        *ngFor="
+          let imagen of imagenesSeleccionadas;
+          let i = index
+        "
+      >
+
+        <span class="respuesta-numero">
+          {{ i + 1 }}
+        </span>
+
+        <span class="respuesta-emoji">
+
+          {{
+            obtenerEmoji(imagen)
+          }}
+
+        </span>
+
+        <span class="respuesta-nombre">
+
+          {{
+            obtenerNombre(imagen)
+          }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ACCIONES
+         ================================================= -->
+
+    <div class="respuesta-actions">
+
+      <button
+        type="button"
+
+        class="btn-secondary"
+
+        [disabled]="
+          enviando ||
+          imagenesSeleccionadas.length === 0
+        "
+
+        (click)="deshacerUltima()"
+      >
+
+        ← Deshacer
+
+      </button>
+
+
+      <button
+        type="button"
+
+        class="btn-secondary"
+
+        [disabled]="
+          enviando ||
+          imagenesSeleccionadas.length === 0
+        "
+
+        (click)="limpiarSeleccion()"
+      >
+
+        Limpiar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TERMINAR
+       ===================================================== -->
+
+  <div class="acciones-ejercicio">
+
+    <button
+      type="button"
+
+      class="btn-terminar"
+
+      [disabled]="
+        enviando ||
+        imagenesSeleccionadas.length !==
+        (serie?.expectedAnswer?.length ?? 0)
+      "
+
+      (click)="enviar()"
+    >
+
+      <span *ngIf="!enviando">
+        ✓ Terminé
+      </span>
+
+      <span *ngIf="enviando">
+        Guardando...
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <div class="help-footer">
+
+    🧩
+
+    <span>
+      Escucha → Observa → Selecciona → Ordena
+    </span>
+
+  </div>
+
+</div>

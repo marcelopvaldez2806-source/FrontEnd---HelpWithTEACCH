@@ -1,0 +1,14 @@
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+<div class="main-layout" [class.expanded]="sidebarExpanded">
+
+  <app-navbar></app-navbar>
+
+  <div class="page-content">
+
+
+  </div>
+
+</div>

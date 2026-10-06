@@ -1,6 +1,6 @@
 import {Component, Input } from '@angular/core';
-import {KpiItem} from '../../model/KpiItem';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {KpiItem} from '../../models/SelectOption';
 
 @Component({
   selector: 'app-kpi-grid',
