@@ -1,0 +1,142 @@
+<section class="ejercicio">
+  <header class="cabecera">
+    <div>
+      <span class="etiqueta">K-ABC · MEMORIA ESPACIAL</span>
+      <h2>¿Dónde estaban los objetos?</h2>
+    </div>
+
+    <span class="contador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+  </header>
+
+  <p class="instruccion">
+    {{ item?.instruction ||
+      'Observa la posición de los objetos. Después de ocultarlos, colócalos en sus posiciones originales.' }}
+  </p>
+
+  <div class="estado" *ngIf="modoMemoria">
+    <span class="punto"></span>
+    Observa y memoriza las posiciones de los objetos.
+  </div>
+
+  <div class="estado estado-respuesta" *ngIf="!modoMemoria">
+    <span class="punto"></span>
+    Objetos colocados: {{ cantidadColocados }} de {{ objetos.length }}
+  </div>
+
+  <div
+    class="tablero"
+    [class.tablero-memoria]="modoMemoria"
+    [class.tablero-respuesta]="!modoMemoria"
+    role="group"
+    aria-label="Cuadrícula de memoria espacial"
+  >
+    <button
+      *ngFor="let celda of celdas"
+      type="button"
+      class="casilla"
+      [class.casilla-seleccionada]="
+        !modoMemoria &&
+        objetoSeleccionado !== null &&
+        obtenerObjetoEnCasilla(celda) === undefined
+      "
+      [disabled]="modoMemoria || enviando || respuestaEnviada"
+      [attr.aria-label]="'Casilla ' + (celda + 1)"
+      (click)="colocarObjeto(celda)"
+    >
+      <span
+        class="simbolo"
+        *ngIf="obtenerObjetoEnCasilla(celda) as objeto"
+        [class.simbolo-memoria]="modoMemoria"
+      >
+        {{ objeto.simbolo }}
+      </span>
+    </button>
+  </div>
+
+  <div class="acciones-memoria" *ngIf="modoMemoria">
+    <p>
+      Recuerda dónde está cada símbolo antes de ocultarlos.
+    </p>
+
+    <button
+      type="button"
+      class="boton boton-principal"
+      (click)="ocultarObjetos()"
+    >
+      Ocultar objetos y comenzar
+    </button>
+  </div>
+
+  <div class="zona-respuesta" *ngIf="!modoMemoria">
+    <h3>Selecciona un objeto</h3>
+
+    <p class="ayuda">
+      Pulsa un símbolo y después pulsa su casilla en la cuadrícula.
+    </p>
+
+    <div class="objetos">
+      <button
+        *ngFor="let objeto of objetos; trackBy: trackById"
+        type="button"
+        class="objeto"
+        [class.objeto-seleccionado]="
+          objetoSeleccionado === objeto.id
+        "
+        [class.objeto-colocado]="estaColocado(objeto)"
+        [disabled]="enviando || respuestaEnviada"
+        (click)="seleccionarObjeto(objeto)"
+      >
+        <span class="objeto-simbolo">{{ objeto.simbolo }}</span>
+
+        <span class="objeto-texto">
+          {{ estaColocado(objeto) ? 'Colocado' : 'Elegir' }}
+        </span>
+      </button>
+    </div>
+
+    <div class="progreso">
+      <div class="progreso-fondo">
+        <div
+          class="progreso-valor"
+          [style.width.%]="
+            objetos.length
+              ? (cantidadColocados / objetos.length) * 100
+              : 0
+          "
+        ></div>
+      </div>
+
+      <span>{{ cantidadColocados }}/{{ objetos.length }}</span>
+    </div>
+
+    <div class="botones-finales">
+      <button
+        type="button"
+        class="boton boton-secundario"
+        (click)="reiniciarColocacion()"
+        [disabled]="enviando || respuestaEnviada"
+      >
+        Reiniciar
+      </button>
+
+      <button
+        type="button"
+        class="boton boton-principal"
+        (click)="confirmarRespuesta()"
+        [disabled]="!todosColocados || enviando || respuestaEnviada"
+      >
+        {{ enviando ? 'Guardando...' : 'Confirmar respuesta' }}
+      </button>
+    </div>
+  </div>
+
+  <p
+    class="mensaje"
+    *ngIf="mensaje"
+    aria-live="polite"
+  >
+    {{ mensaje }}
+  </p>
+</section>

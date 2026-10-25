@@ -1,0 +1,196 @@
+
+<section class="triangulos-container">
+  <header class="ejercicio-header">
+    <span class="ejercicio-etiqueta">EJERCICIO 07</span>
+    <h2>Triángulos</h2>
+    <p>
+      Observa el modelo y construye la misma figura
+      arrastrando y girando las piezas.
+    </p>
+    <p class="serie-indicador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </p>
+  </header>
+
+  <div class="instruccion">
+    <span class="instruccion-icono">💡</span>
+    <div>
+      <strong>Instrucción</strong>
+      <p>
+        Arrastra las tres piezas al tablero.
+        Ajusta su posición y orientación para reproducir el modelo.
+      </p>
+    </div>
+  </div>
+
+  <section class="modelo-section">
+    <h3>Modelo de referencia</h3>
+
+    <div class="modelo-frame">
+      <svg viewBox="0 0 600 360"
+           role="img"
+           aria-label="Modelo geométrico de referencia">
+        <defs>
+          <pattern id="rejillaModelo"
+                   width="20" height="20"
+                   patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20"
+                  fill="none"
+                  stroke="#e1e7f0"
+                  stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <rect width="600" height="360"
+              fill="url(#rejillaModelo)"/>
+
+        <g *ngFor="let objetivo of modeloActual; let i = index"
+           [attr.transform]="
+             'translate(' + objetivo.x + ' ' + objetivo.y + ') ' +
+             'rotate(' + objetivo.rotacion + ' 40 35)'
+           ">
+          <polygon points="40,0 80,70 0,70"
+                   [attr.fill]="colores[i]"
+                   stroke="#344054"
+                   stroke-width="2"
+                   stroke-linejoin="round"/>
+        </g>
+      </svg>
+      <p class="nota">
+        Modelo geométrico propio para el prototipo.
+      </p>
+    </div>
+  </section>
+
+  <section class="tablero-section">
+    <div class="tablero-titulo">
+      <h3>Tu construcción</h3>
+      <span class="contador">
+        {{ piezasColocadas }} / {{ piezas.length }} piezas colocadas
+      </span>
+    </div>
+
+    <div class="ayuda-tablero">
+      <span>↔</span> Arrastra para mover
+      <span>·</span>
+      <span>↻</span> Usa el botón para girar
+    </div>
+
+    <div class="tablero">
+      <svg #tableroSvg
+           viewBox="0 0 600 360"
+           preserveAspectRatio="xMidYMid meet"
+           aria-label="Tablero libre para construir"
+           (pointermove)="moverArrastre($event)"
+           (pointerup)="terminarArrastre($event)"
+           (pointercancel)="terminarArrastre($event)">
+
+        <defs>
+          <pattern id="rejillaTablero"
+                   width="20" height="20"
+                   patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20"
+                  fill="none"
+                  stroke="#e1e7f0"
+                  stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <rect width="600" height="360"
+              fill="url(#rejillaTablero)"/>
+
+        <g *ngFor="let pieza of piezas"
+           [attr.transform]="
+             'translate(' + pieza.x + ' ' + pieza.y + ') ' +
+             'rotate(' + pieza.rotacion + ' 40 35)'
+           "
+           (pointerdown)="iniciarArrastre($event, pieza)"
+           (click)="seleccionarPieza(pieza.id)"
+           [class.pieza-seleccionada]="
+             piezaSeleccionada === pieza.id
+           "
+           [class.pieza-colocada]="pieza.colocada"
+           class="pieza-movible">
+
+          <polygon points="40,0 80,70 0,70"
+                   [attr.fill]="pieza.color"
+                   stroke="#344054"
+                   stroke-width="2"
+                   stroke-linejoin="round"/>
+
+          <text x="40" y="45"
+                text-anchor="middle"
+                class="etiqueta-pieza">
+            {{ pieza.id.replace('pieza_', '') }}
+          </text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="piezas-section">
+    <h3>Piezas disponibles</h3>
+    <p class="texto-ayuda">
+      Selecciona una pieza del tablero para girarla o retirarla.
+    </p>
+
+    <div class="piezas-grid">
+      <button type="button"
+              *ngFor="let pieza of piezas"
+              class="pieza-card"
+              [class.seleccionada]="piezaSeleccionada === pieza.id"
+              [disabled]="enviando"
+              (click)="seleccionarPieza(pieza.id)">
+
+        <svg viewBox="0 0 100 90" aria-hidden="true">
+          <polygon points="50,5 95,80 5,80"
+                   [attr.fill]="pieza.color"
+                   stroke="#344054"
+                   stroke-width="2"/>
+        </svg>
+
+        <strong>{{ pieza.id }}</strong>
+        <span>{{ pieza.rotacion }}°</span>
+        <span *ngIf="pieza.colocada">En el tablero</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="controles">
+    <button type="button"
+            class="btn-secundario"
+            [disabled]="!piezaSeleccionada || enviando"
+            (click)="girarSeleccionada()">
+      ↻ Girar 45°
+    </button>
+
+    <button type="button"
+            class="btn-secundario"
+            [disabled]="!piezaSeleccionada || enviando"
+            (click)="retirarSeleccionada()">
+      Retirar pieza
+    </button>
+
+    <button type="button"
+            class="btn-reiniciar"
+            [disabled]="enviando"
+            (click)="reiniciar()">
+      Reiniciar
+    </button>
+  </div>
+
+  <p *ngIf="mensaje"
+     class="mensaje"
+     [class.mensaje-error]="mensajeTipo === 'error'"
+     [class.mensaje-exito]="mensajeTipo === 'exito'"
+     role="status">
+    {{ mensaje }}
+  </p>
+
+  <button type="button"
+          class="btn-continuar"
+          [disabled]="!todasColocadas || enviando"
+          (click)="confirmarConstruccion()">
+    {{ enviando ? 'Registrando...' : 'Comprobar y registrar construcción' }}
+  </button>
+</section>

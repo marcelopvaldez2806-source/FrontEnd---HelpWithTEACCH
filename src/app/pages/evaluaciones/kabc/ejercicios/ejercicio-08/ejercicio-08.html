@@ -1,0 +1,194 @@
+
+<section class="matrices-container">
+
+  <header class="ejercicio-header">
+    <span class="etiqueta">EJERCICIO 08</span>
+    <h2>Matrices análogas</h2>
+    <p>{{ instruccion }}</p>
+    <span class="indicador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+  </header>
+
+  <div class="instruccion">
+    <span>💡</span>
+    <p>
+      Observa las figuras, identifica el patrón y elige la
+      alternativa que completa la matriz.
+    </p>
+  </div>
+
+  <section class="matriz-section">
+    <h3>Matriz de referencia</h3>
+
+    <svg class="matriz-svg"
+         viewBox="0 0 320 270"
+         role="img"
+         aria-label="Matriz de figuras con una casilla faltante">
+
+      <rect x="10" y="10" width="300" height="250"
+            rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+
+      <path d="M160 10 V260 M10 135 H310"
+            stroke="#cbd5e1" stroke-width="2"/>
+
+      <!-- SERIE 1 -->
+      <ng-container *ngIf="indiceSerie === 0">
+        <polygon points="85,28 55,105 115,105"
+                 fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"/>
+
+        <polygon points="200,55 180,105 220,105"
+                 fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"/>
+        <polygon points="260,55 240,105 280,105"
+                 fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"/>
+
+        <circle cx="85" cy="195" r="28"
+                fill="#facc15" stroke="#a16207" stroke-width="2"/>
+
+        <text x="235" y="215" text-anchor="middle"
+              font-size="48" font-weight="700" fill="#64748b">?</text>
+      </ng-container>
+
+      <!-- SERIE 2 -->
+      <ng-container *ngIf="indiceSerie === 1">
+        <rect x="55" y="42" width="55" height="55"
+              fill="white" stroke="#334155" stroke-width="3"/>
+        <rect x="205" y="42" width="55" height="55"
+              fill="#334155" stroke="#334155" stroke-width="3"/>
+
+        <circle cx="82" cy="195" r="29"
+                fill="white" stroke="#334155" stroke-width="3"/>
+
+        <text x="235" y="215" text-anchor="middle"
+              font-size="48" font-weight="700" fill="#64748b">?</text>
+      </ng-container>
+
+      <!-- SERIE 3 -->
+      <ng-container *ngIf="indiceSerie === 2">
+        <circle cx="85" cy="72" r="17"
+                fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+
+        <circle cx="205" cy="72" r="17"
+                fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+        <circle cx="265" cy="72" r="17"
+                fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+
+        <circle cx="62" cy="195" r="17"
+                fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+        <circle cx="108" cy="195" r="17"
+                fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+
+        <text x="235" y="215" text-anchor="middle"
+              font-size="48" font-weight="700" fill="#64748b">?</text>
+      </ng-container>
+
+    </svg>
+  </section>
+
+  <section class="opciones-section">
+    <h3>Elige una alternativa</h3>
+
+    <div class="opciones-grid">
+
+      <button
+        *ngFor="let opcion of opciones; let i = index; trackBy: trackByOpcion"
+        type="button"
+        class="opcion-card"
+        [class.seleccionada]="opcionSeleccionada === opcion.id"
+        [disabled]="enviando"
+        [attr.aria-pressed]="opcionSeleccionada === opcion.id"
+        (click)="seleccionarOpcion(opcion.id)">
+
+        <span class="letra">
+          {{ ['A', 'B', 'C', 'D'][i] ?? (i + 1) }}
+        </span>
+
+        <svg class="figuras-opcion"
+             viewBox="0 0 180 90"
+             aria-hidden="true">
+
+          <ng-container *ngFor="let figura of opcion.figuras; let j = index">
+
+            <circle
+              *ngIf="figura === 'circulo'"
+              [attr.cx]="45 + (j % 3) * 45"
+              [attr.cy]="45"
+              r="15"
+              fill="#ef4444"
+              stroke="#991b1b"
+              stroke-width="2"/>
+
+            <polygon
+              *ngIf="figura === 'triangulo'"
+              [attr.points]="
+                (45 + (j % 3) * 45) + ',20 ' +
+                (30 + (j % 3) * 45) + ',65 ' +
+                (60 + (j % 3) * 45) + ',65'
+              "
+              fill="#3b82f6"
+              stroke="#1e3a8a"
+              stroke-width="2"/>
+
+            <rect
+              *ngIf="figura === 'cuadrado'"
+              [attr.x]="25 + (j % 3) * 45"
+              y="28" width="30" height="30"
+              fill="#facc15"
+              stroke="#a16207"
+              stroke-width="2"/>
+
+            <rect
+              *ngIf="figura === 'cuadrado_relleno'"
+              [attr.x]="25 + (j % 3) * 45"
+              y="28" width="30" height="30"
+              fill="#334155"
+              stroke="#334155"
+              stroke-width="2"/>
+
+            <polygon
+              *ngIf="figura === 'triangulo_rotado'"
+              [attr.transform]="'rotate(180 ' +
+                (45 + (j % 3) * 45) + ' 45)'"
+              [attr.points]="
+                (45 + (j % 3) * 45) + ',20 ' +
+                (30 + (j % 3) * 45) + ',65 ' +
+                (60 + (j % 3) * 45) + ',65'
+              "
+              fill="#3b82f6"
+              stroke="#1e3a8a"
+              stroke-width="2"/>
+
+          </ng-container>
+        </svg>
+
+        <span class="texto-opcion">{{ opcion.etiqueta }}</span>
+
+        <span *ngIf="opcionSeleccionada === opcion.id"
+              class="check">✓</span>
+
+      </button>
+
+    </div>
+  </section>
+
+  <p *ngIf="mensaje" class="mensaje" role="status">
+    {{ mensaje }}
+  </p>
+
+  <footer class="controles">
+    <button type="button"
+            class="btn-secundario"
+            [disabled]="!opcionSeleccionada || enviando"
+            (click)="limpiarSeleccion()">
+      Limpiar selección
+    </button>
+
+    <button type="button"
+            class="btn-principal"
+            [disabled]="!opcionSeleccionada || enviando"
+            (click)="confirmarRespuesta()">
+      {{ enviando ? 'Registrando...' : 'Confirmar respuesta' }}
+    </button>
+  </footer>
+
+</section>

@@ -492,6 +492,42 @@
 
 ></app-ejercicio-06>
 
+
+<!-- =====================================================
+     EJERCICIO 07 - TRIÁNGULOS
+     TR_01
+     ===================================================== -->
+
+<app-ejercicio-07
+  *ngIf="itemActual?.code === 'TR_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio07($event)">
+</app-ejercicio-07>
+
+<app-ejercicio-08
+  *ngIf="itemActual?.code === 'MA_01'"
+  [item]="itemActual"
+  [serie]="serieActual"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio08($event)">
+</app-ejercicio-08>
+<app-ejercicio-09
+  *ngIf="itemActual?.code === 'ME_01'"
+  [item]="itemActual"
+  [serie]="serieActual"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio09($event)">
+</app-ejercicio-09>
+
+
       <!-- =====================================================
            ERROR
            ===================================================== -->
