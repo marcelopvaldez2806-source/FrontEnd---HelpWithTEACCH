@@ -1,0 +1,78 @@
+
+<div class="ejercicio-container">
+
+  <div class="ejercicio-header">
+    <span class="ejercicio-label">
+      K-ABC · LECTURA / DECODIFICACIÓN
+    </span>
+
+    <h2>Lectura de palabras</h2>
+
+    <p>
+      Pide al niño que lea las siguientes palabras en voz alta.
+    </p>
+  </div>
+
+  <div class="progreso-container">
+    <div class="progreso-info">
+      <span>Serie {{ numeroSerie }} de {{ totalSeries }}</span>
+      <span>{{ numeroSerie }}/{{ totalSeries }}</span>
+    </div>
+
+    <div class="progreso-barra">
+      <div
+        class="progreso-completado"
+        [style.width.%]="(numeroSerie / totalSeries) * 100">
+      </div>
+    </div>
+  </div>
+
+  <div class="instruccion-card">
+    <h3>Lee las siguientes palabras</h3>
+    <p>
+      El niño debe leer cada palabra en voz alta.
+    </p>
+  </div>
+
+  <div class="palabras-container">
+    <div
+      class="palabra"
+      *ngFor="let palabra of palabrasActuales">
+      {{ palabra }}
+    </div>
+  </div>
+
+  <div class="evaluacion-section">
+    <h3>¿El niño dijo bien las tres palabras?</h3>
+
+    <p>
+      Selecciona «Sí» si leyó correctamente todas las palabras.
+      Selecciona «No» si presentó algún error.
+    </p>
+
+    <div class="botones-respuesta">
+
+      <button
+        type="button"
+        class="btn-respuesta btn-si"
+        [disabled]="enviando"
+        (click)="responder(true)">
+        Sí
+      </button>
+
+      <button
+        type="button"
+        class="btn-respuesta btn-no"
+        [disabled]="enviando"
+        (click)="responder(false)">
+        No
+      </button>
+
+    </div>
+  </div>
+
+  <p class="mensaje-guardando" *ngIf="enviando">
+    Guardando respuesta...
+  </p>
+
+</div>

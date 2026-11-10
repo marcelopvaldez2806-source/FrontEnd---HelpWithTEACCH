@@ -83,6 +83,14 @@ import {
   Ejercicio14,
   RespuestaEjercicio14
 } from './ejercicios/ejercicio-14/ejercicio-14';
+import {
+  Ejercicio15,
+  RespuestaEjercicio15
+} from './ejercicios/ejercicio-15/ejercicio-15';
+import {
+  Ejercicio16,
+  RespuestaEjercicio16
+} from './ejercicios/ejercicio-16/ejercicio-16';
 
 interface Nino {
   idNino: number;
@@ -151,7 +159,9 @@ interface RespuestaGuardada {
     Ejercicio11,
     Ejercicio12,
     Ejercicio13,
-    Ejercicio14
+    Ejercicio14,
+    Ejercicio15,
+    Ejercicio16
   ],
 
   templateUrl: './kabc.html',
@@ -2368,6 +2378,94 @@ guardarRespuestaEjercicio14(
       this.enviandoRespuesta = false;
     }
 
+  });
+}
+guardarRespuestaEjercicio15(
+  respuesta: RespuestaEjercicio15
+): void {
+
+  if (this.enviandoRespuesta) {
+    return;
+  }
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie || !this.evaluacionId) {
+    console.error('No se encontró la evaluación, el ítem o la serie.');
+    return;
+  }
+
+  this.enviandoRespuesta = true;
+
+  const body = {
+    idEvaluacion: this.evaluacionId,
+    items: [
+      {
+        itemId: item.id,
+        serieId: serie.id,
+        tipo: item.type,
+        valor: respuesta.valor
+      }
+    ]
+  };
+
+  this.respuestaService.guardarRespuestas(body).subscribe({
+
+    next: () => {
+      this.avanzarSerie();
+    },
+
+    error: (error) => {
+      console.error('Error guardando respuesta del ejercicio 15:', error);
+      this.enviandoRespuesta = false;
+    },
+
+    complete: () => {
+      this.enviandoRespuesta = false;
+    }
+
+  });
+
+}
+guardarRespuestaEjercicio16(
+  respuesta: RespuestaEjercicio16
+): void {
+  if (this.enviandoRespuesta) return;
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie || !this.evaluacionId) return;
+
+  this.enviandoRespuesta = true;
+
+  const body = {
+    idEvaluacion: this.evaluacionId,
+    items: [
+      {
+        itemId: item.id,
+        serieId: serie.id,
+        tipo: item.type,
+        valor: respuesta.valor
+      }
+    ]
+  };
+
+  this.respuestaService.guardarRespuestas(body).subscribe({
+    next: () => {
+      this.avanzarSerie();
+    },
+    error: (error) => {
+      console.error(
+        'Error al guardar la respuesta del ejercicio 16:',
+        error
+      );
+      this.enviandoRespuesta = false;
+    },
+    complete: () => {
+      this.enviandoRespuesta = false;
+    }
   });
 }
 

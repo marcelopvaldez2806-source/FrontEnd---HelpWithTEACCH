@@ -1,0 +1,97 @@
+
+<div class="ejercicio-container">
+
+  <div class="ejercicio-header">
+    <span class="ejercicio-etiqueta">K-ABC · LECTURA Y COMPRENSIÓN</span>
+    <h2>La caja de juguetes</h2>
+    <p>Serie {{ numeroSerie }} de {{ totalSeries }}</p>
+  </div>
+
+  <div class="progreso-container">
+    <div
+      class="progreso-barra"
+      [style.width.%]="(numeroSerie / totalSeries) * 100">
+    </div>
+  </div>
+
+  <div class="instruccion-container">
+    <span class="instruccion-titulo">¿Qué debes hacer?</span>
+    <p>{{ configuracionActual.instruccion }}</p>
+  </div>
+
+  <div class="zonas-trabajo">
+
+    <!-- Caja de juguetes -->
+    <section class="zona caja-zona">
+      <h3>CAJA DE JUGUETES</h3>
+      <p class="zona-descripcion">Arrastra los juguetes desde aquí.</p>
+
+      <div class="caja-contenido">
+        <div
+          class="juguete"
+          *ngFor="let juguete of juguetesEnCaja"
+          draggable="true"
+          (dragstart)="iniciarArrastre($event, juguete)"
+          (touchstart)="iniciarToque($event, juguete)"
+          (touchend)="finalizarToque($event)"
+          [style.--juguete-color]="juguete.color">
+
+          <div class="figura" [ngClass]="'figura-' + juguete.figura">
+            <span *ngIf="juguete.figura === 'estrella'">★</span>
+          </div>
+
+          <span class="juguete-nombre">{{ juguete.nombre }}</span>
+        </div>
+
+        <p class="vacio" *ngIf="juguetesEnCaja.length === 0">
+          ¡La caja está vacía!
+        </p>
+      </div>
+    </section>
+
+    <!-- Mesa -->
+    <section
+      class="zona mesa-zona mesa-drop-zone"
+      (dragover)="permitirSoltar($event)"
+      (drop)="soltarEnMesa($event)">
+
+      <h3>MESA</h3>
+      <p class="zona-descripcion">Coloca aquí los juguetes solicitados.</p>
+
+      <div class="mesa-contenido">
+        <div
+          class="juguete juguete-colocado"
+          *ngFor="let juguete of juguetesEnMesa"
+          (click)="devolverACaja(juguete.id)"
+          [style.--juguete-color]="juguete.color">
+
+          <div class="figura" [ngClass]="'figura-' + juguete.figura">
+            <span *ngIf="juguete.figura === 'estrella'">★</span>
+          </div>
+
+          <span class="juguete-nombre">{{ juguete.nombre }}</span>
+          <span class="devolver-texto">Toca para devolver</span>
+        </div>
+
+        <p class="vacio" *ngIf="juguetesEnMesa.length === 0">
+          Arrastra los juguetes hasta aquí.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="acciones">
+    <button
+      class="btn-finalizar"
+      [disabled]="!puedeFinalizar"
+      (click)="finalizarEjercicio()">
+      {{ enviando ? 'Guardando respuesta...' : 'Terminar actividad' }}
+    </button>
+  </div>
+
+  <p class="ayuda">
+    Puedes devolver un juguete a la caja tocándolo sobre la mesa.
+  </p>
+
+</div>

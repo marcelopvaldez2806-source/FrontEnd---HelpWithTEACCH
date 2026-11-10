@@ -1,0 +1,260 @@
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ejercicio-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #302b43;
+}
+
+.ejercicio-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ejercicio-etiqueta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #8270bd;
+}
+
+.ejercicio-header h2 {
+  margin: 10px 0 5px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.ejercicio-header p {
+  color: #858196;
+  margin: 0;
+}
+
+.progreso-container {
+  height: 8px;
+  background: #eeeaf6;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.progreso-barra {
+  height: 100%;
+  background: #8b75c7;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.instruccion-container {
+  background: #f5f2fc;
+  border: 1px solid #e7e0f5;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.instruccion-titulo {
+  color: #8270bd;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.instruccion-container p {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 10px 0 0;
+  line-height: 1.5;
+}
+
+.zonas-trabajo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.zona {
+  min-width: 0;
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 330px;
+}
+
+.caja-zona {
+  background: #8a6042;
+  color: white;
+  border: 5px solid #70482f;
+}
+
+.mesa-zona {
+  background: #f5f1eb;
+  border: 3px dashed #b9aa98;
+  color: #51463c;
+}
+
+.zona h3 {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  margin: 0 0 6px;
+}
+
+.zona-descripcion {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 22px;
+}
+
+.caja-contenido,
+.mesa-contenido {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-content: start;
+  min-height: 220px;
+}
+
+.juguete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.juguete:active {
+  cursor: grabbing;
+}
+
+.figura {
+  width: 76px;
+  height: 76px;
+  background: var(--juguete-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.figura-cuadrado {
+  border-radius: 12px;
+}
+
+.figura-circulo,
+.figura-pelota {
+  border-radius: 50%;
+}
+
+.figura-estrella {
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%,
+    79% 94%, 50% 72%, 21% 94%, 32% 57%,
+    2% 35%, 39% 35%
+  );
+}
+
+.figura-triangulo {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.figura-estrella span {
+  display: none;
+}
+
+.juguete-nombre {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: inherit;
+}
+
+.mesa-zona .juguete {
+  color: #51463c;
+}
+
+.juguete-colocado {
+  cursor: pointer;
+}
+
+.devolver-texto {
+  font-size: 10px;
+  color: #8b75c7;
+  text-align: center;
+}
+
+.vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.7;
+  align-self: center;
+  padding: 30px 5px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.btn-finalizar {
+  background: #806bb9;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 35px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-finalizar:hover:not(:disabled) {
+  background: #6c56a8;
+}
+
+.btn-finalizar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ayuda {
+  text-align: center;
+  font-size: 12px;
+  color: #918ba0;
+  margin-top: 14px;
+}
+
+@media (max-width: 650px) {
+  .ejercicio-container {
+    padding: 14px;
+  }
+
+  .zonas-trabajo {
+    grid-template-columns: 1fr;
+  }
+
+  .zona {
+    min-height: 260px;
+  }
+
+  .figura {
+    width: 65px;
+    height: 65px;
+  }
+
+  .instruccion-container p {
+    font-size: 16px;
+  }
+}

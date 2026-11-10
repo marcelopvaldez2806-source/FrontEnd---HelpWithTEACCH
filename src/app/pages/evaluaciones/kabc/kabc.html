@@ -605,6 +605,24 @@
   [enviando]="enviandoRespuesta"
   (respuesta)="guardarRespuestaEjercicio14($event)">
 </app-ejercicio-14>
+<app-ejercicio-15
+  *ngIf="itemActual?.code === 'LD_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio15($event)">
+</app-ejercicio-15>
+<app-ejercicio-16
+  *ngIf="itemActual?.code === 'LC_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio16($event)">
+</app-ejercicio-16>
 
 
 
