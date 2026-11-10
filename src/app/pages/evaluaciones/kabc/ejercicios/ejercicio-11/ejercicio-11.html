@@ -1,0 +1,145 @@
+
+<section class="ejercicio">
+
+  <!-- CABECERA -->
+  <header class="cabecera">
+
+    <div>
+      <span class="etiqueta">
+        K-ABC · VOCABULARIO EXPRESIVO
+      </span>
+
+      <h2>Vocabulario expresivo</h2>
+    </div>
+
+    <span class="contador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+
+  </header>
+
+  <!-- INSTRUCCIONES -->
+  <p class="instruccion">
+    {{ instruccion }}
+  </p>
+
+  <!-- ESTÍMULO VISUAL -->
+  <section class="zona-estimulo">
+
+    <div class="estimulo">
+      <span class="emoji">
+        {{ estimuloActual.emoji }}
+      </span>
+    </div>
+
+    <div class="pregunta">
+
+      <span class="etiqueta-pregunta">
+        PREGUNTA PARA EL NIÑO
+      </span>
+
+      <h3>
+        {{ estimuloActual.pregunta }}
+      </h3>
+
+      <p>
+        Observa la imagen y responde en voz alta.
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- EVALUACIÓN DEL TUTOR -->
+  <section class="zona-evaluacion">
+
+    <div class="titulo-seccion">
+
+      <div>
+        <span class="etiqueta">
+          REGISTRO DEL EVALUADOR
+        </span>
+
+        <h3>Evaluación del tutor</h3>
+      </div>
+
+      <span class="icono-tutor">
+        👩‍🏫
+      </span>
+
+    </div>
+
+    <p class="ayuda">
+      Escucha la respuesta del niño y selecciona
+      si respondió correctamente al estímulo presentado.
+    </p>
+
+    <div class="campo-evaluacion">
+
+      <h4>
+        ¿Lo dijo bien?
+      </h4>
+
+      <div class="opciones">
+
+        <!-- RESPUESTA CORRECTA -->
+        <button
+          type="button"
+          class="opcion opcion-correcta"
+          [disabled]="enviando || respuestaEnviada"
+          (click)="evaluarRespuesta(true)"
+        >
+
+          <span class="icono-opcion">✓</span>
+
+          <span>
+            <strong>Sí, lo dijo bien</strong>
+            <small>Respuesta correcta · 1 punto</small>
+          </span>
+
+        </button>
+
+        <!-- RESPUESTA INCORRECTA -->
+        <button
+          type="button"
+          class="opcion opcion-incorrecta"
+          [disabled]="enviando || respuestaEnviada"
+          (click)="evaluarRespuesta(false)"
+        >
+
+          <span class="icono-opcion">✕</span>
+
+          <span>
+            <strong>No, no lo dijo bien</strong>
+            <small>Respuesta incorrecta · 0 puntos</small>
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- MENSAJE DE ENVÍO -->
+  <p
+    class="mensaje"
+    *ngIf="enviando"
+    role="status"
+    aria-live="polite"
+  >
+    Guardando evaluación...
+  </p>
+
+  <!-- MENSAJE INFORMATIVO -->
+  <p
+    class="mensaje"
+    *ngIf="mensaje"
+    role="status"
+    aria-live="polite"
+  >
+    {{ mensaje }}
+  </p>
+
+</section>

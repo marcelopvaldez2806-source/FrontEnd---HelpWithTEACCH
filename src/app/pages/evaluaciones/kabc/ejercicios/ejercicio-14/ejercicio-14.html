@@ -1,0 +1,104 @@
+
+<div class="ejercicio-container">
+
+  <!-- Encabezado -->
+  <div class="ejercicio-header">
+
+    <span class="ejercicio-label">
+      K-ABC · ADIVINANZAS
+    </span>
+
+    <h2>Adivinanzas</h2>
+
+    <p>
+      Lee atentamente la adivinanza y escribe tu respuesta.
+    </p>
+
+  </div>
+
+  <!-- Progreso -->
+  <div class="progreso-container">
+
+    <div class="progreso-info">
+      <span>Actividad {{ numeroSerie }} de {{ totalSeries }}</span>
+      <span>{{ numeroSerie }}/{{ totalSeries }}</span>
+    </div>
+
+    <div class="progreso-barra">
+      <div
+        class="progreso-completado"
+        [style.width.%]="(numeroSerie / totalSeries) * 100">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Instrucción -->
+  <div class="instruccion-card">
+
+    <h3>¡Descubre la respuesta!</h3>
+
+    <p>
+      Lee con atención las pistas y piensa qué palabra corresponde.
+    </p>
+
+  </div>
+
+  <!-- Adivinanza -->
+  <div class="adivinanza-section">
+
+    <span class="adivinanza-label">
+      LEE CON ATENCIÓN
+    </span>
+
+    <p class="adivinanza-texto">
+      {{ adivinanzaActual }}
+    </p>
+
+  </div>
+
+  <!-- Respuesta -->
+  <div class="respuesta-section">
+
+    <label for="respuestaAdivinanza">
+      Mi respuesta es:
+    </label>
+
+    <input
+      id="respuestaAdivinanza"
+      type="text"
+      autocomplete="off"
+      placeholder="Escribe tu respuesta..."
+      [value]="respuestaUsuario"
+      [disabled]="enviando"
+      (input)="respuestaUsuario = $any($event.target).value"
+      (keyup.enter)="enviarRespuesta()">
+
+    <span class="ayuda-texto">
+      Escribe una palabra para responder.
+    </span>
+
+  </div>
+
+  <!-- Botón -->
+  <div class="acciones">
+
+    <button
+      type="button"
+      class="btn-responder"
+      [disabled]="!respuestaUsuario.trim() || enviando"
+      (click)="enviarRespuesta()">
+
+      <ng-container *ngIf="!enviando">
+        Confirmar respuesta
+      </ng-container>
+
+      <ng-container *ngIf="enviando">
+        Guardando respuesta...
+      </ng-container>
+
+    </button>
+
+  </div>
+
+</div>

@@ -1,0 +1,267 @@
+
+<div class="ejercicio-container">
+
+  <!-- ENCABEZADO -->
+  <header class="ejercicio-header">
+
+    <div class="titulo-seccion">
+
+      <span class="icono-memoria">🧠</span>
+
+      <div>
+        <h2>Memoria visual de lugares</h2>
+        <p>Observa, recuerda y reconoce los lugares.</p>
+      </div>
+
+    </div>
+
+    <div class="indicador-serie">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </div>
+
+  </header>
+
+
+  <!-- BARRA DE PROGRESO -->
+  <div class="progreso-container">
+
+    <div class="progreso-texto">
+      <span>Progreso de la actividad</span>
+
+      <strong>
+        {{ fase === 'observacion' ? 'Observación' : 'Reconocimiento' }}
+      </strong>
+    </div>
+
+    <div class="progreso-barra">
+
+      <div
+        class="progreso-relleno"
+        [class.progreso-completo]="fase === 'reconocimiento'"
+        [style.width]="fase === 'observacion' ? '50%' : '100%'">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================= -->
+  <!-- FASE 1: OBSERVACIÓN -->
+  <!-- ================================= -->
+
+  <section
+    *ngIf="fase === 'observacion'"
+    class="fase-container">
+
+    <div class="instruccion">
+
+      <span class="instruccion-icono">👀</span>
+
+      <div>
+        <h3>¡Observa con atención!</h3>
+
+        <p>
+          Mira los siguientes lugares e intenta recordar cada uno.
+          Cuando estés listo, presiona el botón para continuar.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- CONTADOR -->
+    <div class="contador-imagenes">
+
+      <span>{{ cantidadObjetivos }}</span>
+
+      lugares para recordar
+
+    </div>
+
+
+    <!-- IMÁGENES PARA MEMORIZAR -->
+    <div class="tarjetas-grid observacion-grid">
+
+      <div
+        class="tarjeta-lugar tarjeta-observacion"
+        *ngFor="let imagen of imagenesObservacion">
+
+        <div class="imagen-wrapper">
+
+          <img
+            [src]="imagen.imagen"
+            [alt]="imagen.nombre"
+            draggable="false">
+
+        </div>
+
+        <span class="nombre-lugar">
+          {{ imagen.nombre }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="ayuda-visual">
+
+      <span>💡</span>
+
+      Tómate tu tiempo para observar todas las imágenes.
+
+    </div>
+
+
+    <!-- BOTÓN CONTINUAR -->
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-principal"
+        [disabled]="enviando"
+        (click)="comenzarReconocimiento()">
+
+        Ya las recuerdo
+
+        <span>→</span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================================= -->
+  <!-- FASE 2: RECONOCIMIENTO -->
+  <!-- ================================= -->
+
+  <section
+    *ngIf="fase === 'reconocimiento'"
+    class="fase-container">
+
+    <div class="instruccion">
+
+      <span class="instruccion-icono">🔎</span>
+
+      <div>
+        <h3>¿Qué lugares recuerdas?</h3>
+
+        <p>
+          Selecciona todos los lugares que viste anteriormente.
+          Puedes cambiar tu selección antes de finalizar.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- CONTADOR DE SELECCIONES -->
+    <div class="contador-imagenes">
+
+      <span>{{ seleccionadas.length }}</span>
+
+      imágenes seleccionadas
+
+    </div>
+
+
+    <!-- OPCIONES DE RECONOCIMIENTO -->
+    <div class="tarjetas-grid reconocimiento-grid">
+
+      <button
+        type="button"
+        class="tarjeta-lugar tarjeta-seleccionable"
+        *ngFor="let imagen of opcionesReconocimiento"
+
+        [class.seleccionada]="estaSeleccionada(imagen.id)"
+
+        [attr.aria-pressed]="estaSeleccionada(imagen.id)"
+
+        [disabled]="enviando"
+
+        (click)="alternarSeleccion(imagen.id)">
+
+        <div class="imagen-wrapper">
+
+          <img
+            [src]="imagen.imagen"
+            [alt]="imagen.nombre"
+            draggable="false">
+
+        </div>
+
+        <span class="nombre-lugar">
+          {{ imagen.nombre }}
+        </span>
+
+        <!-- INDICADOR DE SELECCIÓN -->
+        <span
+          class="marca-seleccion"
+          *ngIf="estaSeleccionada(imagen.id)">
+
+          ✓
+
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <div class="ayuda-visual">
+
+      <span>💡</span>
+
+      Recuerda que puedes seleccionar varias imágenes.
+
+    </div>
+
+
+    <!-- RESUMEN DE SELECCIÓN -->
+    <div class="resumen-seleccion">
+
+      <span>Imágenes seleccionadas:</span>
+
+      <strong>{{ seleccionadas.length }}</strong>
+
+    </div>
+
+
+    <!-- BOTONES -->
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        [disabled]="enviando"
+        (click)="fase = 'observacion'; seleccionadas = []">
+
+        Volver a observar
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-principal"
+        [disabled]="!puedeConfirmar"
+        (click)="confirmarRespuesta()">
+
+        <span *ngIf="!enviando">
+          Finalizar actividad ✓
+        </span>
+
+        <span *ngIf="enviando">
+          Guardando...
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

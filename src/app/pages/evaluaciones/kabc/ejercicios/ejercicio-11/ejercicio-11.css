@@ -1,0 +1,22 @@
+
+/* ESTADO DE ENVÍO */
+
+.opcion:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.opcion:focus-visible {
+  outline: 3px solid #aab4ff;
+  outline-offset: 3px;
+}
+
+.mensaje {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f0f2ff;
+  color: #6575c8;
+  font-size: 13px;
+  line-height: 1.5;
+}

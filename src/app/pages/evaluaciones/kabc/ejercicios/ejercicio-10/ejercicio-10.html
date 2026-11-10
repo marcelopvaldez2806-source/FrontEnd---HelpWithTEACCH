@@ -1,0 +1,219 @@
+
+<section class="ejercicio">
+
+  <!-- CABECERA -->
+  <header class="cabecera">
+
+    <div>
+      <span class="etiqueta">
+        K-ABC · SERIES DE FOTOGRAFÍAS
+      </span>
+
+      <h2>Ordena las fotografías</h2>
+    </div>
+
+    <span class="contador">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </span>
+
+  </header>
+
+  <!-- INSTRUCCIÓN -->
+  <p class="instruccion">
+    {{ instruccion }}
+  </p>
+
+  <!-- ESTADO -->
+  <div class="estado">
+    <span class="punto"></span>
+
+    Selecciona las fotografías y colócalas
+    en el orden que consideres correcto.
+  </div>
+
+  <!-- ZONA DE SELECCIÓN -->
+  <section class="zona-fotografias">
+
+    <h3>Fotografías disponibles</h3>
+
+    <p class="ayuda">
+      Selecciona una fotografía para colocarla
+      en una de las posiciones.
+    </p>
+
+    <div class="fotografias">
+
+      <button
+        *ngFor="let foto of opciones; trackBy: trackByFoto"
+        type="button"
+        class="foto-card"
+        [class.foto-seleccionada]="
+          fotoSeleccionada === foto.id
+        "
+        [class.foto-colocada]="estaColocada(foto)"
+        [disabled]="
+          estaColocada(foto) ||
+          enviando ||
+          respuestaEnviada
+        "
+        [attr.aria-pressed]="
+          fotoSeleccionada === foto.id
+        "
+        (click)="seleccionarFoto(foto)"
+      >
+
+        <span class="foto-emoji">
+          {{ foto.emoji }}
+        </span>
+
+        <span class="foto-descripcion">
+          {{ foto.descripcion }}
+        </span>
+
+        <span
+          class="foto-estado"
+          *ngIf="estaColocada(foto)"
+        >
+          Colocada
+        </span>
+
+        <span
+          class="foto-estado"
+          *ngIf="!estaColocada(foto)"
+        >
+          Seleccionar
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TABLERO DE SECUENCIA -->
+  <section class="zona-secuencia">
+
+    <h3>Orden de la secuencia</h3>
+
+    <p class="ayuda">
+      Coloca las fotografías en las cuatro posiciones,
+      siguiendo el orden de los acontecimientos.
+    </p>
+
+    <div class="tablero">
+
+      <button
+        *ngFor="
+          let posicion of [1, 2, 3, 4];
+          trackBy: trackByPosicion
+        "
+        type="button"
+        class="casilla"
+        [class.casilla-ocupada]="
+          obtenerFotoEnPosicion(posicion) !== undefined
+        "
+        [class.casilla-seleccionada]="
+          fotoSeleccionada !== null
+        "
+        [disabled]="enviando || respuestaEnviada"
+        [attr.aria-label]="'Posición ' + posicion"
+        (click)="colocarFoto(posicion)"
+      >
+
+        <span class="numero-posicion">
+          {{ posicion }}
+        </span>
+
+        <ng-container
+          *ngIf="obtenerFotoEnPosicion(posicion) as foto"
+        >
+
+          <span class="simbolo">
+            {{ foto.emoji }}
+          </span>
+
+          <span class="descripcion-casilla">
+            {{ foto.descripcion }}
+          </span>
+
+          <span class="retirar">
+            Tocar para retirar
+          </span>
+
+        </ng-container>
+
+        <span
+          class="marcador-vacio"
+          *ngIf="!obtenerFotoEnPosicion(posicion)"
+        >
+          +
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- PROGRESO -->
+  <div class="progreso">
+
+    <div class="progreso-fondo">
+
+      <div
+        class="progreso-valor"
+        [style.width.%]="
+          (cantidadColocadas / 4) * 100
+        "
+      ></div>
+
+    </div>
+
+    <span>
+      {{ cantidadColocadas }}/4
+    </span>
+
+  </div>
+
+  <!-- MENSAJE -->
+  <p
+    class="mensaje"
+    *ngIf="mensaje"
+    role="status"
+    aria-live="polite"
+  >
+    {{ mensaje }}
+  </p>
+
+  <!-- CONTROLES -->
+  <footer class="botones-finales">
+
+    <button
+      type="button"
+      class="boton boton-secundario"
+      (click)="reiniciar()"
+      [disabled]="enviando || respuestaEnviada"
+    >
+      Reiniciar
+    </button>
+
+    <button
+      type="button"
+      class="boton boton-principal"
+      (click)="confirmarRespuesta()"
+      [disabled]="
+        !todosColocados ||
+        enviando ||
+        respuestaEnviada
+      "
+    >
+      {{
+        enviando
+          ? 'Guardando...'
+          : 'Confirmar respuesta'
+      }}
+    </button>
+
+  </footer>
+
+</section>

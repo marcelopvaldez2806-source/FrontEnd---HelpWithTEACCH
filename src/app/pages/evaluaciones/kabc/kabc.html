@@ -528,6 +528,86 @@
 </app-ejercicio-09>
 
 
+<!-- =====================================================
+     EJERCICIO 10 - SERIES DE FOTOGRAFÍAS
+     SF_01
+     ===================================================== -->
+
+<app-ejercicio-10
+
+  *ngIf="itemActual?.code === 'SF_01'"
+
+  [item]="itemActual!"
+
+  [serie]="serieActual!"
+
+  [numeroSerie]="indiceSerie + 1"
+
+  [totalSeries]="itemActual?.series?.length ?? 3"
+
+  [enviando]="enviandoRespuesta"
+
+  (respuesta)="guardarRespuestaEjercicio10($event)"
+
+></app-ejercicio-10>
+<!-- =====================================================
+     EJERCICIO 11 - VOCABULARIO EXPRESIVO
+     VE_01
+     ===================================================== -->
+
+<app-ejercicio-11
+
+  *ngIf="itemActual?.code === 'VE_01'"
+
+  [item]="itemActual!"
+
+  [serie]="serieActual!"
+
+  [numeroSerie]="indiceSerie + 1"
+
+  [totalSeries]="itemActual?.series?.length ?? 3"
+
+  [enviando]="enviandoRespuesta"
+
+  (respuesta)="guardarRespuestaEjercicio11($event)"
+
+></app-ejercicio-11>
+<app-ejercicio-12
+  *ngIf="itemActual?.code === 'CL_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio12($event)">
+</app-ejercicio-12>
+<!-- EJERCICIO 13: ARITMÉTICA -->
+<app-ejercicio-13
+  *ngIf="itemActual?.code === 'AR_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio13($event)">
+</app-ejercicio-13>
+<!-- =====================================================
+     EJERCICIO 14 - ADIVINANZAS
+     AD_01
+     ===================================================== -->
+
+<app-ejercicio-14
+  *ngIf="itemActual?.code === 'AD_01'"
+  [item]="itemActual!"
+  [serie]="serieActual!"
+  [numeroSerie]="indiceSerie + 1"
+  [totalSeries]="itemActual?.series?.length ?? 3"
+  [enviando]="enviandoRespuesta"
+  (respuesta)="guardarRespuestaEjercicio14($event)">
+</app-ejercicio-14>
+
+
+
       <!-- =====================================================
            ERROR
            ===================================================== -->

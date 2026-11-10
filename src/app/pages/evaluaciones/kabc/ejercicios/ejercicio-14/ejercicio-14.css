@@ -1,0 +1,230 @@
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ejercicio-container {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* ENCABEZADO */
+
+.ejercicio-header {
+  margin-bottom: 30px;
+}
+
+.ejercicio-label {
+  color: #7965c5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.ejercicio-header h2 {
+  margin: 8px 0;
+  color: #29263d;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.ejercicio-header p {
+  margin: 0;
+  color: #77758a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* PROGRESO */
+
+.progreso-container {
+  margin-bottom: 30px;
+}
+
+.progreso-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #77758a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.progreso-barra {
+  width: 100%;
+  height: 9px;
+  background: #eeedf5;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progreso-completado {
+  height: 100%;
+  background: #8873d6;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+/* INSTRUCCIÓN */
+
+.instruccion-card {
+  padding: 20px;
+  margin-bottom: 25px;
+  background: #f5f3ff;
+  border: 1px solid #e9e4ff;
+  border-radius: 15px;
+}
+
+.instruccion-card h3 {
+  margin: 0 0 6px;
+  color: #40366e;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.instruccion-card p {
+  margin: 0;
+  color: #77718e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ADIVINANZA */
+
+.adivinanza-section {
+  padding: 30px 25px;
+  margin-bottom: 30px;
+  text-align: center;
+  background: #faf9ff;
+  border: 1px solid #ece9f7;
+  border-radius: 16px;
+}
+
+.adivinanza-label {
+  display: block;
+  margin-bottom: 18px;
+  color: #8873d6;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.adivinanza-texto {
+  margin: 0;
+  color: #353149;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* RESPUESTA */
+
+.respuesta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.respuesta-section label {
+  color: #413d56;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.respuesta-section input {
+  width: 100%;
+  padding: 16px 18px;
+  color: #353149;
+  background: #ffffff;
+  border: 2px solid #e5e1f0;
+  border-radius: 12px;
+  outline: none;
+  font-size: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.respuesta-section input:focus {
+  border-color: #8873d6;
+  box-shadow: 0 0 0 3px rgba(136, 115, 214, 0.12);
+}
+
+.respuesta-section input::placeholder {
+  color: #aaa7b8;
+}
+
+.respuesta-section input:disabled {
+  background: #f5f4f8;
+  cursor: not-allowed;
+}
+
+.ayuda-texto {
+  color: #9692a3;
+  font-size: 12px;
+}
+
+/* BOTÓN */
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-responder {
+  min-width: 220px;
+  padding: 14px 22px;
+  color: #ffffff;
+  background: #7965c5;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-responder:hover:not(:disabled) {
+  background: #6651b2;
+  transform: translateY(-2px);
+}
+
+.btn-responder:disabled {
+  background: #c7c2d9;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  .ejercicio-container {
+    padding: 20px;
+  }
+
+  .ejercicio-header h2 {
+    font-size: 23px;
+  }
+
+  .adivinanza-section {
+    padding: 25px 18px;
+  }
+
+  .adivinanza-texto {
+    font-size: 18px;
+  }
+
+  .acciones {
+    justify-content: stretch;
+  }
+
+  .btn-responder {
+    width: 100%;
+  }
+
+}

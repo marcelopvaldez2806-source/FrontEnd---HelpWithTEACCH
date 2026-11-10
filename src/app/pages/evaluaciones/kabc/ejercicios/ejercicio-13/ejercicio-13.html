@@ -1,0 +1,211 @@
+
+<div class="ejercicio-container">
+
+  <!-- ENCABEZADO -->
+  <header class="ejercicio-header">
+
+    <div class="titulo-seccion">
+
+      <span class="icono-ejercicio">🔢</span>
+
+      <div>
+        <h2>Aritmética</h2>
+        <p>Observa, piensa y encuentra la respuesta.</p>
+      </div>
+
+    </div>
+
+    <div class="indicador-serie">
+      Serie {{ numeroSerie }} de {{ totalSeries }}
+    </div>
+
+  </header>
+
+
+  <!-- PROGRESO -->
+  <div class="progreso-container">
+
+    <div class="progreso-texto">
+      <span>Progreso de la actividad</span>
+      <strong>Serie {{ numeroSerie }}</strong>
+    </div>
+
+    <div class="progreso-barra">
+
+      <div
+        class="progreso-relleno"
+        [style.width]="(numeroSerie / totalSeries * 100) + '%'">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CONTENIDO DE LA PREGUNTA -->
+  <section class="pregunta-container">
+
+    <div class="instruccion">
+
+      <span class="instruccion-icono">💡</span>
+
+      <div>
+        <h3>{{ preguntaActual.titulo }}</h3>
+        <p>{{ preguntaActual.instruccion }}</p>
+      </div>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- SERIE 1: CONTEO CON EMOJIS -->
+    <!-- ============================== -->
+
+    <div
+      *ngIf="preguntaActual.tipo === 'conteo'"
+      class="contenido-conteo">
+
+      <div class="pregunta-texto">
+        {{ preguntaActual.pregunta }}
+      </div>
+
+      <div class="emojis-container">
+
+        <span
+          class="emoji-elemento"
+          *ngFor="let emoji of preguntaActual.emojis">
+
+          {{ emoji }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- SERIE 2: OPERACIÓN MATEMÁTICA -->
+    <!-- ============================== -->
+
+    <div
+      *ngIf="preguntaActual.tipo === 'operacion'"
+      class="contenido-operacion">
+
+      <p class="pregunta-texto">
+        {{ preguntaActual.pregunta }}
+      </p>
+
+      <div class="operacion-destacada">
+
+        {{ preguntaActual.operacion }}
+
+      </div>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- SERIE 3: PROBLEMA MATEMÁTICO -->
+    <!-- ============================== -->
+
+    <div
+      *ngIf="preguntaActual.tipo === 'problema'"
+      class="contenido-problema">
+
+      <div class="problema-ilustracion">
+
+        <span
+          *ngFor="let emoji of preguntaActual.ilustracion">
+
+          {{ emoji }}
+
+        </span>
+
+      </div>
+
+      <div class="problema-enunciado">
+
+        {{ preguntaActual.pregunta }}
+
+      </div>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- OPCIONES DE RESPUESTA -->
+    <!-- ============================== -->
+
+    <div class="opciones-container">
+
+      <h3>Selecciona una respuesta</h3>
+
+      <div class="opciones-grid">
+
+        <button
+          type="button"
+          class="opcion-btn"
+          *ngFor="let opcion of preguntaActual.opciones"
+
+          [class.seleccionada]="estaSeleccionada(opcion)"
+
+          [attr.aria-pressed]="estaSeleccionada(opcion)"
+
+          [disabled]="enviando"
+
+          (click)="seleccionarRespuesta(opcion)">
+
+          {{ opcion }}
+
+          <span
+            class="check-seleccion"
+            *ngIf="estaSeleccionada(opcion)">
+
+            ✓
+
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- AYUDA -->
+    <div class="ayuda-visual">
+
+      <span>💡</span>
+
+      Tómate tu tiempo. Cuando estés seguro, confirma tu respuesta.
+
+    </div>
+
+
+    <!-- ACCIONES -->
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-principal"
+
+        [disabled]="!puedeConfirmar"
+
+        (click)="confirmarRespuesta()">
+
+        <span *ngIf="!enviando">
+          Confirmar respuesta ✓
+        </span>
+
+        <span *ngIf="enviando">
+          Guardando...
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

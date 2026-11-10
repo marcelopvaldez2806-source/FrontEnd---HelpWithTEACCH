@@ -1,0 +1,365 @@
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ejercicio {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px;
+  color: #243047;
+  background: #ffffff;
+  border: 1px solid #e5eaf2;
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(31, 48, 77, 0.06);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.etiqueta {
+  color: #6476c7;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.cabecera h2 {
+  margin: 7px 0 0;
+  font-size: 25px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+
+.contador {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f0f2ff;
+  color: #5968b7;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.instruccion {
+  margin: 0 0 20px;
+  color: #68758a;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.estado {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 20px;
+  color: #5d6f9c;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.punto {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #7989e8;
+}
+
+.zona-fotografias,
+.zona-secuencia {
+  margin-top: 22px;
+}
+
+.zona-fotografias h3,
+.zona-secuencia h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.ayuda {
+  margin: 0 0 16px;
+  color: #78849a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fotografias {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.foto-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 130px;
+  padding: 12px 7px;
+  border: 2px solid #e2e7f0;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #34415c;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.foto-card:hover:not(:disabled) {
+  border-color: #9aa5ec;
+  background: #f7f8ff;
+}
+
+.foto-seleccionada {
+  border-color: #7181dc;
+  background: #f0f2ff;
+  box-shadow: 0 0 0 2px rgba(113, 129, 220, 0.12);
+}
+
+.foto-colocada {
+  border-color: #a9dec6;
+  background: #f0faf5;
+}
+
+.foto-card:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.foto-card:focus-visible,
+.casilla:focus-visible {
+  outline: 3px solid #aab4ff;
+  outline-offset: 3px;
+}
+
+.foto-emoji {
+  font-size: clamp(32px, 6vw, 46px);
+  line-height: 1.2;
+}
+
+.foto-descripcion {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.foto-estado {
+  color: #78849a;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.zona-secuencia {
+  padding-top: 20px;
+  border-top: 1px solid #e9edf5;
+}
+
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.casilla {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 145px;
+  padding: 25px 6px 10px;
+  border: 2px dashed #d7deed;
+  border-radius: 14px;
+  background: #f8f9fc;
+  color: #34415c;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.casilla:hover:not(:disabled) {
+  border-color: #8996e9;
+  background: #f0f2ff;
+}
+
+.casilla-ocupada {
+  border-style: solid;
+  border-color: #a9dec6;
+  background: #f0faf5;
+}
+
+.casilla-ocupada:hover:not(:disabled) {
+  border-color: #e19b9b;
+  background: #fff5f5;
+}
+
+.casilla-seleccionada:not(.casilla-ocupada) {
+  border-color: #8996e9;
+  background: #f0f2ff;
+}
+
+.casilla:disabled {
+  cursor: default;
+}
+
+.numero-posicion {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 7px;
+  background: #edf1f7;
+  color: #6476a0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.simbolo {
+  font-size: clamp(30px, 5vw, 42px);
+  line-height: 1.2;
+}
+
+.descripcion-casilla {
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.retirar {
+  color: #8792a7;
+  font-size: 9px;
+}
+
+.marcador-vacio {
+  color: #aab4c7;
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.progreso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  color: #69758b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.progreso-fondo {
+  flex: 1;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9edf5;
+}
+
+.progreso-valor {
+  height: 100%;
+  border-radius: inherit;
+  background: #7989e8;
+  transition: width 0.2s ease;
+}
+
+.mensaje {
+  margin: 16px 0 0;
+  color: #6575c8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.botones-finales {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.boton {
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.boton-principal {
+  background: #6879d6;
+  color: #ffffff;
+}
+
+.boton-principal:hover:not(:disabled) {
+  background: #5869c5;
+}
+
+.boton-secundario {
+  border: 1px solid #e0e6f0;
+  background: #ffffff;
+  color: #59667d;
+}
+
+.boton-secundario:hover:not(:disabled) {
+  background: #f5f7fb;
+}
+
+@media (max-width: 560px) {
+
+  .ejercicio {
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cabecera h2 {
+    font-size: 21px;
+  }
+
+  .fotografias {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tablero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .casilla {
+    min-height: 130px;
+  }
+
+  .botones-finales {
+    flex-direction: column-reverse;
+  }
+
+  .boton {
+    width: 100%;
+  }
+}

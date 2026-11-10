@@ -63,6 +63,26 @@ import {
   Ejercicio09,
   RespuestaEjercicio09
 } from './ejercicios/ejercicio-09/ejercicio-09';
+import {
+  Ejercicio10,
+  RespuestaEjercicio10
+} from './ejercicios/ejercicio-10/ejercicio-10';
+import {
+  Ejercicio11,
+  RespuestaEjercicio11
+} from './ejercicios/ejercicio-11/ejercicio-11';
+import {
+  Ejercicio12,
+  RespuestaEjercicio12
+} from './ejercicios/ejercicio-12/ejercicio-12';
+import {
+  Ejercicio13,
+  RespuestaEjercicio13
+} from './ejercicios/ejercicio-13/ejercicio-13';
+import {
+  Ejercicio14,
+  RespuestaEjercicio14
+} from './ejercicios/ejercicio-14/ejercicio-14';
 
 interface Nino {
   idNino: number;
@@ -98,6 +118,16 @@ interface EvaluacionResponse {
   fechaFinalizacion: string | null;
 }
 
+interface RespuestaGuardada {
+  idRespuesta: number;
+  itemId: number;
+  serieId: number;
+  tipo: string;
+  valor: any;
+  correcta: boolean;
+  puntaje: number;
+}
+
 
 @Component({
   selector: 'app-kabc',
@@ -116,7 +146,12 @@ interface EvaluacionResponse {
     Ejercicio06,
     Ejercicio07,
     Ejercicio08,
-    Ejercicio09
+    Ejercicio09,
+    Ejercicio10,
+    Ejercicio11,
+    Ejercicio12,
+    Ejercicio13,
+    Ejercicio14
   ],
 
   templateUrl: './kabc.html',
@@ -788,6 +823,8 @@ comenzarKabc(): void {
 
   }
 
+
+
 // =========================================================
 // CARGAR CONFIGURACIÓN
 // =========================================================
@@ -930,21 +967,19 @@ private cargarConfiguracion(): Promise<void> {
       );
 
 
-      this.indiceItem = 0;
+      if (this.items.length === 0) {
 
-      this.indiceSerie = 0;
+  this.mensajeError =
+    'La configuración K-ABC no contiene actividades.';
 
+  return;
 
-      if (
-        this.items.length === 0
-      ) {
+}
 
-        this.mensajeError =
-          'La configuración K-ABC no contiene actividades.';
+// Recuperar el progreso de la evaluación.
+return this.recuperarPosicionEvaluacion();
 
-      }
-
-    })
+})
 
 
     .catch(error => {
@@ -967,6 +1002,113 @@ private cargarConfiguracion(): Promise<void> {
 
       this.cargandoConfiguracion =
         false;
+
+    });
+
+}
+// =========================================================
+// RECUPERAR POSICIÓN DE LA EVALUACIÓN
+// =========================================================
+
+private recuperarPosicionEvaluacion(): Promise<void> {
+
+  if (!this.evaluacionId) {
+    return Promise.reject(
+      new Error('No existe una evaluación seleccionada.')
+    );
+  }
+
+  return fetch(
+    `${this.API_URL}/respuestas/evaluacion/${this.evaluacionId}`,
+    {
+      method: 'GET',
+      headers: this.obtenerHeaders()
+    }
+  )
+
+    .then(async response => {
+
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        throw new Error(
+          errorText ||
+          'No se pudieron recuperar las respuestas anteriores.'
+        );
+      }
+
+      return response.json();
+
+    })
+
+    .then((respuestas: RespuestaGuardada[]) => {
+
+      console.log(
+        'Respuestas recuperadas de la evaluación:',
+        respuestas
+      );
+
+      // Identificamos las combinaciones de ítem y serie
+      // que ya tienen una respuesta guardada.
+      const respuestasRegistradas = new Set(
+        respuestas.map(
+          respuesta => `${respuesta.itemId}-${respuesta.serieId}`
+        )
+      );
+
+      // Recorremos todos los ejercicios y sus respectivas series.
+      for (let i = 0; i < this.items.length; i++) {
+
+        const item = this.items[i];
+
+        for (let j = 0; j < (item.series?.length ?? 0); j++) {
+
+          const serie = item.series[j];
+
+          const clave = `${item.id}-${serie.id}`;
+
+          // Si no existe una respuesta, esta es la siguiente actividad.
+          if (!respuestasRegistradas.has(clave)) {
+
+            this.indiceItem = i;
+            this.indiceSerie = j;
+
+            console.log(
+              'Se continuará desde:',
+              {
+                itemId: item.id,
+                serieId: serie.id,
+                indiceItem: i,
+                indiceSerie: j
+              }
+            );
+
+            return;
+          }
+
+        }
+
+      }
+
+      // Si todas las series tienen respuesta,
+      // no debemos regresar a la última actividad.
+      this.indiceItem = this.items.length;
+      this.indiceSerie = 0;
+
+      console.log(
+        'Todas las series de esta evaluación ya tienen respuesta.'
+      );
+
+    })
+
+    .catch((error: unknown) => {
+
+      console.error(
+        'Error recuperando el progreso de K-ABC:',
+        error
+      );
+
+      throw error;
 
     });
 
@@ -1761,6 +1903,7 @@ guardarRespuestaEjercicio09(
       }
     ]
   };
+  
 
   this.respuestaService.guardarRespuestas(body).subscribe({
     next: () => {
@@ -1778,7 +1921,459 @@ guardarRespuestaEjercicio09(
         'No se pudo guardar la respuesta. Inténtalo nuevamente.';
     }
   });
+  
 }
+
+guardarRespuestaEjercicio10(
+  respuesta: RespuestaEjercicio10
+): void {
+
+  if (
+    this.enviandoRespuesta ||
+    !this.evaluacionId
+  ) {
+    return;
+  }
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie) {
+
+    this.mensajeError =
+      'No se encontró la actividad actual.';
+
+    return;
+  }
+
+  this.enviandoRespuesta = true;
+  this.mensajeError = '';
+
+  const body = {
+    idEvaluacion: this.evaluacionId,
+
+    items: [
+      {
+        itemId: item.id,
+        serieId: serie.id,
+        tipo: item.type ?? 'IMAGE_ORDERING',
+        valor: respuesta.valor
+      }
+    ]
+  };
+
+  console.log(
+    'Enviando respuesta Ejercicio 10:',
+    body
+  );
+
+  this.respuestaService
+    .guardarRespuestas(body)
+    .subscribe({
+
+      next: () => {
+
+        console.log(
+          'Respuesta Ejercicio 10 guardada correctamente.'
+        );
+
+        this.enviandoRespuesta = false;
+
+        this.avanzarSerie();
+      },
+
+      error: (error: unknown) => {
+
+        console.error(
+          'Error guardando Ejercicio 10:',
+          error
+        );
+
+        this.enviandoRespuesta = false;
+
+        this.mensajeError =
+          'No se pudo guardar la respuesta. Inténtalo nuevamente.';
+      }
+
+    });
+}
+// =========================================================
+// RECIBIR RESPUESTA DEL EJERCICIO 11
+// =========================================================
+
+
+guardarRespuestaEjercicio11(
+  respuesta: RespuestaEjercicio11
+): void {
+
+  if (
+    this.enviandoRespuesta ||
+    !this.evaluacionId
+  ) {
+    return;
+  }
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie) {
+    this.mensajeError =
+      'No se encontró la actividad actual.';
+    return;
+  }
+
+  // Validar la respuesta recibida del ejercicio 11.
+  if (
+    !respuesta?.valor ||
+    typeof respuesta.valor.correcta !== 'boolean' ||
+    respuesta.valor.evaluadoPor !== 'tutor'
+  ) {
+    this.mensajeError =
+      'La valoración del tutor no tiene un formato válido.';
+    return;
+  }
+
+  this.enviandoRespuesta = true;
+  this.mensajeError = '';
+
+  const body = {
+    idEvaluacion: this.evaluacionId,
+
+    items: [
+      {
+        itemId: item.id,
+        serieId: serie.id,
+        tipo: item.type ?? 'EXPRESSIVE_VOCABULARY',
+        valor: respuesta.valor
+      }
+    ]
+  };
+
+  console.log(
+    '[KABC] Enviando respuesta Ejercicio 11:',
+    body
+  );
+
+  this.respuestaService
+    .guardarRespuestas(body)
+    .subscribe({
+
+      next: () => {
+
+        console.log(
+          '[KABC] Respuesta Ejercicio 11 guardada correctamente.',
+          respuesta.valor
+        );
+
+        this.enviandoRespuesta = false;
+
+        this.avanzarSerie();
+      },
+
+      error: (error: unknown) => {
+
+        console.error(
+          '[KABC] Error guardando Ejercicio 11:',
+          error
+        );
+
+        this.enviandoRespuesta = false;
+
+        this.mensajeError =
+          'No se pudo guardar la respuesta. Inténtalo nuevamente.';
+      }
+
+    });
+}
+
+guardarRespuestaEjercicio12(
+  respuesta: RespuestaEjercicio12
+): void {
+
+  if (
+    this.enviandoRespuesta ||
+    !this.evaluacionId
+  ) {
+
+    this.mensajeError =
+      'No existe una evaluación activa.';
+
+    return;
+
+  }
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie) {
+
+    this.mensajeError =
+      'No se encontró la actividad actual.';
+
+    return;
+
+  }
+
+  this.enviandoRespuesta = true;
+
+  this.mensajeError = '';
+  this.mensajeExito = '';
+
+  const body = {
+
+    idEvaluacion: this.evaluacionId,
+
+    items: [
+
+      {
+
+        itemId: item.id,
+
+        serieId: serie.id,
+
+        tipo: item.type ?? 'RECOGNITION',
+
+        valor:
+          typeof respuesta.valor === 'string'
+            ? respuesta.valor
+            : JSON.stringify(respuesta.valor)
+
+      }
+
+    ]
+
+  };
+
+  console.log(
+    'Enviando respuesta K-ABC - Ejercicio 12:',
+    body
+  );
+
+  fetch(
+    `${this.API_URL}/respuestas`,
+    {
+
+      method: 'POST',
+
+      headers: this.obtenerHeaders(),
+
+      body: JSON.stringify(body)
+
+    }
+  )
+
+    .then(async response => {
+
+      if (!response.ok) {
+
+        const errorText =
+          await response.text();
+
+        throw new Error(
+          errorText ||
+          `Error guardando respuesta (${response.status})`
+        );
+
+      }
+
+      return response
+        .json()
+        .catch(() => null);
+
+    })
+
+    .then(() => {
+
+      this.mensajeExito =
+        'Respuesta registrada correctamente.';
+
+      console.log(
+        'Respuesta del ejercicio 12 guardada correctamente.'
+      );
+
+      this.avanzarSerie();
+
+    })
+
+    .catch(error => {
+
+      console.error(
+        'Error guardando respuesta K-ABC - Ejercicio 12:',
+        error
+      );
+
+      this.mensajeError =
+        error?.message ||
+        'No se pudo guardar la respuesta.';
+
+    })
+
+    .finally(() => {
+
+      this.enviandoRespuesta = false;
+
+    });
+
+}
+
+
+
+guardarRespuestaEjercicio13(
+  respuesta: RespuestaEjercicio13
+): void {
+
+  if (
+    this.enviandoRespuesta ||
+    !this.evaluacionId
+  ) {
+
+    this.mensajeError =
+      'No existe una evaluación activa.';
+
+    return;
+
+  }
+
+  const item = this.itemActual;
+
+  const serie = this.serieActual;
+
+  if (!item || !serie) {
+
+    this.mensajeError =
+      'No se encontró la actividad actual.';
+
+    return;
+
+  }
+
+  this.enviandoRespuesta = true;
+
+  this.mensajeError = '';
+  this.mensajeExito = '';
+
+  const body = {
+
+    idEvaluacion: this.evaluacionId,
+
+    items: [
+
+      {
+
+        itemId: item.id,
+
+        serieId: serie.id,
+
+        tipo: item.type ?? 'ARITHMETIC',
+
+        valor: respuesta.valor
+
+      }
+
+    ]
+
+  };
+
+  console.log(
+    'Enviando respuesta K-ABC - Ejercicio 13:',
+    body
+  );
+
+  this.respuestaService
+    .guardarRespuestas(body)
+    .subscribe({
+
+      next: () => {
+
+        console.log(
+          'Respuesta del Ejercicio 13 guardada correctamente.'
+        );
+
+        this.mensajeExito =
+          'Respuesta registrada correctamente.';
+
+        this.avanzarSerie();
+
+      },
+
+      error: (error: unknown) => {
+
+        console.error(
+          'Error guardando la respuesta del Ejercicio 13:',
+          error
+        );
+
+        this.mensajeError =
+          'No se pudo guardar la respuesta. Inténtalo nuevamente.';
+
+      },
+
+      complete: () => {
+
+        this.enviandoRespuesta = false;
+
+      }
+
+    });
+
+}
+guardarRespuestaEjercicio14(
+  respuesta: RespuestaEjercicio14
+): void {
+
+  if (this.enviandoRespuesta) {
+    return;
+  }
+
+  const item = this.itemActual;
+  const serie = this.serieActual;
+
+  if (!item || !serie || !this.evaluacionId) {
+    console.error(
+      'No se pudo guardar la respuesta del ejercicio 14.'
+    );
+    return;
+  }
+
+  this.enviandoRespuesta = true;
+
+  const body = {
+    idEvaluacion: this.evaluacionId,
+    items: [
+      {
+        itemId: item.id,
+        serieId: serie.id,
+        tipo: item.type ?? 'RIDDLES',
+        valor: respuesta.valor
+      }
+    ]
+  };
+
+  this.respuestaService.guardarRespuestas(body).subscribe({
+
+    next: () => {
+      this.avanzarSerie();
+    },
+
+    error: (error) => {
+      console.error(
+        'Error al guardar la respuesta del ejercicio 14:',
+        error
+      );
+
+      this.enviandoRespuesta = false;
+    },
+
+    complete: () => {
+      this.enviandoRespuesta = false;
+    }
+
+  });
+}
+
+
+
+
 
 
 
