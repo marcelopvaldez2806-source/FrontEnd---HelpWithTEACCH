@@ -1,4 +1,248 @@
 
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ejercicio {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #302b43;
+  box-sizing: border-box;
+}
+
+/* CABECERA */
+
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.etiqueta {
+  display: block;
+  color: #8270bd;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.cabecera h2 {
+  margin: 8px 0 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #302b43;
+}
+
+.contador {
+  color: #8270bd;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* INSTRUCCIONES */
+
+.instruccion {
+  padding: 16px 20px;
+  margin: 0 0 24px;
+  background: #f5f2fc;
+  border: 1px solid #e7e0f5;
+  border-radius: 14px;
+  color: #51466d;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ESTÍMULO */
+
+.zona-estimulo {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #eeeaf5;
+  border-radius: 18px;
+}
+
+.estimulo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 180px;
+  background: #f5f2fc;
+  border-radius: 16px;
+}
+
+.emoji {
+  font-size: 100px;
+  line-height: 1;
+}
+
+.pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.etiqueta-pregunta {
+  color: #8270bd;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.pregunta h3 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 700;
+  color: #302b43;
+}
+
+.pregunta p {
+  margin: 0;
+  color: #777287;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* EVALUACIÓN DEL TUTOR */
+
+.zona-evaluacion {
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #eeeaf5;
+  border-radius: 18px;
+}
+
+.titulo-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.titulo-seccion h3 {
+  margin: 8px 0 0;
+  color: #302b43;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.icono-tutor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  background: #f2effb;
+  border-radius: 14px;
+  font-size: 25px;
+}
+
+.ayuda {
+  margin: 18px 0;
+  color: #777287;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.campo-evaluacion h4 {
+  margin: 0 0 16px;
+  color: #302b43;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* BOTONES */
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 250px;
+  min-width: 0;
+  padding: 16px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.opcion-correcta {
+  border-color: #cce9d9;
+  background: #f1faf5;
+  color: #287b50;
+}
+
+.opcion-correcta:hover:not(:disabled) {
+  background: #e5f5eb;
+  border-color: #77bd96;
+  transform: translateY(-2px);
+}
+
+.opcion-incorrecta {
+  border-color: #f0d2d2;
+  background: #fff5f5;
+  color: #b94b4b;
+}
+
+.opcion-incorrecta:hover:not(:disabled) {
+  background: #ffebeb;
+  border-color: #df9292;
+  transform: translateY(-2px);
+}
+
+.icono-opcion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.opcion-correcta .icono-opcion {
+  background: #d9f0e2;
+}
+
+.opcion-incorrecta .icono-opcion {
+  background: #f9dddd;
+}
+
+.opcion strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.opcion small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
 /* ESTADO DE ENVÍO */
 
 .opcion:disabled {
@@ -19,4 +263,52 @@
   color: #6575c8;
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+  .ejercicio {
+    padding: 14px;
+  }
+
+  .cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cabecera h2 {
+    font-size: 22px;
+  }
+
+  .zona-estimulo {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .estimulo {
+    min-height: 150px;
+  }
+
+  .emoji {
+    font-size: 85px;
+  }
+
+  .pregunta h3 {
+    font-size: 20px;
+  }
+
+  .zona-evaluacion {
+    padding: 18px;
+  }
+
+  .opciones {
+    flex-direction: column;
+  }
+
+  .opcion {
+    flex: 1 1 auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

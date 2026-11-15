@@ -2016,10 +2016,7 @@ guardarRespuestaEjercicio11(
   respuesta: RespuestaEjercicio11
 ): void {
 
-  if (
-    this.enviandoRespuesta ||
-    !this.evaluacionId
-  ) {
+  if (this.enviandoRespuesta || !this.evaluacionId) {
     return;
   }
 
@@ -2027,19 +2024,7 @@ guardarRespuestaEjercicio11(
   const serie = this.serieActual;
 
   if (!item || !serie) {
-    this.mensajeError =
-      'No se encontró la actividad actual.';
-    return;
-  }
-
-  // Validar la respuesta recibida del ejercicio 11.
-  if (
-    !respuesta?.valor ||
-    typeof respuesta.valor.correcta !== 'boolean' ||
-    respuesta.valor.evaluadoPor !== 'tutor'
-  ) {
-    this.mensajeError =
-      'La valoración del tutor no tiene un formato válido.';
+    this.mensajeError = 'No se encontró la actividad actual.';
     return;
   }
 
@@ -2048,52 +2033,28 @@ guardarRespuestaEjercicio11(
 
   const body = {
     idEvaluacion: this.evaluacionId,
-
     items: [
       {
         itemId: item.id,
         serieId: serie.id,
-        tipo: item.type ?? 'EXPRESSIVE_VOCABULARY',
+        tipo: item.type ?? 'VOCABULARY',
         valor: respuesta.valor
       }
     ]
   };
 
-  console.log(
-    '[KABC] Enviando respuesta Ejercicio 11:',
-    body
-  );
-
-  this.respuestaService
-    .guardarRespuestas(body)
-    .subscribe({
-
-      next: () => {
-
-        console.log(
-          '[KABC] Respuesta Ejercicio 11 guardada correctamente.',
-          respuesta.valor
-        );
-
-        this.enviandoRespuesta = false;
-
-        this.avanzarSerie();
-      },
-
-      error: (error: unknown) => {
-
-        console.error(
-          '[KABC] Error guardando Ejercicio 11:',
-          error
-        );
-
-        this.enviandoRespuesta = false;
-
-        this.mensajeError =
-          'No se pudo guardar la respuesta. Inténtalo nuevamente.';
-      }
-
-    });
+  this.respuestaService.guardarRespuestas(body).subscribe({
+    next: () => {
+      this.enviandoRespuesta = false;
+      this.avanzarSerie();
+    },
+    error: (error: unknown) => {
+      console.error('Error Ejercicio 11:', error);
+      this.enviandoRespuesta = false;
+      this.mensajeError =
+        'No se pudo guardar la respuesta. Inténtalo nuevamente.';
+    }
+  });
 }
 
 guardarRespuestaEjercicio12(

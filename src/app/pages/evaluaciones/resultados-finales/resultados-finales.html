@@ -1,661 +1,656 @@
-<div
-  class="main-layout"
-  [class.expanded]="sidebarExpanded"
->
 
-
-  <!-- =====================================================
-       SIDEBAR
-  ====================================================== -->
+<div class="main-layout" [class.expanded]="sidebarExpanded">
 
   <app-sidebar
-    (sidebarToggle)="onSidebarToggle($event)"
-  ></app-sidebar>
-
-
-
-  <!-- =====================================================
-       CONTENIDO
-  ====================================================== -->
+    (sidebarToggle)="onSidebarToggle($event)">
+  </app-sidebar>
 
   <div class="page-content">
 
-
-    <!-- ===================================================
-         NAVBAR
-    ==================================================== -->
-
     <app-navbar></app-navbar>
-
-
-
-    <!-- ===================================================
-         HEADER
-    ==================================================== -->
-
-    <div class="content-header">
-
-
-      <div class="header-icon">
-
-        <span>
-          📊
-        </span>
-
-      </div>
-
-
-      <div class="header-info">
-
-        <h1>
-          Resultados finales
-        </h1>
-
-        <p>
-          Consulta los resultados integrados de las evaluaciones
-          Q-CHAT y K-ABC.
-        </p>
-
-      </div>
-
-
-    </div>
-
-
-
-    <!-- ===================================================
-         CONTENIDO
-    ==================================================== -->
 
     <main class="content-body">
 
-
-      <!-- =================================================
-           RESUMEN SUPERIOR
-      ================================================== -->
-
-      <section class="summary-grid">
-
-
-        <!-- ===============================================
-             Q-CHAT
-        ================================================ -->
-
-        <article class="result-card qchat-card">
-
-
-          <div class="card-header">
-
-
-            <div class="card-icon">
-              🧠
-            </div>
-
-
-            <div>
-
-              <span class="card-label">
-                EVALUACIÓN
-              </span>
-
-              <h2>
-                Q-CHAT
-              </h2>
-
-            </div>
-
-          </div>
-
-
-
-          <div class="qchat-result">
-
-
-            <div class="percentage-circle">
-
-              <span class="percentage-value">
-                {{ porcentajeQChat }}%
-              </span>
-
-              <span class="percentage-label">
-                resultado
-              </span>
-
-            </div>
-
-
-            <div class="qchat-description">
-
-              <h3>
-                Resultado Q-CHAT
-              </h3>
-
-              <p>
-                Resultado obtenido en la evaluación
-                Q-CHAT realizada al niño.
-              </p>
-
-              <span class="demo-badge">
-                Datos de demostración
-              </span>
-
-            </div>
-
-
-          </div>
-
-
-        </article>
-
-
-
-        <!-- ===============================================
-             K-ABC
-        ================================================ -->
-
-        <article class="result-card kabc-summary">
-
-
-          <div class="card-header">
-
-
-            <div class="card-icon">
-              🧩
-            </div>
-
-
-            <div>
-
-              <span class="card-label">
-                PERFIL DE DESEMPEÑO
-              </span>
-
-              <h2>
-                K-ABC
-              </h2>
-
-            </div>
-
-          </div>
-
-
-          <div class="kabc-summary-content">
-
-
-            <div class="kabc-average">
-
-              <span>
-                Promedio
-              </span>
-
-              <strong>
-                {{ obtenerPromedioKabc() }}%
-              </strong>
-
-            </div>
-
-
-            <div class="kabc-summary-text">
-
-              <p>
-                Perfil construido a partir de las actividades
-                K-ABC implementadas en el prototipo.
-              </p>
-
-              <span class="demo-badge">
-                Datos de demostración
-              </span>
-
-            </div>
-
-          </div>
-
-
-        </article>
-
-
+      <!-- ENCABEZADO -->
+      <section class="page-heading">
+        <div class="heading-icon">📊</div>
+
+        <div>
+          <span class="eyebrow">HELPWITHTEACCH</span>
+          <h1>Resultados finales</h1>
+          <p>
+            Consulta los resultados integrados de Q-CHAT y K-ABC.
+          </p>
+        </div>
       </section>
 
+      <!-- ================================================= -->
+      <!-- LISTADO DE NIÑOS -->
+      <!-- ================================================= -->
 
+      <ng-container *ngIf="!resultadoSeleccionado">
 
-      <!-- =================================================
-           RADAR
-      ================================================== -->
+        <section class="list-section">
 
-      <section class="radar-card">
+          <div class="section-title">
+            <div>
+              <h2>Evaluaciones completadas</h2>
+              <p>
+                Se muestran los niños que cuentan con ambas evaluaciones.
+              </p>
+            </div>
 
-
-        <div class="section-heading">
-
-          <div>
-
-            <span class="section-kicker">
-              PERFIL DE DESEMPEÑO
+            <span class="total-badge">
+              {{ resultadosFiltrados.length }} resultados
             </span>
+          </div>
 
-            <h2>
-              Perfil de actividades K-ABC
-            </h2>
+          <!-- BUSCADOR -->
+          <div class="search-box">
+            <span>⌕</span>
 
-            <p>
-              Representación visual del desempeño obtenido
-              en las actividades implementadas.
+            <input
+              type="text"
+              placeholder="Buscar por nombre o código del niño..."
+              [(ngModel)]="textoBusqueda"
+              (input)="buscar()">
+          </div>
+
+          <!-- CARGANDO -->
+          <div class="state-container" *ngIf="cargando">
+            <div class="loader"></div>
+            <p>Cargando resultados integrados...</p>
+          </div>
+
+          <!-- ERROR -->
+          <div
+            class="state-container error-state"
+            *ngIf="!cargando && error">
+
+            <span>⚠️</span>
+            <p>{{ error }}</p>
+
+            <button
+              class="secondary-button"
+              (click)="cargarResultadosIntegrados()">
+              Reintentar
+            </button>
+          </div>
+
+          <!-- SIN RESULTADOS -->
+          <div
+            class="state-container empty-state"
+            *ngIf="!cargando && !error && resultadosFiltrados.length === 0">
+
+            <span class="empty-icon">📂</span>
+
+            <h3>No hay resultados integrados</h3>
+
+            <p *ngIf="resultados.length === 0">
+              Aún no existen niños con las evaluaciones Q-CHAT y K-ABC
+              completadas.
             </p>
 
+            <p *ngIf="resultados.length > 0">
+              No se encontraron coincidencias con tu búsqueda.
+            </p>
           </div>
 
+          <!-- TARJETAS DE NIÑOS -->
+          <div
+            class="children-grid"
+            *ngIf="!cargando && !error && resultadosFiltrados.length > 0">
 
-          <div class="demo-badge">
-            Prototipo
-          </div>
+            <article
+              class="child-card"
+              *ngFor="let resultado of resultadosFiltrados">
 
-        </div>
+              <div class="child-card-top">
 
+                <div class="child-avatar">
+                  {{ resultado.nombreNino.charAt(0).toUpperCase() }}
+                </div>
 
+                <div class="child-info">
+                  <h3>{{ resultado.nombreNino }}</h3>
+                  <span>Código: {{ resultado.idNino }}</span>
+                </div>
 
-        <div class="radar-layout">
+              </div>
 
+              <div class="evaluation-status">
 
-          <!-- =============================================
-               GRÁFICO
-          ============================================== -->
+                <div class="evaluation-item">
+                  <span class="evaluation-icon qchat-icon">🧠</span>
 
-          <div class="radar-container">
+                  <div>
+                    <strong>Q-CHAT</strong>
+                    <small>Completada</small>
+                  </div>
 
+                  <span class="check-mark">✓</span>
+                </div>
 
-            <svg
-              viewBox="0 0 400 400"
-              class="radar-svg"
-              role="img"
-              aria-label="Gráfico de radar del perfil K-ABC"
-            >
+                <div class="evaluation-item">
+                  <span class="evaluation-icon kabc-icon">🧩</span>
 
+                  <div>
+                    <strong>K-ABC</strong>
+                    <small>Completada</small>
+                  </div>
 
-              <!-- =========================================
-                   CUADRÍCULA
-              ========================================== -->
+                  <span class="check-mark">✓</span>
+                </div>
 
-              <polygon
-                *ngFor="let nivel of [20,40,60,80,100]"
-                [attr.points]="obtenerPuntosNivel(nivel)"
-                class="radar-grid"
-              ></polygon>
+              </div>
 
-
-
-              <!-- =========================================
-                   EJES
-              ========================================== -->
-
-              <line
-                *ngFor="
-                  let item of perfilKabc;
-                  let i = index
-                "
-                [attr.x1]="radarCentro"
-                [attr.y1]="radarCentro"
-                [attr.x2]="obtenerX(i, 100)"
-                [attr.y2]="obtenerY(i, 100)"
-                class="radar-axis"
-              ></line>
-
-
-
-              <!-- =========================================
-                   PERFIL
-              ========================================== -->
-
-              <polygon
-                [attr.points]="obtenerPuntosPerfil()"
-                class="radar-profile"
-              ></polygon>
-
-
-
-              <!-- =========================================
-                   PUNTOS
-              ========================================== -->
-
-              <circle
-                *ngFor="
-                  let item of perfilKabc;
-                  let i = index
-                "
-                [attr.cx]="obtenerX(i, item.porcentaje)"
-                [attr.cy]="obtenerY(i, item.porcentaje)"
-                r="5"
-                class="radar-point"
-              ></circle>
-
-
-
-              <!-- =========================================
-                   ETIQUETAS
-              ========================================== -->
-
-              <text
-                *ngFor="
-                  let item of perfilKabc;
-                  let i = index
-                "
-                [attr.x]="obtenerLabelX(i)"
-                [attr.y]="obtenerLabelY(i)"
-                class="radar-label"
-                text-anchor="middle"
-              >
-
-                {{ item.nombre }}
-
-              </text>
-
-
-            </svg>
-
-
-          </div>
-
-
-
-          <!-- =============================================
-               LEYENDA
-          ============================================== -->
-
-          <div class="radar-legend">
-
-
-            <div
-              class="legend-item"
-              *ngFor="
-                let item of perfilKabc
-              "
-            >
-
-
-              <div class="legend-top">
-
-                <span class="legend-name">
-                  {{ item.nombre }}
+              <div class="card-dates">
+                <span>
+                  Q-CHAT: {{ formatearFecha(resultado.fechaQChat) }}
                 </span>
-
-                <strong>
-                  {{ item.porcentaje }}%
-                </strong>
-
-              </div>
-
-
-              <div class="progress-track">
-
-                <div
-                  class="progress-value"
-                  [style.width.%]="item.porcentaje"
-                ></div>
-
-              </div>
-
-
-              <div class="legend-bottom">
 
                 <span>
-                  {{ item.codigo }}
+                  K-ABC: {{ formatearFecha(resultado.fechaKabc) }}
                 </span>
-
-                <span
-                  class="priority"
-                  [ngClass]="
-                    obtenerClasePrioridad(
-                      item.prioridad
-                    )
-                  "
-                >
-                  {{ item.prioridad }}
-                </span>
-
               </div>
 
+              <button
+                class="view-button"
+                (click)="verResultado(resultado)">
 
-            </div>
+                Ver resultados integrados
+                <span>→</span>
 
+              </button>
+
+            </article>
 
           </div>
 
+        </section>
 
-        </div>
+      </ng-container>
 
+      <!-- ================================================= -->
+      <!-- DETALLE INTEGRADO -->
+      <!-- ================================================= -->
 
-      </section>
-
-
-
-      <!-- =================================================
-           ORIENTACIONES EDUCATIVAS
-      ================================================== -->
-
-      <section class="strategies-card">
-
-
-        <div class="section-heading">
-
-          <div>
-
-            <span class="section-kicker">
-              APOYO EDUCATIVO
-            </span>
-
-            <h2>
-              Orientaciones educativas sugeridas
-            </h2>
-
-            <p>
-              Estrategias orientativas basadas en las áreas
-              que presentan mayor necesidad de apoyo.
-            </p>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="strategies-grid">
-
-
-          <article
-            class="strategy-card"
-            *ngFor="
-              let item of obtenerAreasPrioritarias()
-            "
-          >
-
-
-            <div class="strategy-icon">
-
-              <span
-                *ngIf="item.codigo === 'MM_01'"
-              >
-                👋
-              </span>
-
-              <span
-                *ngIf="item.codigo === 'RN_01'"
-              >
-                🔢
-              </span>
-
-              <span
-                *ngIf="item.codigo === 'OP_01'"
-              >
-                🧩
-              </span>
-
-              <span
-                *ngIf="item.codigo === 'VM_01'"
-              >
-                👁️
-              </span>
-
-              <span
-                *ngIf="item.codigo === 'RC_01'"
-              >
-                🙂 
-              </span>
-
-              <span
-                *ngIf="item.codigo === 'CG_01'"
-              >
-                🖼️
-              </span>
-
-            </div>
-
-
-            <div class="strategy-content">
-
-
-              <div class="strategy-title">
-
-                <h3>
-                  {{ item.nombre }}
-                </h3>
-
-                <span
-                  class="priority"
-                  [ngClass]="
-                    obtenerClasePrioridad(
-                      item.prioridad
-                    )
-                  "
-                >
-                  Prioridad {{ item.prioridad }}
-                </span>
-
-              </div>
-
-
-              <p>
-                {{ item.estrategia }}
-              </p>
-
-
-            </div>
-
-
-          </article>
-
-
-        </div>
-
-
-      </section>
-
-
-
-      <!-- =================================================
-           BASE TEACCH
-      ================================================== -->
-
-      <section class="teacch-card">
-
-
-        <div class="teacch-icon">
-          💡
-        </div>
-
-
-        <div>
-
-          <h3>
-            Base de las orientaciones
-          </h3>
-
-
-          <p>
-
-            Las orientaciones consideran principios de
-            Structured TEACCHing, como la organización física,
-            el uso de apoyos visuales, la estructuración de
-            actividades, la secuenciación de tareas y los
-            sistemas de trabajo que permiten identificar qué
-            hacer, cuánto realizar, cómo saber que una actividad
-            terminó y qué ocurre después.
-
-          </p>
-
-
-        </div>
-
-
-      </section>
-
-
-
-      <!-- =================================================
-           ADVERTENCIA
-      ================================================== -->
-
-      <section class="disclaimer-card">
-
-
-        <div class="disclaimer-icon">
-          ⚠️
-        </div>
-
-
-        <div>
-
-          <strong>
-            Información importante
-          </strong>
-
-
-          <p>
-
-            El perfil mostrado corresponde únicamente a las
-            actividades K-ABC implementadas en el prototipo.
-            No constituye una puntuación estandarizada oficial,
-            una medida de CI ni un diagnóstico clínico.
-
-          </p>
-
-
-          <p>
-
-            Las orientaciones educativas son sugerencias de
-            apoyo y deben individualizarse de acuerdo con las
-            características y necesidades de cada niño.
-
-          </p>
-
-        </div>
-
-
-      </section>
-
-
-
-      <!-- =================================================
-           BOTONES
-      ================================================== -->
-
-      <div class="actions">
-
+      <ng-container *ngIf="resultadoSeleccionado">
 
         <button
-          type="button"
-          class="btn-secondary"
-          (click)="volverListado()"
-        >
+          class="back-button"
+          (click)="volverListado()">
 
-          ← Volver a evaluaciones
+          <span>←</span>
+          Volver al listado
 
         </button>
 
+        <!-- INFORMACIÓN DEL NIÑO -->
+        <section class="student-heading">
 
-      </div>
+          <div class="student-avatar">
+            {{ resultadoSeleccionado.nombreNino.charAt(0).toUpperCase() }}
+          </div>
 
+          <div>
+            <span class="eyebrow">INFORME INTEGRADO</span>
+
+            <h2>{{ resultadoSeleccionado.nombreNino }}</h2>
+
+            <p>
+              Código del niño: {{ resultadoSeleccionado.idNino }}
+            </p>
+          </div>
+
+        </section>
+
+        <!-- CARGANDO DETALLE -->
+        <div class="state-container" *ngIf="cargandoDetalle">
+          <div class="loader"></div>
+          <p>Procesando resultados de ambas evaluaciones...</p>
+        </div>
+
+        <!-- ERROR DETALLE -->
+        <div
+          class="state-container error-state"
+          *ngIf="!cargandoDetalle && errorDetalle">
+
+          <span>⚠️</span>
+          <p>{{ errorDetalle }}</p>
+
+        </div>
+
+        <ng-container *ngIf="!cargandoDetalle">
+
+          <!-- ================================================= -->
+          <!-- RESULTADOS Q-CHAT -->
+          <!-- ================================================= -->
+
+          <section class="report-section">
+
+            <div class="report-heading">
+              <div class="report-icon qchat-icon">🧠</div>
+
+              <div>
+                <span class="eyebrow">EVALUACIÓN 01</span>
+                <h2>Resultados Q-CHAT</h2>
+                <p>
+                  Predicciones generadas por los modelos de Machine Learning.
+                </p>
+              </div>
+            </div>
+
+            <!-- MODELOS ML -->
+            <div class="ml-grid">
+
+              <article
+                class="ml-card"
+                *ngFor="let modelo of modelosML">
+
+                <div class="ml-card-header">
+                  <span class="model-dot"></span>
+                  <h3>{{ modelo.nombre }}</h3>
+                </div>
+
+                <div class="ml-result">
+                  <strong>
+                    {{ modelo.probabilidad | number:'1.1-2' }}%
+                  </strong>
+                  <span>Probabilidad reportada</span>
+                </div>
+
+                <div class="progress-track">
+                  <div
+                    class="progress-value"
+                    [style.width.%]="modelo.probabilidad">
+                  </div>
+                </div>
+
+                <div class="model-prediction">
+                  <span>Resultado del modelo</span>
+                  <strong>{{ modelo.resultado }}</strong>
+                </div>
+
+              </article>
+
+              <!-- PROMEDIO DE MODELOS -->
+              <article
+                class="ml-card ensemble-card"
+                *ngIf="promedioML !== null">
+
+                <div class="ml-card-header">
+                  <span class="ensemble-icon">∑</span>
+                  <h3>Promedio de modelos</h3>
+                </div>
+
+                <div class="ml-result">
+                  <strong>
+                    {{ promedioML | number:'1.1-2' }}%
+                  </strong>
+                  <span>Promedio de probabilidades</span>
+                </div>
+
+                <div class="progress-track">
+                  <div
+                    class="progress-value"
+                    [style.width.%]="promedioML">
+                  </div>
+                </div>
+
+                <p class="ensemble-note">
+                  Promedio aritmético de las probabilidades recibidas
+                  de los modelos disponibles.
+                </p>
+
+              </article>
+
+            </div>
+
+            <!-- SIN PREDICCIONES -->
+            <div
+              class="empty-inline"
+              *ngIf="modelosML.length === 0">
+
+              No se encontraron predicciones ML para esta evaluación Q-CHAT.
+
+            </div>
+
+            <p class="disclaimer">
+              Las probabilidades mostradas corresponden a las predicciones
+              registradas por los modelos. No representan por sí solas
+              un diagnóstico clínico.
+            </p>
+
+          </section>
+
+          <!-- ================================================= -->
+          <!-- RESULTADOS K-ABC -->
+          <!-- ================================================= -->
+
+          <section class="report-section">
+
+            <div class="report-heading">
+              <div class="report-icon kabc-icon">🧩</div>
+
+              <div>
+                <span class="eyebrow">EVALUACIÓN 02</span>
+                <h2>Resultados K-ABC</h2>
+                <p>
+                  Desempeño observado en las actividades de la evaluación.
+                </p>
+              </div>
+            </div>
+
+            <!-- ================================================= -->
+            <!-- GRÁFICO DE ARAÑA -->
+            <!-- ================================================= -->
+
+            <section
+              class="radar-section"
+              *ngIf="resultadosSubtests.length > 2">
+
+              <div class="radar-heading">
+
+                <div>
+                  <span class="eyebrow">
+                    VISUALIZACIÓN DEL DESEMPEÑO
+                  </span>
+
+                  <h3>Perfil de desempeño K-ABC</h3>
+
+                  <p>
+                    Porcentaje de series correctas por subtest.
+                  </p>
+                </div>
+
+                <span class="radar-badge">
+                  Gráfico de araña
+                </span>
+
+              </div>
+
+              <!-- CONTENEDOR DEL GRÁFICO -->
+              <div class="radar-container">
+
+                <svg
+                  class="radar-chart"
+                  viewBox="0 0 500 500"
+                  preserveAspectRatio="xMidYMid meet"
+                  role="img"
+                  aria-label="Gráfico de araña del desempeño K-ABC">
+
+                  <!-- NIVELES DEL RADAR -->
+                  <g class="radar-grid">
+
+                    <polygon
+                      *ngFor="let nivel of [20, 40, 60, 80, 100]"
+                      [attr.points]="radarNivel(nivel)"
+                      fill="none"
+                      stroke="#e1e4ed"
+                      stroke-width="1">
+                    </polygon>
+
+                  </g>
+
+                  <!-- EJES -->
+                  <g class="radar-axes">
+
+                    <line
+                      *ngFor="let eje of radarEjes"
+                      [attr.x1]="eje.x1"
+                      [attr.y1]="eje.y1"
+                      [attr.x2]="eje.x2"
+                      [attr.y2]="eje.y2"
+                      stroke="#d9dce8"
+                      stroke-width="1">
+                    </line>
+
+                  </g>
+
+                  <!-- ESCALA DE PORCENTAJES -->
+                  <g class="radar-scale">
+
+                    <text
+                      *ngFor="let nivel of [20, 40, 60, 80, 100]"
+                      x="258"
+                      [attr.y]="radarCentro - (radarRadio * nivel / 100) - 5"
+                      fill="#8d94a8"
+                      font-size="11"
+                      text-anchor="start">
+
+                      {{ nivel }}%
+
+                    </text>
+
+                  </g>
+
+                  <!-- POLÍGONO DEL DESEMPEÑO -->
+                  <polygon
+                    *ngIf="radarEjes.length > 2"
+                    class="radar-performance-area"
+                    [attr.points]="radarPoligono"
+                    fill="#7775c8"
+                    fill-opacity="0.22"
+                    stroke="#7775c8"
+                    stroke-width="2.5"
+                    stroke-linejoin="round">
+                  </polygon>
+
+                  <!-- PUNTOS DE DESEMPEÑO -->
+                  <g class="radar-points">
+
+                    <circle
+                      *ngFor="let eje of radarEjes"
+                      [attr.cx]="eje.puntoX"
+                      [attr.cy]="eje.puntoY"
+                      r="5"
+                      fill="#7775c8"
+                      stroke="#ffffff"
+                      stroke-width="2">
+
+                      <title>
+                        {{ eje.nombre }}:
+                        {{ eje.porcentaje | number:'1.1-1' }}%
+                      </title>
+
+                    </circle>
+
+                  </g>
+
+                  <!-- IDENTIFICADORES NUMÉRICOS -->
+                  <g class="radar-labels">
+
+                    <text
+                      *ngFor="let eje of radarEjes"
+                      [attr.x]="eje.labelX"
+                      [attr.y]="eje.labelY"
+                      text-anchor="middle"
+                      dominant-baseline="middle"
+                      fill="#555d75"
+                      font-size="12"
+                      font-weight="700">
+
+                      {{ eje.numero }}
+
+                    </text>
+
+                  </g>
+
+                </svg>
+
+              </div>
+
+              <!-- LEYENDA DE ACTIVIDADES -->
+              <div class="radar-activities">
+
+                <div
+                  class="radar-activity"
+                  *ngFor="let eje of radarEjes">
+
+                  <span class="activity-number">
+                    {{ eje.numero }}
+                  </span>
+
+                  <span class="activity-name">
+                    {{ eje.nombre }}
+                  </span>
+
+                  <strong>
+                    {{ eje.porcentaje | number:'1.1-1' }}%
+                  </strong>
+
+                </div>
+
+              </div>
+
+              <!-- LEYENDA DEL GRÁFICO -->
+              <div class="radar-legend">
+
+                <span class="legend-dot"></span>
+
+                <span>
+                  Porcentaje de series correctas
+                </span>
+
+              </div>
+
+              <p class="radar-disclaimer">
+                Esta visualización representa el porcentaje de series
+                correctas por subtest. No constituye una puntuación
+                estandarizada ni un diagnóstico clínico.
+              </p>
+
+            </section>
+
+            <!-- ================================================= -->
+            <!-- DETALLE DE SUBTESTS -->
+            <!-- ================================================= -->
+
+            <div
+              class="subtest-list"
+              *ngIf="resultadosSubtests.length > 0">
+
+              <article
+                class="subtest-card"
+                *ngFor="let subtest of resultadosSubtests">
+
+                <div class="subtest-header">
+
+                  <div>
+                    <span class="subtest-code">
+                      {{ subtest.codigo }}
+                    </span>
+
+                    <h3>{{ subtest.nombre }}</h3>
+                  </div>
+
+                  <span
+                    class="status-pill"
+                    [class.status-success]="subtest.estado === 'APROBADO'"
+                    [class.status-warning]="subtest.estado === 'NECESITA APOYO'"
+                    [class.status-neutral]="subtest.estado === 'SIN DATOS'">
+
+                    {{ obtenerTextoEstado(subtest.estado) }}
+
+                  </span>
+
+                </div>
+
+                <!-- ESTADÍSTICAS -->
+                <div class="subtest-stats">
+
+                  <div>
+                    <strong>{{ subtest.totalItems }}</strong>
+                    <span>Series configuradas</span>
+                  </div>
+
+                  <div>
+                    <strong>{{ subtest.itemsCorrectos }}</strong>
+                    <span>Series correctas</span>
+                  </div>
+
+                  <div>
+                    <strong>{{ subtest.itemsIncorrectos }}</strong>
+                    <span>Series incorrectas</span>
+                  </div>
+
+                </div>
+
+                <!-- RECOMENDACIÓN EDUCATIVA -->
+                <div
+                  class="recommendation"
+                  *ngIf="subtest.estado === 'NECESITA APOYO'">
+
+                  <div class="recommendation-title">
+                    <span>💡</span>
+                    <strong>Recomendación educativa</strong>
+                  </div>
+
+                  <p>
+                    {{ subtest.recomendacion }}
+                  </p>
+
+                </div>
+
+                <!-- DESEMPEÑO LOGRADO -->
+                <div
+                  class="success-message"
+                  *ngIf="subtest.estado === 'APROBADO'">
+
+                  <span>✓</span>
+
+                  No se identificaron respuestas incorrectas en este subtest.
+
+                </div>
+
+                <!-- SIN DATOS -->
+                <div
+                  class="empty-inline"
+                  *ngIf="subtest.estado === 'SIN DATOS'">
+
+                  No hay información suficiente para determinar el desempeño.
+
+                </div>
+
+              </article>
+
+            </div>
+
+            <!-- SIN SUBTESTS -->
+            <div
+              class="empty-inline"
+              *ngIf="resultadosSubtests.length === 0">
+
+              No se encontraron actividades para mostrar en esta evaluación.
+
+            </div>
+
+            <!-- ORIENTACIÓN TEACCH -->
+            <div class="teacch-note">
+
+              <span>🌱</span>
+
+              <div>
+                <strong>Orientación educativa</strong>
+
+                <p>
+                  Las recomendaciones propuestas pueden desarrollarse
+                  incorporando principios de enseñanza estructurada TEACCH,
+                  como apoyos visuales, organización de materiales,
+                  secuenciación y claridad en las instrucciones.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
+        </ng-container>
+
+      </ng-container>
 
     </main>
-
 
   </div>
 

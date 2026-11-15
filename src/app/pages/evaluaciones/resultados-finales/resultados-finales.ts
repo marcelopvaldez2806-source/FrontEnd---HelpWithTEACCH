@@ -1,3 +1,4 @@
+
 import {
   Component,
   Inject,
@@ -10,1175 +11,874 @@ import {
   isPlatformBrowser
 } from '@angular/common';
 
-import {
-  ActivatedRoute,
-  Router
-} from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 
 import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Header } from '../../../layout/header/header';
+
+import { NinoService } from '../../../core/services/nino.service';
+import { RespuestaService } from '../../../core/services/respuesta.service';
+
 import { environment } from '../../../../environments/environment';
 
-import {
-  RespuestaService
-} from '../../../core/services/respuesta.service';
+// =====================================================
+// INTERFACES
+// =====================================================
 
-
-// =========================================================
-// INTERFAZ DEL PERFIL K-ABC
-// =========================================================
-
-interface PerfilKabc {
-
-  codigo: string;
-
-  nombre: string;
-
-  porcentaje: number;
-
-  prioridad: 'Alta' | 'Media' | 'Baja';
-
-  estrategia: string;
-
+interface Evaluacion {
+  idEvaluacion: number;
+  idNino: number;
+  idUsuario: number;
+  idVersion: number;
+  fechaEvaluacion: string;
+  estado: string;
 }
 
+interface Nino {
+  idNino: number;
+  nombres: string;
+  apellidos: string;
+}
 
-// =========================================================
-// INTERFAZ DE RESPUESTA K-ABC
-// =========================================================
+interface ResultadoIntegrado {
+  idNino: number;
+  nombreNino: string;
+  idEvaluacionQChat: number;
+  idEvaluacionKabc: number;
+  fechaQChat: string;
+  fechaKabc: string;
+}
 
 interface RespuestaKabc {
-
   idRespuesta?: number;
-
   idEvaluacion?: number;
-
   itemId: number;
-
   serieId: number;
-
-  correcta: boolean;
-
+  correcta: boolean | null;
   puntaje?: number;
-
   tipo?: string;
-
   valor?: any;
-
 }
 
+interface SerieConfiguracion {
+  id: number;
+}
 
-// =========================================================
+interface ItemConfiguracion {
+  id: number;
+  subtest: string;
+  series?: SerieConfiguracion[];
+}
+
+interface PrediccionML {
+  idPrediccion?: number;
+  idEvaluacion?: number;
+  modelo: string;
+  resultado: string;
+  probabilidad: number;
+  fechaPrediccion?: string;
+}
+
+interface ResultadoModelo {
+  nombre: string;
+  resultado: string;
+  probabilidad: number;
+}
+
+interface ResultadoSubtest {
+  codigo: string;
+  nombre: string;
+  totalItems: number;
+  itemsCorrectos: number;
+  itemsIncorrectos: number;
+  porcentaje: number;
+  estado: 'APROBADO' | 'NECESITA APOYO' | 'SIN DATOS';
+  recomendacion: string;
+}
+
+// =====================================================
 // COMPONENTE
-// =========================================================
+// =====================================================
 
 @Component({
-
   selector: 'app-resultados-finales',
-
   standalone: true,
-
   imports: [
-
     CommonModule,
-
+    FormsModule,
     Navbar,
-
     Sidebar,
-
     Header
-
   ],
-
   templateUrl: './resultados-finales.html',
-
   styleUrl: './resultados-finales.css'
-
 })
-
-
 export class ResultadosFinales implements OnInit {
 
+  private readonly API_URL = environment.apiUrl;
 
-  // =========================================================
-  // SIDEBAR
-  // =========================================================
+  // IMPORTANTE: conservar estos identificadores
+  // únicamente si corresponden a los IDs reales de Version.
+  private readonly ID_VERSION_QCHAT = 1;
+  private readonly ID_VERSION_KABC = 2;
+
+  // =====================================================
+  // ESTADO DEL COMPONENTE
+  // =====================================================
 
   sidebarExpanded = false;
 
-
-  // =========================================================
-  // ESTADO
-  // =========================================================
+  usuarioId: number | null = null;
 
   cargando = true;
+  cargandoDetalle = false;
 
   error = '';
+  errorDetalle = '';
 
-  idEvaluacion = 0;
+  textoBusqueda = '';
 
+  resultados: ResultadoIntegrado[] = [];
+  resultadosFiltrados: ResultadoIntegrado[] = [];
 
-  // =========================================================
-  // Q-CHAT
-  // =========================================================
+  resultadoSeleccionado: ResultadoIntegrado | null = null;
 
-  /*
-   * Por ahora mantenemos el porcentaje de demostración
-   * del Q-CHAT.
-   *
-   * El Q-CHAT ya tiene su propio flujo funcionando.
-   * Posteriormente podemos obtener aquí el resultado
-   * correspondiente a la misma evaluación/niño.
-   */
+  // =====================================================
+  // RESULTADOS Q-CHAT / MACHINE LEARNING
+  // =====================================================
 
-  porcentajeQChat = 78;
+  modelosML: ResultadoModelo[] = [];
 
+  promedioML: number | null = null;
 
-  // =========================================================
-  // PERFIL K-ABC
-  // =========================================================
+  // =====================================================
+  // RESULTADOS K-ABC
+  // =====================================================
 
-  perfilKabc: PerfilKabc[] = [];
+  resultadosSubtests: ResultadoSubtest[] = [];
 
+  // =====================================================
+  // CONFIGURACIÓN DEL GRÁFICO DE ARAÑA
+  // =====================================================
 
-  // =========================================================
-  // CONSTRUCTOR
-  // =========================================================
+  public readonly radarCentro = 250;
+  public readonly radarRadio = 145;
 
   constructor(
-
-    private route: ActivatedRoute,
-
-    private router: Router,
-
+    private ninoService: NinoService,
     private respuestaService: RespuestaService,
 
     @Inject(PLATFORM_ID)
-    private platformId: Object
-
+    private platformId: object
   ) {}
 
-
-  // =========================================================
-  // ON INIT
-  // =========================================================
+  // =====================================================
+  // INICIALIZACIÓN
+  // =====================================================
 
   ngOnInit(): void {
-
-
-    // -------------------------------------------------------
-    // Obtener ID de evaluación desde la URL
-    // -------------------------------------------------------
-
-    this.idEvaluacion = Number(
-
-      this.route.snapshot.paramMap.get(
-        'idEvaluacion'
-      )
-
-    );
-
-
-    console.log(
-      '========================================'
-    );
-
-    console.log(
-      'RESULTADOS FINALES'
-    );
-
-    console.log(
-      'ID EVALUACIÓN:',
-      this.idEvaluacion
-    );
-
-    console.log(
-      'PLATAFORMA:',
-      isPlatformBrowser(
-        this.platformId
-      )
-        ? 'BROWSER'
-        : 'SERVER'
-    );
-
-    console.log(
-      '========================================'
-    );
-
-
-    // -------------------------------------------------------
-    // Validar ID
-    // -------------------------------------------------------
-
-    if (!this.idEvaluacion) {
-
-      this.error =
-        'No se encontró el ID de la evaluación.';
-
-      this.cargando = false;
-
+    if (!isPlatformBrowser(this.platformId)) {
       return;
-
     }
 
-
-    // -------------------------------------------------------
-    // IMPORTANTE:
-    //
-    // Durante SSR no existe localStorage.
-    //
-    // El JWT que utiliza la aplicación está guardado
-    // en localStorage, por lo que no podemos realizar
-    // la petición autenticada durante SSR.
-    // -------------------------------------------------------
-
-    if (
-      !isPlatformBrowser(
-        this.platformId
-      )
-    ) {
-
-      console.log(
-        'SSR detectado.'
-      );
-
-      console.log(
-        'Se omite temporalmente la petición K-ABC.'
-      );
-
-      this.cargando = false;
-
-      return;
-
-    }
-
-
-    // -------------------------------------------------------
-    // Ya estamos en el navegador.
-    // Podemos obtener las respuestas reales.
-    // -------------------------------------------------------
-
-    this.cargarResultadosKabc();
-
+    this.obtenerUsuario();
   }
 
-
-  // =========================================================
-  // CARGAR RESULTADOS K-ABC
-  // =========================================================
-
-  cargarResultadosKabc(): void {
-
-
-    this.cargando = true;
-
-    this.error = '';
-
-
-    console.log(
-      '========================================'
-    );
-
-    console.log(
-      'CONSULTANDO RESPUESTAS K-ABC'
-    );
-
-    console.log(
-      'ID EVALUACIÓN:',
-      this.idEvaluacion
-    );
-
-    console.log(
-      '========================================'
-    );
-
-
-    this.respuestaService
-
-      .obtenerPorEvaluacion(
-        this.idEvaluacion
-      )
-
-      .subscribe({
-
-        // ===================================================
-        // RESPUESTA EXITOSA
-        // ===================================================
-
-        next: (
-          respuestas: RespuestaKabc[]
-        ) => {
-
-
-          console.log(
-            '========================================'
-          );
-
-          console.log(
-            'RESPUESTAS K-ABC RECIBIDAS'
-          );
-
-          console.log(
-            respuestas
-          );
-
-          console.log(
-            'TOTAL RESPUESTAS:',
-            respuestas.length
-          );
-
-          console.log(
-            '========================================'
-          );
-
-
-          // -------------------------------------------------
-          // Calcular perfil
-          // -------------------------------------------------
-
-          this.calcularPerfilKabc(
-            respuestas
-          );
-
-
-          this.cargando = false;
-
-        },
-
-
-        // ===================================================
-        // ERROR
-        // ===================================================
-
-        error: (
-          error: any
-        ) => {
-
-
-          console.error(
-            '========================================'
-          );
-
-          console.error(
-            'ERROR OBTENIENDO RESPUESTAS K-ABC'
-          );
-
-          console.error(
-            error
-          );
-
-          console.error(
-            '========================================'
-          );
-
-
-          // -------------------------------------------------
-          // Mensaje amigable
-          // -------------------------------------------------
-
-          if (
-            error?.status === 403
-          ) {
-
-            this.error =
-              'No tienes permisos para consultar los resultados de esta evaluación.';
-
-          }
-
-          else if (
-            error?.status === 401
-          ) {
-
-            this.error =
-              'Tu sesión ha expirado. Inicia sesión nuevamente.';
-
-          }
-
-          else {
-
-            this.error =
-              'No se pudieron cargar los resultados K-ABC.';
-
-          }
-
-
-          this.cargando = false;
-
-        }
-
-      });
-
-  }
-
-
-  // =========================================================
-  // CALCULAR PERFIL K-ABC
-  // =========================================================
-
-  private calcularPerfilKabc(
-
-    respuestas: RespuestaKabc[]
-
-  ): void {
-
-
-    /*
-     * Actualmente tenemos implementadas
-     * 6 actividades K-ABC.
-     *
-     * Cada actividad tiene 3 series.
-     */
-
-
-    const actividades = [
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 01
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 1,
-
-        codigo: 'MM_01',
-
-        nombre: 'Movimientos de manos',
-
-        estrategia:
-          'Utilizar secuencias visuales paso a paso, modelado de la actividad y una estructura clara de inicio y finalización.'
-
-      },
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 02
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 2,
-
-        codigo: 'RN_01',
-
-        nombre: 'Recuerdo de números',
-
-        estrategia:
-          'Presentar instrucciones breves, dividir la información en pequeñas unidades y utilizar repetición y apoyos visuales.'
-
-      },
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 03
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 3,
-
-        codigo: 'OP_01',
-
-        nombre: 'Orden de palabras',
-
-        estrategia:
-          'Utilizar tarjetas visuales para representar primero, después y finalmente, reforzando la secuencia de acciones.'
-
-      },
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 04
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 4,
-
-        codigo: 'VM_01',
-
-        nombre: 'Ventana mágica',
-
-        estrategia:
-          'Presentar estímulos visuales de manera progresiva y reducir elementos distractores durante la actividad.'
-
-      },
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 05
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 5,
-
-        codigo: 'RC_01',
-
-        nombre: 'Reconocimiento de caras',
-
-        estrategia:
-          'Mantener apoyos visuales organizados y utilizar actividades de asociación y reconocimiento de manera gradual.'
-
-      },
-
-
-      // -----------------------------------------------------
-      // EJERCICIO 06
-      // -----------------------------------------------------
-
-      {
-
-        itemId: 6,
-
-        codigo: 'CG_01',
-
-        nombre: 'Cierre gestáltico',
-
-        estrategia:
-          'Utilizar imágenes parcialmente ocultas y proporcionar claves visuales progresivas para facilitar el reconocimiento del todo.'
-
+  // =====================================================
+  // OBTENER USUARIO
+  // =====================================================
+
+  private obtenerUsuario(): void {
+    try {
+      const usuarioGuardado = localStorage.getItem('usuario');
+
+      if (!usuarioGuardado) {
+        this.error = 'No se encontró la información del usuario.';
+        this.cargando = false;
+        return;
       }
 
-    ];
+      const datos = JSON.parse(usuarioGuardado);
 
+      this.usuarioId =
+        datos?.usuario?.idUsuario ??
+        datos?.idUsuario ??
+        null;
 
-    // =======================================================
-    // GENERAR PERFIL
-    // =======================================================
+      if (!this.usuarioId) {
+        this.error = 'No se pudo identificar al usuario.';
+        this.cargando = false;
+        return;
+      }
 
-    this.perfilKabc = actividades.map(
+      this.cargarResultadosIntegrados();
 
-      actividad => {
+    } catch (error) {
+      console.error('Error obteniendo usuario:', error);
 
+      this.error = 'No se pudo obtener la información del usuario.';
+      this.cargando = false;
+    }
+  }
 
-        // ---------------------------------------------------
-        // Buscar respuestas del item
-        // ---------------------------------------------------
+  // =====================================================
+  // HEADERS HTTP
+  // =====================================================
 
-        const respuestasItem =
+  private obtenerHeaders(): HeadersInit {
+    const token = localStorage.getItem('token');
 
-          respuestas.filter(
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json'
+    };
 
-            respuesta =>
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
 
-              Number(
-                respuesta.itemId
-              ) === actividad.itemId
+    return headers;
+  }
 
+  // =====================================================
+  // LISTADO DE RESULTADOS INTEGRADOS
+  // =====================================================
+
+  async cargarResultadosIntegrados(): Promise<void> {
+    if (!this.usuarioId) {
+      return;
+    }
+
+    this.cargando = true;
+    this.error = '';
+
+    try {
+      const url =
+        `${this.API_URL}/evaluaciones` +
+        `?page=0&size=100` +
+        `&idUsuario=${this.usuarioId}` +
+        `&estado=COMPLETADA`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.obtenerHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `No se pudieron obtener las evaluaciones (${response.status}).`
+        );
+      }
+
+      const data = await response.json();
+
+      const evaluaciones: Evaluacion[] =
+        data?.content ?? [];
+
+      const evaluacionesQChat = evaluaciones.filter(
+        e => Number(e.idVersion) === this.ID_VERSION_QCHAT
+      );
+
+      const evaluacionesKabc = evaluaciones.filter(
+        e => Number(e.idVersion) === this.ID_VERSION_KABC
+      );
+
+      // Agrupar evaluaciones por niño.
+      const idsNinos = new Set<number>([
+        ...evaluacionesQChat.map(e => e.idNino),
+        ...evaluacionesKabc.map(e => e.idNino)
+      ]);
+
+      const resultadosIntegrados: ResultadoIntegrado[] = [];
+
+      for (const idNino of idsNinos) {
+
+        // Última evaluación Q-CHAT completada.
+        const qchat = evaluacionesQChat
+          .filter(e => e.idNino === idNino)
+          .sort(
+            (a, b) =>
+              new Date(b.fechaEvaluacion).getTime() -
+              new Date(a.fechaEvaluacion).getTime()
+          )[0];
+
+        // Última evaluación K-ABC completada.
+        const kabc = evaluacionesKabc
+          .filter(e => e.idNino === idNino)
+          .sort(
+            (a, b) =>
+              new Date(b.fechaEvaluacion).getTime() -
+              new Date(a.fechaEvaluacion).getTime()
+          )[0];
+
+        // Solo mostrar niños con ambas evaluaciones.
+        if (!qchat || !kabc) {
+          continue;
+        }
+
+        let nombreNino = `Niño #${idNino}`;
+
+        try {
+          const nino = await firstValueFrom(
+            this.ninoService.obtenerPorId(idNino)
+          ) as Nino;
+
+          if (nino) {
+            nombreNino =
+              `${nino.nombres} ${nino.apellidos}`.trim();
+          }
+
+        } catch (error) {
+          console.warn(
+            `No se pudo obtener el nombre del niño ${idNino}:`,
+            error
           );
+        }
 
+        resultadosIntegrados.push({
+          idNino,
+          nombreNino,
+          idEvaluacionQChat: qchat.idEvaluacion,
+          idEvaluacionKabc: kabc.idEvaluacion,
+          fechaQChat: qchat.fechaEvaluacion,
+          fechaKabc: kabc.fechaEvaluacion
+        });
+      }
 
-        // ---------------------------------------------------
-        // Contar respuestas correctas
-        // ---------------------------------------------------
+      this.resultados = resultadosIntegrados;
 
-        const correctas =
+      this.aplicarFiltro();
 
-          respuestasItem.filter(
+    } catch (error: any) {
+      console.error(
+        'Error cargando resultados integrados:',
+        error
+      );
 
-            respuesta =>
+      this.error =
+        error?.message ??
+        'No se pudieron cargar los resultados integrados.';
 
-              respuesta.correcta === true
+    } finally {
+      this.cargando = false;
+    }
+  }
 
-          ).length;
+  // =====================================================
+  // BUSCADOR
+  // =====================================================
 
+  buscar(): void {
+    this.aplicarFiltro();
+  }
 
-        // ---------------------------------------------------
-        // Calcular porcentaje
-        // ---------------------------------------------------
+  private aplicarFiltro(): void {
+    const texto = this.textoBusqueda.trim().toLowerCase();
 
-        const porcentaje =
+    if (!texto) {
+      this.resultadosFiltrados = [...this.resultados];
+      return;
+    }
 
-          respuestasItem.length > 0
+    this.resultadosFiltrados = this.resultados.filter(resultado =>
+      resultado.nombreNino.toLowerCase().includes(texto) ||
+      resultado.idNino.toString().includes(texto)
+    );
+  }
 
-            ? Math.round(
+  // =====================================================
+  // ABRIR DETALLE INTEGRADO
+  // =====================================================
 
-                (
+  async verResultado(resultado: ResultadoIntegrado): Promise<void> {
+    this.resultadoSeleccionado = resultado;
 
-                  correctas /
+    this.cargandoDetalle = true;
+    this.errorDetalle = '';
 
-                  respuestasItem.length
+    this.modelosML = [];
+    this.promedioML = null;
+    this.resultadosSubtests = [];
 
-                ) * 100
+    await Promise.all([
+      this.cargarResultadosML(resultado.idEvaluacionQChat),
+      this.cargarResultadosKabc(resultado.idEvaluacionKabc)
+    ]);
 
-              )
+    this.cargandoDetalle = false;
+  }
 
-            : 0;
+  // =====================================================
+  // RESULTADOS Q-CHAT / MACHINE LEARNING
+  // =====================================================
 
+  private async cargarResultadosML(
+    idEvaluacion: number
+  ): Promise<void> {
+    try {
+      const response = await fetch(
+        `${this.API_URL}/predicciones-ml/evaluacion/${idEvaluacion}`,
+        {
+          method: 'GET',
+          headers: this.obtenerHeaders()
+        }
+      );
 
-        // ---------------------------------------------------
-        // Determinar prioridad
-        // ---------------------------------------------------
+      if (!response.ok) {
+        throw new Error(
+          `No se pudieron obtener las predicciones (${response.status}).`
+        );
+      }
 
-        const prioridad =
+      const predicciones: PrediccionML[] =
+        await response.json();
 
-          this.obtenerPrioridad(
-            porcentaje
-          );
+      const normalizadas = (predicciones ?? []).map(p => ({
+        nombre: this.normalizarNombreModelo(p.modelo),
+        resultado: p.resultado ?? 'Sin resultado',
+        probabilidad: this.normalizarProbabilidad(p.probabilidad)
+      }));
 
+      // Conservar la predicción más reciente de cada modelo.
+      const modelos = new Map<string, ResultadoModelo>();
+
+      for (const prediccion of normalizadas) {
+        modelos.set(prediccion.nombre, prediccion);
+      }
+
+      this.modelosML = Array.from(modelos.values());
+
+      const probabilidades = this.modelosML
+        .map(m => m.probabilidad)
+        .filter(p => Number.isFinite(p));
+
+      if (probabilidades.length > 0) {
+        this.promedioML =
+          probabilidades.reduce((total, p) => total + p, 0) /
+          probabilidades.length;
+      }
+
+    } catch (error) {
+      console.error(
+        'Error obteniendo resultados ML:',
+        error
+      );
+
+      this.errorDetalle =
+        'No se pudieron cargar las predicciones de Q-CHAT.';
+    }
+  }
+
+  private normalizarNombreModelo(modelo: string): string {
+    const nombre = (modelo ?? '').toLowerCase();
+
+    if (nombre.includes('random')) {
+      return 'Random Forest';
+    }
+
+    if (nombre.includes('xgboost') || nombre.includes('xg')) {
+      return 'XGBoost';
+    }
+
+    return modelo || 'Modelo ML';
+  }
+
+  private normalizarProbabilidad(valor: number): number {
+    const numero = Number(valor);
+
+    if (!Number.isFinite(numero)) {
+      return 0;
+    }
+
+    // Normalizar probabilidades de 0-1 o de 0-100.
+    const porcentaje = numero <= 1
+      ? numero * 100
+      : numero;
+
+    return Math.max(0, Math.min(100, porcentaje));
+  }
+
+  // =====================================================
+  // RESULTADOS K-ABC
+  // =====================================================
+
+  private async cargarResultadosKabc(
+    idEvaluacion: number
+  ): Promise<void> {
+    try {
+      const [respuestas, configuracion] = await Promise.all([
+        firstValueFrom(
+          this.respuestaService.obtenerPorEvaluacion(idEvaluacion)
+        ) as Promise<RespuestaKabc[]>,
+
+        this.obtenerConfiguracionKabc(idEvaluacion)
+      ]);
+
+      const items: ItemConfiguracion[] =
+        configuracion?.assessment?.items ?? [];
+
+      this.calcularSubtests(
+        respuestas ?? [],
+        items
+      );
+
+    } catch (error) {
+      console.error(
+        'Error obteniendo resultados K-ABC:',
+        error
+      );
+
+      this.errorDetalle =
+        'No se pudieron cargar las respuestas o la configuración K-ABC.';
+    }
+  }
+
+  private async obtenerConfiguracionKabc(
+    idEvaluacion: number
+  ): Promise<any> {
+    const response = await fetch(
+      `${this.API_URL}/evaluaciones/${idEvaluacion}/configuracion`,
+      {
+        method: 'GET',
+        headers: this.obtenerHeaders()
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `No se pudo obtener la configuración K-ABC (${response.status}).`
+      );
+    }
+
+    return response.json();
+  }
+
+  // =====================================================
+  // AGRUPAR RESPUESTAS POR SUBTEST / ACTIVIDAD
+  // =====================================================
+
+  private calcularSubtests(
+    respuestas: RespuestaKabc[],
+    items: ItemConfiguracion[]
+  ): void {
+
+    const recomendaciones: Record<string, string> = {
+      PROCESAMIENTO_SECUENCIAL:
+        'Practicar actividades de secuenciación, seguimiento de instrucciones paso a paso y organización de acontecimientos.',
+
+      PROCESAMIENTO_SIMULTANEO:
+        'Utilizar rompecabezas, asociación de imágenes, reconocimiento de patrones y actividades visoespaciales.',
+
+      PROCESAMIENTO_MENTAL:
+        'Reforzar actividades de razonamiento, resolución de problemas y establecimiento de relaciones.',
+
+      CONOCIMIENTOS:
+        'Promover actividades de vocabulario, reconocimiento de conceptos y asociación de palabras.'
+    };
+
+    const nombres: Record<string, string> = {
+      PROCESAMIENTO_SECUENCIAL: 'Procesamiento secuencial',
+      PROCESAMIENTO_SIMULTANEO: 'Procesamiento simultáneo',
+      PROCESAMIENTO_MENTAL: 'Procesamiento mental',
+      CONOCIMIENTOS: 'Conocimientos'
+    };
+
+    const grupos = new Map<string, {
+      totalSeries: number;
+      seriesCorrectas: number;
+      seriesIncorrectas: number;
+      itemFallido: boolean;
+      totalItems: number;
+      sinDatos: boolean;
+    }>();
+
+    for (const item of items) {
+
+      const codigo = this.normalizarCodigoSubtest(item.subtest);
+
+      if (!codigo) {
+        continue;
+      }
+
+      if (!grupos.has(codigo)) {
+        grupos.set(codigo, {
+          totalSeries: 0,
+          seriesCorrectas: 0,
+          seriesIncorrectas: 0,
+          itemFallido: false,
+          totalItems: 0,
+          sinDatos: false
+        });
+      }
+
+      const grupo = grupos.get(codigo)!;
+
+      grupo.totalItems++;
+
+      const series = item.series ?? [];
+
+      grupo.totalSeries += series.length;
+
+      const respuestasItem = respuestas.filter(
+        r => Number(r.itemId) === Number(item.id)
+      );
+
+      let itemCompleto = series.length > 0;
+      let itemTieneError = false;
+
+      for (const serie of series) {
+
+        const respuestaSerie = respuestasItem.find(
+          r => Number(r.serieId) === Number(serie.id)
+        );
+
+        if (!respuestaSerie) {
+          itemCompleto = false;
+          continue;
+        }
+
+        if (respuestaSerie.correcta === true) {
+          grupo.seriesCorrectas++;
+
+        } else if (respuestaSerie.correcta === false) {
+          grupo.seriesIncorrectas++;
+          itemTieneError = true;
+
+        } else {
+          itemCompleto = false;
+        }
+      }
+
+      // ALL_SERIES_CORRECT:
+      // Si una serie falla, el ítem completo falla.
+      if (itemTieneError) {
+        grupo.itemFallido = true;
+      }
+
+      // Si falta alguna respuesta, no se considera aprobado.
+      if (!itemCompleto) {
+        grupo.itemFallido = true;
+        grupo.sinDatos = true;
+      }
+    }
+
+    this.resultadosSubtests = Array.from(grupos.entries()).map(
+      ([codigo, grupo]) => {
+
+        let estado: ResultadoSubtest['estado'];
+
+        if (grupo.sinDatos && grupo.seriesCorrectas === 0 &&
+            grupo.seriesIncorrectas === 0) {
+          estado = 'SIN DATOS';
+
+        } else if (grupo.itemFallido) {
+          estado = 'NECESITA APOYO';
+
+        } else if (grupo.totalSeries > 0) {
+          estado = 'APROBADO';
+
+        } else {
+          estado = 'SIN DATOS';
+        }
+
+        const porcentaje = grupo.totalSeries > 0
+          ? (grupo.seriesCorrectas / grupo.totalSeries) * 100
+          : 0;
 
         return {
-
-
-          codigo:
-            actividad.codigo,
-
+          codigo,
 
           nombre:
-            actividad.nombre,
+            nombres[codigo] ??
+            this.formatearNombreActividad(codigo),
 
+          totalItems: grupo.totalSeries,
+
+          itemsCorrectos: grupo.seriesCorrectas,
+
+          itemsIncorrectos: grupo.seriesIncorrectas,
 
           porcentaje,
 
+          estado,
 
-          prioridad,
-
-
-          estrategia:
-            actividad.estrategia
-
+          recomendacion:
+            recomendaciones[codigo] ??
+            'Reforzar las actividades relacionadas con esta área mediante ejercicios estructurados, apoyos visuales y práctica guiada.'
         };
-
       }
-
     );
-
-
-    // =======================================================
-    // MOSTRAR RESULTADO EN CONSOLA
-    // =======================================================
-
-    console.log(
-      '========================================'
-    );
-
-    console.log(
-      'PERFIL K-ABC REAL CALCULADO'
-    );
-
-    console.table(
-      this.perfilKabc
-    );
-
-    console.log(
-      'PROMEDIO K-ABC:',
-      this.obtenerPromedioKabc()
-    );
-
-    console.log(
-      '========================================'
-    );
-
   }
 
+  // =====================================================
+  // NORMALIZAR CÓDIGO DE SUBTEST
+  // =====================================================
 
-  // =========================================================
-  // DETERMINAR PRIORIDAD
-  // =========================================================
-
-  obtenerPrioridad(
-
-    porcentaje: number
-
-  ): 'Alta' | 'Media' | 'Baja' {
-
-
-    if (
-      porcentaje < 60
-    ) {
-
-      return 'Alta';
-
-    }
-
-
-    if (
-      porcentaje < 80
-    ) {
-
-      return 'Media';
-
-    }
-
-
-    return 'Baja';
-
+  private normalizarCodigoSubtest(valor: string): string {
+    return (valor ?? '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
   }
 
-
-  // =========================================================
-  // SIDEBAR TOGGLE
-  // =========================================================
-
-  onSidebarToggle(
-
-    expanded: boolean
-
-  ): void {
-
-
-    this.sidebarExpanded =
-      expanded;
-
-  }
-
-
-  // =========================================================
-  // VOLVER AL LISTADO
-  // =========================================================
-
-  volverListado(): void {
-
-
-    this.router.navigate([
-      '/resultados'
-    ]);
-
-  }
-
-
-  // =========================================================
-  // RADAR
-  // =========================================================
-
-  readonly radarCentro = 200;
-
-  readonly radarRadio = 140;
-
-
-  // =========================================================
-  // OBTENER ÁNGULO
-  // =========================================================
-
-  obtenerAngulo(
-
-    indice: number
-
-  ): number {
-
-
-    const total =
-      this.perfilKabc.length;
-
-
-    if (
-      total === 0
-    ) {
-
-      return 0;
-
-    }
-
-
-    return (
-
-      -Math.PI / 2 +
-
-      (
-
-        2 *
-
-        Math.PI *
-
-        indice
-
-      ) /
-
-      total
-
-    );
-
-  }
-
-
-  // =========================================================
-  // OBTENER X
-  // =========================================================
-
-  obtenerX(
-
-    indice: number,
-
-    porcentaje: number,
-
-    radio = this.radarRadio
-
-  ): number {
-
-
-    const angulo =
-      this.obtenerAngulo(
-        indice
-      );
-
-
-    const distancia =
-
-      radio *
-
-      (
-        porcentaje /
-        100
-      );
-
-
-    return (
-
-      this.radarCentro +
-
-      Math.cos(
-        angulo
-      ) *
-
-      distancia
-
-    );
-
-  }
-
-
-  // =========================================================
-  // OBTENER Y
-  // =========================================================
-
-  obtenerY(
-
-    indice: number,
-
-    porcentaje: number,
-
-    radio = this.radarRadio
-
-  ): number {
-
-
-    const angulo =
-      this.obtenerAngulo(
-        indice
-      );
-
-
-    const distancia =
-
-      radio *
-
-      (
-        porcentaje /
-        100
-      );
-
-
-    return (
-
-      this.radarCentro +
-
-      Math.sin(
-        angulo
-      ) *
-
-      distancia
-
-    );
-
-  }
-
-
-  // =========================================================
-  // PUNTOS DEL PERFIL
-  // =========================================================
-
-  obtenerPuntosPerfil(): string {
-
-
-    return this.perfilKabc
-
-      .map(
-
-        (
-          item,
-
-          indice
-
-        ) => {
-
-
-          const x =
-            this.obtenerX(
-
-              indice,
-
-              item.porcentaje
-
-            );
-
-
-          const y =
-            this.obtenerY(
-
-              indice,
-
-              item.porcentaje
-
-            );
-
-
-          return `${x},${y}`;
-
-        }
-
+  // =====================================================
+  // FORMATEAR NOMBRES DE ACTIVIDADES
+  // =====================================================
+
+  private formatearNombreActividad(codigo: string): string {
+    return codigo
+      .toLowerCase()
+      .split('_')
+      .map(palabra =>
+        palabra.charAt(0).toUpperCase() + palabra.slice(1)
       )
-
       .join(' ');
-
   }
 
-
-  // =========================================================
-  // PUNTOS DE NIVEL DEL RADAR
-  // =========================================================
-
-  obtenerPuntosNivel(
-
-    porcentaje: number
-
-  ): string {
-
-
-    return this.perfilKabc
-
-      .map(
-
-        (
-
-          _,
-
-          indice
-
-        ) => {
-
-
-          const x =
-            this.obtenerX(
-
-              indice,
-
-              porcentaje
-
-            );
-
-
-          const y =
-            this.obtenerY(
-
-              indice,
-
-              porcentaje
-
-            );
-
-
-          return `${x},${y}`;
-
-        }
-
-      )
-
-      .join(' ');
-
-  }
-
-
-  // =========================================================
-  // LABEL X
-  // =========================================================
-
-  obtenerLabelX(
-
-    indice: number
-
-  ): number {
-
-
-    const angulo =
-      this.obtenerAngulo(
-        indice
-      );
-
-
-    const radio =
-      165;
-
-
-    return (
-
-      this.radarCentro +
-
-      Math.cos(
-        angulo
-      ) *
-
-      radio
-
-    );
-
-  }
-
-
-  // =========================================================
-  // LABEL Y
-  // =========================================================
-
-  obtenerLabelY(
-
-    indice: number
-
-  ): number {
-
-
-    const angulo =
-      this.obtenerAngulo(
-        indice
-      );
-
-
-    const radio =
-      165;
-
-
-    return (
-
-      this.radarCentro +
-
-      Math.sin(
-        angulo
-      ) *
-
-      radio
-
-    );
-
-  }
-
-
-  // =========================================================
-  // CLASE DE PRIORIDAD
-  // =========================================================
-
-  obtenerClasePrioridad(
-
-    prioridad: string
-
-  ): string {
-
-
-    switch (
-      prioridad
-    ) {
-
-
-      case 'Alta':
-
-        return 'priority-high';
-
-
-      case 'Media':
-
-        return 'priority-medium';
-
+  // =====================================================
+  // UTILIDADES DE PRESENTACIÓN
+  // =====================================================
+
+  obtenerTextoEstado(estado: string): string {
+    switch (estado) {
+      case 'APROBADO':
+        return 'Desempeño logrado';
+
+      case 'NECESITA APOYO':
+        return 'Requiere apoyo';
 
       default:
-
-        return 'priority-low';
-
+        return 'Sin datos suficientes';
     }
-
   }
 
-
-  // =========================================================
-  // PROMEDIO K-ABC
-  // =========================================================
-
-  obtenerPromedioKabc(): number {
-
-
-    if (
-      !this.perfilKabc.length
-    ) {
-
-      return 0;
-
+  formatearFecha(fecha: string): string {
+    if (!fecha) {
+      return '-';
     }
 
-
-    const suma =
-
-      this.perfilKabc.reduce(
-
-        (
-
-          total,
-
-          item
-
-        ) =>
-
-          total +
-          item.porcentaje,
-
-        0
-
-      );
-
-
-    return Math.round(
-
-      suma /
-      this.perfilKabc.length
-
-    );
-
+    return new Date(fecha).toLocaleDateString('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   }
 
+  onSidebarToggle(expanded: boolean): void {
+    this.sidebarExpanded = expanded;
+  }
 
-  // =========================================================
-  // ÁREAS PRIORITARIAS
-  // =========================================================
+  volverListado(): void {
+    this.resultadoSeleccionado = null;
 
-  obtenerAreasPrioritarias():
+    this.modelosML = [];
+    this.promedioML = null;
+    this.resultadosSubtests = [];
 
-    PerfilKabc[] {
+    this.errorDetalle = '';
+  }
 
+  // =====================================================
+  // GRÁFICO DE ARAÑA K-ABC
+  // =====================================================
 
-    return this.perfilKabc
+  get radarEjes() {
+    const total = this.resultadosSubtests.length;
 
-      .filter(
+    if (total === 0) {
+      return [];
+    }
 
-        item =>
+    return this.resultadosSubtests.map((subtest, index) => {
 
-          item.prioridad === 'Alta' ||
+      const angulo =
+        (2 * Math.PI * index / total) - Math.PI / 2;
 
-          item.prioridad === 'Media'
-
-      )
-
-      .sort(
-
-        (
-
-          a,
-
-          b
-
-        ) =>
-
-          a.porcentaje -
-          b.porcentaje
-
+      const porcentaje = Math.max(
+        0,
+        Math.min(100, Number(subtest.porcentaje) || 0)
       );
 
+      return {
+        numero: index + 1,
+
+        nombre: subtest.nombre,
+
+        porcentaje,
+
+        // Centro del gráfico
+        x1: this.radarCentro,
+        y1: this.radarCentro,
+
+        // Extremos de los ejes
+        x2: this.radarCentro +
+          this.radarRadio * Math.cos(angulo),
+
+        y2: this.radarCentro +
+          this.radarRadio * Math.sin(angulo),
+
+        // Posición de los números
+        labelX: this.radarCentro +
+          (this.radarRadio + 23) * Math.cos(angulo),
+
+        labelY: this.radarCentro +
+          (this.radarRadio + 23) * Math.sin(angulo),
+
+        // Posición de los puntos según porcentaje
+        puntoX: this.radarCentro +
+          this.radarRadio *
+          (porcentaje / 100) *
+          Math.cos(angulo),
+
+        puntoY: this.radarCentro +
+          this.radarRadio *
+          (porcentaje / 100) *
+          Math.sin(angulo)
+      };
+    });
+  }
+
+  // =====================================================
+  // POLÍGONO DEL GRÁFICO
+  // =====================================================
+
+  get radarPoligono(): string {
+    return this.radarEjes
+      .map(eje => `${eje.puntoX},${eje.puntoY}`)
+      .join(' ');
+  }
+
+  // =====================================================
+  // NIVELES DEL GRÁFICO
+  // =====================================================
+
+  radarNivel(nivel: number): string {
+    const total = this.resultadosSubtests.length;
+
+    if (total === 0) {
+      return '';
+    }
+
+    return this.resultadosSubtests.map((_, index) => {
+
+      const angulo =
+        (2 * Math.PI * index / total) - Math.PI / 2;
+
+      const radio =
+        this.radarRadio * (nivel / 100);
+
+      const x =
+        this.radarCentro + radio * Math.cos(angulo);
+
+      const y =
+        this.radarCentro + radio * Math.sin(angulo);
+
+      return `${x},${y}`;
+
+    }).join(' ');
   }
 
 }

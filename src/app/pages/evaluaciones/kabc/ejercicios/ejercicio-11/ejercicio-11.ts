@@ -10,13 +10,17 @@ import {
 
 import { CommonModule } from '@angular/common';
 
+// ======================================================
+// RESPUESTA DEL EJERCICIO 11
+// ======================================================
+
 export interface RespuestaEjercicio11 {
-  valor: {
-    estimulo: string;
-    correcta: boolean;
-    evaluadoPor: 'tutor';
-  };
+  valor: string;
 }
+
+// ======================================================
+// MODELO DE LOS ESTÍMULOS
+// ======================================================
 
 interface EstimuloVocabulario {
   id: string;
@@ -24,6 +28,10 @@ interface EstimuloVocabulario {
   nombre: string;
   pregunta: string;
 }
+
+// ======================================================
+// COMPONENTE
+// ======================================================
 
 @Component({
   selector: 'app-ejercicio-11',
@@ -36,12 +44,18 @@ export class Ejercicio11 implements OnChanges {
 
   @Input() item: any;
   @Input() serie: any;
+
   @Input() numeroSerie = 1;
   @Input() totalSeries = 3;
+
   @Input() enviando = false;
 
-  @Output() respuesta =
-    new EventEmitter<RespuestaEjercicio11>();
+  @Output()
+  respuesta = new EventEmitter<RespuestaEjercicio11>();
+
+  // ======================================================
+  // ESTÍMULOS DE LAS TRES SERIES
+  // ======================================================
 
   private readonly estimulosPorSerie: EstimuloVocabulario[] = [
     {
@@ -64,6 +78,10 @@ export class Ejercicio11 implements OnChanges {
     }
   ];
 
+  // ======================================================
+  // ESTADO DEL EJERCICIO
+  // ======================================================
+
   estimuloActual: EstimuloVocabulario = {
     id: '',
     emoji: '',
@@ -75,7 +93,12 @@ export class Ejercicio11 implements OnChanges {
 
   respuestaEnviada = false;
 
+  // ======================================================
+  // DETECTAR CAMBIOS
+  // ======================================================
+
   ngOnChanges(changes: SimpleChanges): void {
+
     if (
       changes['serie'] ||
       changes['item'] ||
@@ -85,7 +108,12 @@ export class Ejercicio11 implements OnChanges {
     }
   }
 
+  // ======================================================
+  // ÍNDICE DE LA SERIE ACTUAL
+  // ======================================================
+
   get indiceSerie(): number {
+
     return Math.max(
       0,
       Math.min(
@@ -95,10 +123,19 @@ export class Ejercicio11 implements OnChanges {
     );
   }
 
+  // ======================================================
+  // INSTRUCCIÓN
+  // ======================================================
+
   get instruccion(): string {
+
     return this.item?.instruction ??
       'Observa la imagen y responde oralmente.';
   }
+
+  // ======================================================
+  // INICIALIZAR SERIE
+  // ======================================================
 
   private inicializarSerie(): void {
 
@@ -108,6 +145,7 @@ export class Ejercicio11 implements OnChanges {
     this.estimuloActual = { ...configuracion };
 
     this.mensaje = '';
+
     this.respuestaEnviada = false;
 
     console.log(
@@ -116,12 +154,19 @@ export class Ejercicio11 implements OnChanges {
     );
   }
 
+  // ======================================================
+  // EVALUAR RESPUESTA DEL NIÑO
+  // ======================================================
+
   /**
-   * El tutor indica si el niño respondió correctamente.
+   * El tutor determina si el niño respondió correctamente.
    *
-   * true  = respuesta correcta (1 punto).
-   * false = respuesta incorrecta (0 puntos).
+   * true  = respuesta correcta.
+   * false = respuesta incorrecta.
+   *
+   * Se envía una cadena compatible con expectedAnswer.
    */
+
   evaluarRespuesta(correcta: boolean): void {
 
     if (
@@ -131,19 +176,27 @@ export class Ejercicio11 implements OnChanges {
       return;
     }
 
-    const valor = {
-      estimulo: this.estimuloActual.nombre,
-      correcta: correcta,
-      evaluadoPor: 'tutor' as const
-    };
+    const valor = correcta
+      ? String(
+          this.serie?.expectedAnswer ??
+          this.estimuloActual.nombre
+        )
+      : '__RESPUESTA_INCORRECTA__';
 
     this.respuestaEnviada = true;
 
     console.log(
       '[Ejercicio11] Resultado enviado:',
-      valor
+      {
+        valor,
+        correcta,
+        estimulo: this.estimuloActual.nombre
+      }
     );
 
-    this.respuesta.emit({ valor });
+    this.respuesta.emit({
+      valor
+    });
   }
+
 }
