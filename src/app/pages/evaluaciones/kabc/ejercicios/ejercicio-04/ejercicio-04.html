@@ -2,7 +2,6 @@
 
   <!-- ENCABEZADO -->
   <div class="ejercicio-header">
-
     <div class="ejercicio-numero">
       <span>Ejercicio 4</span>
       <strong>Ventana mágica</strong>
@@ -11,306 +10,140 @@
     <div class="progreso-serie">
       Serie {{ numeroSerie }} de {{ totalSeries }}
     </div>
-
   </div>
 
-
-  <!-- INSTRUCCIÓN TEACCH -->
+  <!-- INSTRUCCIÓN -->
   <div class="instruccion-card">
-
-    <div class="instruccion-icono">
-      👀
-    </div>
+    <div class="instruccion-icono">👀</div>
 
     <div class="instruccion-contenido">
-
-      <span class="instruccion-titulo">
-        ¿Qué tengo que hacer?
-      </span>
-
+      <span class="instruccion-titulo">¿Qué tengo que hacer?</span>
       <p>
-        Observa la imagen a medida que aparece
-        y selecciona la respuesta correcta.
+        Un dibujo va a pasar detrás de una ventanita. Solo verás un pedacito
+        a la vez. Mira con atención y después di qué era.
       </p>
-
     </div>
-
   </div>
 
-
-  <!-- PROCESO -->
+  <!-- PASOS -->
   <div class="pasos-card">
-
     <div
       class="paso"
-      [class.activo]="!imagenRevelada"
-      [class.completado]="imagenRevelada"
+      [class.activo]="fase !== 'respuesta'"
+      [class.completado]="fase === 'respuesta'"
     >
-
-      <span class="paso-numero">
-        1
-      </span>
-
-      <span>
-        Observa
-      </span>
-
+      <span class="paso-numero">1</span>
+      <span>Observa</span>
     </div>
 
-
-    <div class="paso-flecha">
-      →
-    </div>
-
+    <div class="paso-flecha">→</div>
 
     <div
       class="paso"
-      [class.activo]="imagenRevelada"
+      [class.activo]="fase === 'respuesta'"
       [class.completado]="opcionSeleccionada"
     >
-
-      <span class="paso-numero">
-        2
-      </span>
-
-      <span>
-        Selecciona
-      </span>
-
+      <span class="paso-numero">2</span>
+      <span>¿Qué era?</span>
     </div>
-
   </div>
 
-
-  <!-- VENTANA MÁGICA -->
+  <!-- VENTANA -->
   <div class="ventana-card">
-
     <div class="ventana-titulo">
-      <span class="ventana-icono">
-        🪟
-      </span>
-
-      <span>
-        Ventana mágica
-      </span>
+      <span class="ventana-icono">🪟</span>
+      <span>Ventana mágica</span>
     </div>
 
+    <div class="vm-escenario">
 
-    <div class="ventana-contenedor">
-
-      <!-- ESTADO OCULTO -->
-      <div
-        class="ventana-oculta"
-        *ngIf="!imagenRevelada"
-      >
-
-        <div class="bloqueo-grid">
-
-          <span>▦</span>
-          <span>▦</span>
-          <span>▦</span>
-
-          <span>▦</span>
-          <span>❔</span>
-          <span>▦</span>
-
-          <span>▦</span>
-          <span>▦</span>
-          <span>▦</span>
-
+      <!-- La rendija: solo se ve lo que pasa por aquí -->
+      <div class="vm-rendija">
+        <div
+          class="vm-imagen"
+          *ngIf="fase === 'mostrando'"
+          [style.animation-duration.ms]="duracionMs"
+        >
+          {{ obtenerEstimulo() }}
         </div>
+      </div>
 
-        <p>
-          La imagen está oculta
-        </p>
-
+      <div class="vm-mensaje" *ngIf="fase === 'listo'">
+        <p>Cuando el niño esté mirando la ventana, pulsa comenzar.</p>
         <button
           type="button"
           class="btn-revelar"
-          (click)="revelarImagen()"
+          (click)="comenzar()"
           [disabled]="enviando"
         >
-          👀 Revelar imagen
+          ▶ Comenzar
         </button>
-
       </div>
 
-
-      <!-- ESTADO REVELADO -->
-      <div
-        class="ventana-revelada"
-        *ngIf="imagenRevelada"
-      >
-
-        <div class="estimulo-emoji">
-
-          {{ obtenerEstimulo() }}
-
-        </div>
-
-        <span class="estimulo-texto">
-          Observa con atención
-        </span>
-
+      <div class="vm-mensaje vm-mensaje-fin" *ngIf="fase === 'respuesta'">
+        <p>El dibujo ya pasó. ¿Qué era?</p>
       </div>
-
     </div>
 
+    <p class="vm-nota" *ngIf="fase === 'mostrando'">
+      Mira la ventanita…
+    </p>
   </div>
 
-
-  <!-- OPCIONES -->
-  <div class="opciones-section">
-
+  <!-- OPCIONES (solo palabras) -->
+  <div class="opciones-section" *ngIf="fase === 'respuesta'">
     <div class="opciones-titulo">
-
-      <span>
-        ¿Qué imagen viste?
-      </span>
-
+      <span>¿Qué dibujo pasó por la ventana?</span>
       <small>
-        Selecciona una opción
+        Si el niño aún no lee, léele las opciones.
+        <button type="button" class="vm-leer" (click)="leerOpciones()">
+          🔊 Leer opciones
+        </button>
       </small>
-
     </div>
 
-
     <div class="opciones-grid">
-
       <button
         *ngFor="let opcion of serie?.options ?? []"
         type="button"
         class="opcion-card"
         [class.seleccionada]="estaSeleccionada(opcion)"
-        [disabled]="
-          enviando ||
-          !imagenRevelada
-        "
+        [disabled]="enviando"
         (click)="seleccionarOpcion(opcion)"
       >
+        <div class="opcion-letra">{{ letraOpcion(opcion) }}</div>
 
-        <div class="opcion-letra">
-
-          {{
-            opcion
-              .replace('opcion_', '')
-              .toUpperCase()
-          }}
-
-        </div>
-
-        <div class="opcion-emoji">
-
-          {{ obtenerVisualOpcion(opcion) }}
-
-        </div>
-
-        <div class="opcion-nombre">
-
+        <div class="opcion-nombre vm-opcion-palabra">
           {{ obtenerNombreOpcion(opcion) }}
-
         </div>
 
-        <div
-          class="check-seleccion"
-          *ngIf="estaSeleccionada(opcion)"
-        >
-          ✓
-        </div>
-
+        <div class="check-seleccion" *ngIf="estaSeleccionada(opcion)">✓</div>
       </button>
-
     </div>
-
   </div>
-
-
-  <!-- RESPUESTA -->
-  <div
-    class="respuesta-preview"
-    *ngIf="opcionSeleccionada"
-  >
-
-    <span class="respuesta-icono">
-      ✓
-    </span>
-
-    <div>
-
-      <strong>
-        Respuesta seleccionada
-      </strong>
-
-      <p>
-        Opción
-        {{
-          opcionSeleccionada
-            .replace('opcion_', '')
-            .toUpperCase()
-        }}
-      </p>
-
-    </div>
-
-  </div>
-
 
   <!-- BOTÓN TERMINAR -->
-  <div class="acciones">
-
+  <div class="acciones" *ngIf="fase === 'respuesta'">
     <button
       type="button"
       class="btn-terminar"
-      [disabled]="
-        enviando ||
-        !imagenRevelada ||
-        !opcionSeleccionada
-      "
+      [disabled]="enviando || !opcionSeleccionada"
       (click)="enviar()"
     >
-
-      <span>
-        ✓
-      </span>
-
-      Terminé
-
+      <span>✓</span>
+      {{ enviando ? 'Guardando...' : 'Terminé' }}
     </button>
-
   </div>
-
 
   <!-- PIE -->
   <div class="pie-ejercicio">
-
-    <span>
-      👀 Observa
-    </span>
-
-    <span>
-      →
-    </span>
-
-    <span>
-      🧠 Recuerda
-    </span>
-
-    <span>
-      →
-    </span>
-
-    <span>
-      ☝️ Selecciona
-    </span>
-
-    <span>
-      →
-    </span>
-
-    <span>
-      ✓ Terminé
-    </span>
-
+    <span>👀 Observa</span>
+    <span>→</span>
+    <span>🧩 Junta las partes</span>
+    <span>→</span>
+    <span>☝️ Elige</span>
+    <span>→</span>
+    <span>✓ Terminé</span>
   </div>
 
 </div>

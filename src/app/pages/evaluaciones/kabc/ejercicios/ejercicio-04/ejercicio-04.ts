@@ -3,9 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  NgZone,
   OnChanges,
+  OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  inject
 } from '@angular/core';
 
 export interface SerieKabc {
@@ -32,6 +35,8 @@ export interface RespuestaEjercicio04 {
   correcta: boolean;
 }
 
+type FaseVentana = 'listo' | 'mostrando' | 'respuesta';
+
 @Component({
   selector: 'app-ejercicio-04',
   standalone: true,
@@ -39,7 +44,7 @@ export interface RespuestaEjercicio04 {
   templateUrl: './ejercicio-04.html',
   styleUrl: './ejercicio-04.css'
 })
-export class Ejercicio04 implements OnChanges {
+export class Ejercicio04 implements OnChanges, OnDestroy {
 
   @Input() item!: ItemKabc;
   @Input() serie!: SerieKabc;
@@ -47,27 +52,24 @@ export class Ejercicio04 implements OnChanges {
   @Input() totalSeries = 3;
   @Input() enviando = false;
 
-  @Output() respuesta =
-    new EventEmitter<RespuestaEjercicio04>();
+  @Output()
+  respuesta = new EventEmitter<RespuestaEjercicio04>();
+
+  // Duración del paso de la imagen detrás de la rendija (ms).
+  // Igual que en el K-ABC, la imagen se presenta una sola vez.
+  readonly duracionMs = 7000;
+
+  fase: FaseVentana = 'listo';
 
   opcionSeleccionada: string | null = null;
 
-  imagenRevelada = false;
+  private temporizador: ReturnType<typeof setTimeout> | null = null;
 
-  /**
-   * Representación visual provisional.
-   *
-   * IMPORTANTE:
-   * Los IDs reales siguen siendo opcion_a, opcion_b,
-   * opcion_c y opcion_d.
-   */
-  private readonly opcionesVisuales: Record<string, string> = {
-    opcion_a: '🐱',
-    opcion_b: '🐶',
-    opcion_c: '🐰',
-    opcion_d: '🦊'
-  };
+  private zone = inject(NgZone);
 
+  // Las opciones se muestran como palabras (no como dibujos),
+  // para que el niño tenga que integrar lo que vio por la rendija
+  // y no solo emparejar dos imágenes iguales.
   private readonly nombresOpciones: Record<string, string> = {
     opcion_a: 'Gato',
     opcion_b: 'Perro',
@@ -75,13 +77,8 @@ export class Ejercicio04 implements OnChanges {
     opcion_d: 'Zorro'
   };
 
-  /**
-   * Representación visual provisional del estímulo.
-   *
-   * El JSON original únicamente define los archivos
-   * serie_01.png, serie_02.png y serie_03.png,
-   * no el contenido visual de dichas imágenes.
-   */
+  // Imagen que pasa detrás de la ventana en cada serie
+  // (coincide con el expectedAnswer del JSON).
   private readonly estimulos: Record<number, string> = {
     1: '🐶',
     2: '🐰',
@@ -89,80 +86,95 @@ export class Ejercicio04 implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-
-    if (
-      changes['numeroSerie'] ||
-      changes['serie']
-    ) {
-
-      this.opcionSeleccionada = null;
-      this.imagenRevelada = false;
-
-      console.log('================================');
-      console.log('K-ABC - EJERCICIO 04');
-      console.log('Ventana mágica');
-      console.log('Serie:', this.numeroSerie);
-      console.log('Estímulo:', this.serie?.stimulus);
-      console.log('Opciones:', this.serie?.options);
-      console.log(
-        'Respuesta esperada:',
-        this.serie?.expectedAnswer
-      );
-      console.log('================================');
+    if (changes['numeroSerie'] || changes['serie']) {
+      this.reiniciar();
     }
   }
 
-  obtenerVisualOpcion(id: string): string {
-    return this.opcionesVisuales[id] ?? '❓';
+  ngOnDestroy(): void {
+    this.limpiarTemporizador();
+    this.detenerVoz();
   }
 
-  obtenerNombreOpcion(id: string): string {
-    return this.nombresOpciones[id] ?? id;
+  get imagenRevelada(): boolean {
+    return this.fase === 'respuesta';
   }
 
   obtenerEstimulo(): string {
     return this.estimulos[this.numeroSerie] ?? '❓';
   }
 
-  /**
-   * Revela progresivamente el estímulo.
-   */
-  revelarImagen(): void {
-
-    if (this.enviando) {
-      return;
-    }
-
-    this.imagenRevelada = true;
+  obtenerNombreOpcion(id: string): string {
+    return this.nombresOpciones[id] ?? id;
   }
 
-  seleccionarOpcion(id: string): void {
+  letraOpcion(id: string): string {
+    return id.replace('opcion_', '').toUpperCase();
+  }
 
-    if (this.enviando) {
+  // -------------------------------------------------------
+  // PRESENTACIÓN
+  // -------------------------------------------------------
+
+  comenzar(): void {
+    if (this.enviando || this.fase !== 'listo') {
       return;
     }
 
-    if (!this.imagenRevelada) {
+    this.fase = 'mostrando';
+
+    this.limpiarTemporizador();
+
+    this.temporizador = setTimeout(() => {
+      this.zone.run(() => {
+        this.fase = 'respuesta';
+      });
+    }, this.duracionMs);
+  }
+
+  // -------------------------------------------------------
+  // RESPUESTA
+  // -------------------------------------------------------
+
+  seleccionarOpcion(id: string): void {
+    if (this.enviando || this.fase !== 'respuesta') {
       return;
     }
 
     this.opcionSeleccionada = id;
-
-    console.log(
-      'Opción seleccionada:',
-      id
-    );
   }
 
   estaSeleccionada(id: string): boolean {
     return this.opcionSeleccionada === id;
   }
 
-  enviar(): void {
+  // Lee las opciones en voz alta, para niños que aún no leen.
+  leerOpciones(): void {
+    if (
+      typeof window === 'undefined' ||
+      !('speechSynthesis' in window)
+    ) {
+      return;
+    }
 
+    this.detenerVoz();
+
+    const opciones: string[] = this.serie?.options ?? [];
+
+    opciones.forEach(opcion => {
+      const enunciado = new SpeechSynthesisUtterance(
+        `${this.letraOpcion(opcion)}: ${this.obtenerNombreOpcion(opcion)}`
+      );
+      enunciado.lang = 'es-ES';
+      enunciado.rate = 0.8;
+      window.speechSynthesis.speak(enunciado);
+    });
+  }
+
+  enviar(): void {
     if (
       this.enviando ||
-      !this.imagenRevelada ||
+      this.fase !== 'respuesta' ||
       !this.opcionSeleccionada
     ) {
       return;
@@ -173,29 +185,36 @@ export class Ejercicio04 implements OnChanges {
         ? this.serie.expectedAnswer
         : '';
 
-    const correcta =
-      this.opcionSeleccionada === esperada;
-
-    console.log('================================');
-    console.log('RESPUESTA EJERCICIO 04');
-    console.log('Serie:', this.numeroSerie);
-    console.log(
-      'Ingresada:',
-      this.opcionSeleccionada
-    );
-    console.log(
-      'Esperada:',
-      esperada
-    );
-    console.log(
-      'Correcta:',
-      correcta
-    );
-    console.log('================================');
-
     this.respuesta.emit({
       valor: this.opcionSeleccionada,
-      correcta
+      correcta: this.opcionSeleccionada === esperada
     });
+  }
+
+  // -------------------------------------------------------
+  // AUXILIARES
+  // -------------------------------------------------------
+
+  private reiniciar(): void {
+    this.limpiarTemporizador();
+    this.detenerVoz();
+    this.fase = 'listo';
+    this.opcionSeleccionada = null;
+  }
+
+  private limpiarTemporizador(): void {
+    if (this.temporizador) {
+      clearTimeout(this.temporizador);
+      this.temporizador = null;
+    }
+  }
+
+  private detenerVoz(): void {
+    if (
+      typeof window !== 'undefined' &&
+      'speechSynthesis' in window
+    ) {
+      window.speechSynthesis.cancel();
+    }
   }
 }
