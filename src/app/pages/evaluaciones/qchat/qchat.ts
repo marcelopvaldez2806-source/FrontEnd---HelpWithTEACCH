@@ -673,7 +673,9 @@ export class QChat implements OnInit {
                 item.codigo ??
                 '',
 
+              // El backend envía el enunciado en "question".
               texto:
+                item.question ??
                 item.text ??
                 item.texto ??
                 '',

@@ -2,9 +2,6 @@ import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import {Navbar} from '../../layout/navbar/navbar';
 import {Sidebar} from '../../layout/sidebar/sidebar';
 import {Header} from '../../layout/header/header';
-import {KpiGrid} from '../../layout/kpi-grid/kpi-grid';
-import {KpiItem} from '../../models/SelectOption';
-import {LoginResponse} from '../../models/auth.models';
 import {ModalNino} from './modals/modal-nino/modal-nino';
 import {NgFor, NgIf, isPlatformBrowser} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -32,7 +29,6 @@ interface FilaNino {
     Navbar,
     Sidebar,
     Header,
-    KpiGrid,
     ModalNino,
     NgIf,
     NgFor,
@@ -160,54 +156,8 @@ export class Nino implements OnInit {
 
   sidebarExpanded = false;
 
-  kpis: LoginResponse | null = null;
-
   onSidebarToggle(value: boolean): void {
     this.sidebarExpanded = value;
-  }
-
-  get items(): KpiItem[] {
-
-    if (!this.kpis) {
-      return [];
-    }
-
-    return [
-      {
-        title: 'Total prendas',
-        value: this.kpis.rol,
-        footer: `+ ${this.kpis.rol} registradas este mes`,
-        icon: 'fi fi-bs-shirt-long-sleeve'
-      },
-      {
-        title: 'Disponibles',
-        value: this.kpis.nombres,
-        footer: `+ ${this.kpis.nombres} esta semana`,
-        icon: 'fi fi-br-check-circle',
-        iconClass: 'success'
-      },
-      {
-        title: 'Agotadas',
-        value: this.kpis.apellidos,
-        footer: `${this.kpis.apellidos} esta semana`,
-        icon: 'fi fi-br-cross-circle',
-        iconClass: 'danger'
-      },
-      {
-        title: 'Lotes activos',
-        value: this.kpis.email,
-        footer: `+ ${this.kpis.email} nuevos este mes`,
-        icon: 'fi fi-br-box-open-full',
-        iconClass: 'warning'
-      },
-      {
-        title: 'Valor inventario',
-        value: `S/ ${this.kpis.idUsuario}`,
-        footer: `S/ ${this.kpis.idUsuario} este mes`,
-        icon: 'fi fi-br-sack-dollar',
-        iconClass: 'money'
-      }
-    ];
   }
 
   private bloquearScroll(): void {
