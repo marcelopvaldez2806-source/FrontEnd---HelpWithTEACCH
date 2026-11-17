@@ -8,6 +8,150 @@
 
   <div class="page-content">
 
+    <main class="content-body">
+
+      <!-- ENCABEZADO -->
+      <section class="page-heading">
+        <div class="heading-icon">🏠</div>
+
+        <div>
+          <span class="eyebrow">HELPWITHTEACCH</span>
+          <h1>Inicio</h1>
+          <p>
+            Niños con las evaluaciones Q-CHAT y K-ABC completadas.
+          </p>
+        </div>
+      </section>
+
+      <section class="list-section">
+
+        <div class="section-title">
+          <div>
+            <h2>Resultados disponibles</h2>
+            <p>
+              Entra a un niño para ver sus resultados integrados.
+            </p>
+          </div>
+
+          <span class="total-badge">
+            {{ resultadosFiltrados.length }} resultados
+          </span>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="search-box">
+          <span>⌕</span>
+
+          <input
+            type="text"
+            placeholder="Buscar por nombre o código del niño..."
+            [(ngModel)]="textoBusqueda"
+            (input)="buscar()">
+        </div>
+
+        <!-- CARGANDO -->
+        <div class="state-container" *ngIf="cargando">
+          <div class="loader"></div>
+          <p>Cargando resultados...</p>
+        </div>
+
+        <!-- ERROR -->
+        <div
+          class="state-container error-state"
+          *ngIf="!cargando && error">
+
+          <span>⚠️</span>
+          <p>{{ error }}</p>
+
+          <button
+            class="secondary-button"
+            (click)="cargarResultados()">
+            Reintentar
+          </button>
+        </div>
+
+        <!-- SIN RESULTADOS -->
+        <div
+          class="state-container empty-state"
+          *ngIf="!cargando && !error && resultadosFiltrados.length === 0">
+
+          <span class="empty-icon">📂</span>
+
+          <h3>No hay resultados todavía</h3>
+
+          <p *ngIf="resultados.length === 0">
+            Aún no hay niños con Q-CHAT y K-ABC completadas.
+          </p>
+
+          <p *ngIf="resultados.length > 0">
+            No se encontraron coincidencias con tu búsqueda.
+          </p>
+        </div>
+
+        <!-- TARJETAS -->
+        <div
+          class="children-grid"
+          *ngIf="!cargando && !error && resultadosFiltrados.length > 0">
+
+          <article
+            class="child-card"
+            *ngFor="let resultado of resultadosFiltrados">
+
+            <div class="child-card-top">
+
+              <div class="child-avatar">
+                {{ resultado.nombreNino.charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="child-info">
+                <h3>{{ resultado.nombreNino }}</h3>
+                <span>Código: {{ resultado.idNino }}</span>
+              </div>
+
+            </div>
+
+            <div class="evaluation-status">
+
+              <div class="evaluation-item">
+                <span class="evaluation-icon qchat-icon">🧠</span>
+
+                <div>
+                  <strong>Q-CHAT</strong>
+                  <small>{{ formatearFecha(resultado.fechaQChat) }}</small>
+                </div>
+
+                <span class="check-mark">✓</span>
+              </div>
+
+              <div class="evaluation-item">
+                <span class="evaluation-icon kabc-icon">🧩</span>
+
+                <div>
+                  <strong>K-ABC</strong>
+                  <small>{{ formatearFecha(resultado.fechaKabc) }}</small>
+                </div>
+
+                <span class="check-mark">✓</span>
+              </div>
+
+            </div>
+
+            <button
+              class="view-button"
+              (click)="verResultado(resultado)">
+
+              Ver resultados
+              <span>→</span>
+
+            </button>
+
+          </article>
+
+        </div>
+
+      </section>
+
+    </main>
 
   </div>
 
