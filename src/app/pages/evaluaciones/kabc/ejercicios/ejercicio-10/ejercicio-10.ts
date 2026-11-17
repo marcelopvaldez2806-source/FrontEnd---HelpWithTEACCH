@@ -263,7 +263,20 @@ export class Ejercicio10 implements OnChanges {
 
     this.respuestaEnviada = true;
 
-    const valor = JSON.stringify(posiciones);
+    // Las fotos de cada serie están definidas en orden cronológico:
+    // la secuencia es correcta si la foto 1 va en la posición 1, etc.
+    const correcta = posiciones.every(
+      (posicion, indice) => posicion === indice + 1
+    );
+
+    // El backend compara "valor" con el expectedAnswer del JSON.
+    // Si es correcta se envía ese valor; si no, un objeto con las
+    // posiciones (nunca coincide por accidente con el esperado).
+    const esperado = this.serie?.expectedAnswer;
+
+    const valor = correcta && esperado !== undefined && esperado !== null
+      ? (typeof esperado === 'string' ? esperado : JSON.stringify(esperado))
+      : JSON.stringify({ posiciones });
 
     console.log(
       '[Ejercicio10] Respuesta enviada:',

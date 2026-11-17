@@ -271,21 +271,24 @@ export class Ejercicio07 implements OnChanges {
 
     const objetivos = this.modeloActual;
 
-    return this.piezas.every((pieza, indice) => {
-      const objetivo = objetivos[indice];
+    // Los triángulos son idénticos: cualquier pieza puede ocupar
+    // cualquier posición del modelo. Cada posición debe quedar
+    // cubierta por una pieza distinta, sin importar su color.
+    const usadas = new Set<string>();
 
-      const distancia = Math.hypot(
-        pieza.x - objetivo.x,
-        pieza.y - objetivo.y
+    return objetivos.every(objetivo => {
+      const pieza = this.piezas.find(p =>
+        !usadas.has(p.id) &&
+        Math.hypot(p.x - objetivo.x, p.y - objetivo.y) <= 14 &&
+        this.diferenciaAngular(p.rotacion, objetivo.rotacion) <= 10
       );
 
-      const diferenciaRotacion = this.diferenciaAngular(
-        pieza.rotacion,
-        objetivo.rotacion
-      );
+      if (!pieza) {
+        return false;
+      }
 
-      return distancia <= 14 &&
-        diferenciaRotacion <= 10;
+      usadas.add(pieza.id);
+      return true;
     });
   }
 
@@ -316,20 +319,11 @@ export class Ejercicio07 implements OnChanges {
       'La construcción no coincide. Se registrará el intento y continuarás.';
   }
 
+  // El backend califica comparando "valor" con el expectedAnswer
+  // del JSON, así que se envía tal cual (antes se enviaba un JSON
+  // con las piezas y nunca coincidía).
   this.respuesta.emit({
-    valor: JSON.stringify({
-      actividad: this.item?.code ?? 'TR_01',
-      serieId: this.serie?.id ?? this.numeroSerie,
-      numeroSerie: this.numeroSerie,
-      correcta,
-      respuesta: valor,
-      piezas: this.piezas.map(p => ({
-        id: p.id,
-        x: Math.round(p.x),
-        y: Math.round(p.y),
-        rotacion: p.rotacion
-      }))
-    })
+    valor: String(valor ?? `construccion_incorrecta_modelo_${this.numeroSerie}`)
   });
 }
 }

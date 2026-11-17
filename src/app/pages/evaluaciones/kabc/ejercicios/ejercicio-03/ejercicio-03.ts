@@ -3,9 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  NgZone,
   OnChanges,
+  OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  inject
 } from '@angular/core';
 
 export interface SerieKabc {
@@ -39,7 +42,10 @@ export interface RespuestaEjercicio03 {
   templateUrl: './ejercicio-03.html',
   styleUrl: './ejercicio-03.css'
 })
-export class Ejercicio03 implements OnChanges {
+export class Ejercicio03 implements OnChanges, OnDestroy {
+
+  private zone = inject(NgZone);
+
 
   @Input() item!: ItemKabc;
   @Input() serie!: SerieKabc;
@@ -96,7 +102,12 @@ export class Ejercicio03 implements OnChanges {
 
   audioReproducido = false;
 
-  private audio: HTMLAudioElement | null = null;
+  reproduciendo = false;
+
+  errorAudio = '';
+
+  private temporizador: ReturnType<typeof setTimeout> | null = null;
+
 
 
   private readonly audios: Record<number, string> = {
@@ -196,66 +207,103 @@ export class Ejercicio03 implements OnChanges {
 
   reproducirAudio(): void {
 
-    if (this.enviando) {
+    if (this.enviando || this.reproduciendo) {
       return;
     }
 
+    // Los archivos de audio de esta actividad no existen en el
+    // proyecto, así que las palabras se leen con la voz del
+    // navegador (Web Speech API), en el orden del JSON.
+    const palabras = this.obtenerPalabrasEnOrden();
 
-    if (!this.audioUrl) {
-
-      console.warn(
-        'No existe audio para esta serie.'
-      );
-
+    if (
+      palabras.length === 0 ||
+      typeof window === 'undefined' ||
+      !('speechSynthesis' in window)
+    ) {
+      this.errorAudio =
+        'Este navegador no puede leer las palabras en voz alta.';
       return;
-
     }
-
 
     this.detenerAudio();
+    this.errorAudio = '';
+    this.reproduciendo = true;
 
+    const voz = this.obtenerVozEspanol();
 
-    this.audio =
-      new Audio(this.audioUrl);
-
-
-    this.audio.preload = 'auto';
-
-
-    this.audio.onended = () => {
-
-      this.audioReproducido = true;
-
-    };
-
-
-    this.audio.onerror = () => {
-
-      console.error(
-        'Error cargando audio:',
-        this.audioUrl
-      );
-
-      this.audioReproducido = false;
-
-    };
-
-
-    this.audio.play()
-      .then(() => {
-
+    // Respaldo por si el navegador no avisa que terminó.
+    this.temporizador = setTimeout(() => {
+      this.zone.run(() => {
+        this.reproduciendo = false;
         this.audioReproducido = true;
-
-      })
-      .catch(error => {
-
-        console.error(
-          'No se pudo reproducir el audio:',
-          error
-        );
-
       });
+    }, palabras.length * 2000 + 2000);
 
+    palabras.forEach((palabra, indice) => {
+
+      const enunciado =
+        new SpeechSynthesisUtterance(palabra);
+
+      enunciado.lang = voz?.lang ?? 'es-ES';
+      enunciado.rate = 0.75;
+
+      if (voz) {
+        enunciado.voice = voz;
+      }
+
+      if (indice === palabras.length - 1) {
+        enunciado.onend = () => {
+          this.zone.run(() => {
+            this.reproduciendo = false;
+            this.audioReproducido = true;
+          });
+        };
+      }
+
+      enunciado.onerror = () => {
+        this.zone.run(() => {
+          this.reproduciendo = false;
+          this.audioReproducido = true;
+        });
+      };
+
+      window.speechSynthesis.speak(enunciado);
+
+      // Pausa breve entre palabras.
+      if (indice < palabras.length - 1) {
+        const pausa = new SpeechSynthesisUtterance(' ');
+        pausa.volume = 0;
+        pausa.rate = 0.5;
+        window.speechSynthesis.speak(pausa);
+      }
+    });
+  }
+
+
+  // Palabras de la serie, en el orden en que el niño debe tocarlas.
+  private obtenerPalabrasEnOrden(): string[] {
+
+    const esperada = Array.isArray(this.serie?.expectedAnswer)
+      ? this.serie.expectedAnswer
+      : [];
+
+    return esperada.map(
+      (id: string) => this.obtenerNombre(id).toLowerCase()
+    );
+  }
+
+
+  private obtenerVozEspanol(): SpeechSynthesisVoice | null {
+
+    const voces = window.speechSynthesis.getVoices();
+
+    return (
+      voces.find(v => v.lang?.toLowerCase().startsWith('es-pe')) ??
+      voces.find(v => v.lang?.toLowerCase().startsWith('es-419')) ??
+      voces.find(v => v.lang?.toLowerCase().startsWith('es')) ??
+      null
+    );
   }
 
 
@@ -265,17 +313,26 @@ export class Ejercicio03 implements OnChanges {
 
   private detenerAudio(): void {
 
-    if (this.audio) {
-
-      this.audio.pause();
-
-      this.audio.currentTime = 0;
-
-      this.audio = null;
-
+    if (
+      typeof window !== 'undefined' &&
+      'speechSynthesis' in window
+    ) {
+      window.speechSynthesis.cancel();
     }
 
+    if (this.temporizador) {
+      clearTimeout(this.temporizador);
+      this.temporizador = null;
+    }
+
+    this.reproduciendo = false;
   }
+
+
+  ngOnDestroy(): void {
+    this.detenerAudio();
+  }
+
 
 
   // ==========================================================
@@ -284,7 +341,8 @@ export class Ejercicio03 implements OnChanges {
 
   seleccionarImagen(id: string): void {
 
-    if (this.enviando) {
+    // Primero hay que escuchar las palabras.
+    if (this.enviando || !this.audioReproducido) {
       return;
     }
 
