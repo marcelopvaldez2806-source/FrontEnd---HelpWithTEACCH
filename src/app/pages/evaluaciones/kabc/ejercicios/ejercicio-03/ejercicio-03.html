@@ -89,12 +89,12 @@
         type="button"
         class="audio-button"
 
-        [disabled]="enviando"
+        [disabled]="enviando || reproduciendo"
 
         (click)="reproducirAudio()"
       >
 
-        ▶ Escuchar
+        {{ reproduciendo ? '🔊 Escuchando...' : (audioReproducido ? '↺ Escuchar otra vez' : '▶ Escuchar') }}
 
       </button>
 
@@ -106,6 +106,28 @@
       >
 
         ✓ Audio reproducido
+
+      </span>
+
+
+      <span
+        class="audio-status"
+
+        *ngIf="errorAudio"
+      >
+
+        ⚠ {{ errorAudio }}
+
+      </span>
+
+
+      <span
+        class="audio-status"
+
+        *ngIf="!audioReproducido && !reproduciendo && !errorAudio"
+      >
+
+        Escucha las palabras antes de elegir las imágenes.
 
       </span>
 
@@ -184,6 +206,7 @@
 
         [disabled]="
           enviando ||
+          !audioReproducido ||
           estaSeleccionada(opcion) ||
           imagenesSeleccionadas.length >=
           (serie?.expectedAnswer?.length ?? 0)
