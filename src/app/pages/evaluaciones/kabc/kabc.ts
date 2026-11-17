@@ -839,6 +839,22 @@ comenzarKabc(): void {
 // CARGAR CONFIGURACIÓN
 // =========================================================
 
+// =========================================================
+// REINTENTAR CARGA (desde la pantalla de error)
+// =========================================================
+
+reintentarCarga(): void {
+  this.mensajeError = '';
+
+  this.cargarConfiguracion()
+    .catch(() => {
+      // El mensaje ya queda en mensajeError.
+    })
+    .finally(() => {
+      this.cargandoConfiguracion = false;
+    });
+}
+
 private cargarConfiguracion(): Promise<void> {
 
   if (!this.evaluacionId) {
@@ -1108,6 +1124,12 @@ private recuperarPosicionEvaluacion(): Promise<void> {
       console.log(
         'Todas las series de esta evaluación ya tienen respuesta.'
       );
+
+      // La evaluación quedó sin finalizar: se finaliza ahora
+      // para no dejar la pantalla en blanco.
+      if (!this.evaluacionCompletada) {
+        this.finalizarEvaluacion();
+      }
 
     })
 

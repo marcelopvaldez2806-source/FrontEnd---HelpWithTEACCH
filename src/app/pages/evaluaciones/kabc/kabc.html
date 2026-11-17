@@ -647,6 +647,56 @@
 
 
     <!-- =====================================================
+         SIN ACTIVIDAD QUE MOSTRAR
+         (error al recuperar el progreso, o finalizando)
+         ===================================================== -->
+
+    <section
+      class="empty-config-section"
+
+      *ngIf="
+        evaluacionCreada &&
+        !cargandoConfiguracion &&
+        !evaluacionCompletada &&
+        items.length > 0 &&
+        !(itemActual && serieActual)
+      "
+    >
+
+      <div class="empty-config-card">
+
+        <div class="empty-config-icon">
+          {{ mensajeError ? '⚠️' : '⏳' }}
+        </div>
+
+        <h2>
+          {{ mensajeError ? 'No se pudo continuar la evaluación' : 'Finalizando la evaluación K-ABC...' }}
+        </h2>
+
+        <div
+          class="error-message"
+          *ngIf="mensajeError"
+        >
+
+          {{ mensajeError }}
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-primary"
+          *ngIf="mensajeError && !enviandoRespuesta"
+          (click)="reintentarCarga()"
+        >
+          Reintentar
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
          CONFIGURACIÓN VACÍA
          ===================================================== -->
 
