@@ -1,270 +1,207 @@
 <div class="ejercicio-container">
 
-  <!-- HEADER -->
-
+  <!-- ENCABEZADO -->
   <div class="ejercicio-header">
-
-    <div>
-
-      <span class="ejercicio-numero">
-        Ejercicio 5
-      </span>
-
-      <h2>
-        Reconocimiento de caras
-      </h2>
-
+    <div class="ejercicio-numero">
+      <span>Ejercicio 5</span>
+      <strong>Reconocimiento de caras</strong>
     </div>
 
     <div class="serie-indicador">
       Serie {{ numeroSerie }} de {{ totalSeries }}
     </div>
-
   </div>
-
 
   <!-- INSTRUCCIÓN -->
-
-  <section class="instruction-box">
-
-    <div class="instruction-icon">
-      👀
-    </div>
+  <div class="instruction-box">
+    <div class="instruction-icon">🧠</div>
 
     <div class="instruction-content">
-
-      <span class="instruction-title">
-        ¿Qué tengo que hacer?
-      </span>
-
+      <span class="instruction-title">¿Qué tengo que hacer?</span>
       <p>
-        Observa y recuerda las caras.
-        Después selecciona la cara que viste.
+        Mira bien la cara que aparece. Después se esconderá y tendrás que
+        encontrarla entre varias caras.
       </p>
-
     </div>
-
-  </section>
-
+  </div>
 
   <!-- PASOS -->
-
   <div class="steps">
-
-    <div class="step active">
-
-      <span>1</span>
-
-      <strong>
-        Observa
-      </strong>
-
-    </div>
-
+    <div class="step" [class.active]="fase !== 'responder'">1. Mira la cara</div>
     <div class="step-line"></div>
-
-    <div class="step active">
-
-      <span>2</span>
-
-      <strong>
-        Recuerda
-      </strong>
-
-    </div>
-
-    <div class="step-line"></div>
-
-    <div
-      class="step"
-      [class.active]="opcionSeleccionada"
-    >
-
-      <span>3</span>
-
-      <strong>
-        Selecciona
-      </strong>
-
-    </div>
-
+    <div class="step" [class.active]="fase === 'responder'">2. Encuéntrala</div>
   </div>
 
+  <!-- FASE 1: MEMORIZAR -->
+  <div class="stimulus-section" *ngIf="fase !== 'responder'">
 
-  <!-- CARAS A RECORDAR -->
+    <div class="rc-escenario">
 
-  <section class="stimulus-section">
-
-    <div class="section-title">
-
-      Observa y recuerda estas caras
-
-    </div>
-
-    <div class="memory-grid">
-
-      <div
-        class="memory-face"
-        *ngFor="
-          let cara of obtenerEstimulos()
-        "
-      >
-
-        <div class="face-visual">
-
-          {{ obtenerCara(cara) }}
-
-        </div>
-
-        <span>
-          {{ obtenerNombreCara(cara) }}
-        </span>
-
+      <div class="rc-cara-grande" *ngIf="fase === 'memorizar'">
+        <ng-container
+          *ngTemplateOutlet="caraTpl; context: { $implicit: caraObjetivo }"
+        ></ng-container>
       </div>
 
+      <div class="rc-cuenta" *ngIf="fase === 'memorizar'">
+        {{ segundosRestantes }}
+      </div>
+
+      <div class="rc-listo" *ngIf="fase === 'listo'">
+        <p>Cuando el niño esté mirando la pantalla, pulsa comenzar.
+          La cara se verá {{ segundosExposicion }} segundos.</p>
+        <button
+          type="button"
+          class="finish-button"
+          (click)="comenzar()"
+          [disabled]="enviando"
+        >
+          ▶ Comenzar
+        </button>
+      </div>
     </div>
+  </div>
 
-  </section>
+  <!-- FASE 2: RESPONDER -->
+  <div class="options-section" *ngIf="fase === 'responder'">
 
-
-  <!-- OPCIONES -->
-
-  <section class="options-section">
-
-    <div class="section-title">
-
-      Ahora selecciona la cara que viste
-
-    </div>
+    <div class="section-title">¿Cuál es la cara que viste?</div>
 
     <div class="options-grid">
-
       <button
-        *ngFor="
-          let opcion of obtenerOpciones()
-        "
+        *ngFor="let opcion of obtenerOpciones(); let i = index"
         type="button"
-
         class="face-option"
-
-        [class.selected]="
-          estaSeleccionada(opcion)
-        "
-
+        [class.selected]="estaSeleccionada(opcion)"
         [disabled]="enviando"
-
-        (click)="
-          seleccionarCara(opcion)
-        "
+        (click)="seleccionarCara(opcion)"
       >
-
-        <div class="selection-number">
-
-          <span
-            *ngIf="
-              estaSeleccionada(opcion)
-            "
-          >
-            ✓
-          </span>
-
+        <div class="rc-cara-opcion">
+          <ng-container
+            *ngTemplateOutlet="caraTpl; context: { $implicit: opcion }"
+          ></ng-container>
         </div>
 
-        <div class="face-visual">
+        <span class="selection-number" *ngIf="estaSeleccionada(opcion)">✓</span>
 
-          {{ obtenerCara(opcion) }}
-
-        </div>
-
-        <div class="face-name">
-
-          {{ obtenerNombreCara(opcion) }}
-
-        </div>
-
+        <span class="face-name">Opción {{ i + 1 }}</span>
       </button>
-
     </div>
-
-  </section>
-
-
-  <!-- RESPUESTA -->
-
-  <section
-    class="answer-preview"
-    *ngIf="opcionSeleccionada"
-  >
-
-    <span class="preview-icon">
-      ✓
-    </span>
-
-    <div>
-
-      <strong>
-        Tu respuesta
-      </strong>
-
-      <p>
-        {{ obtenerNombreCara(
-          opcionSeleccionada
-        ) }}
-      </p>
-
-    </div>
-
-  </section>
-
+  </div>
 
   <!-- TERMINAR -->
-
-  <div class="action-section">
-
+  <div class="action-section" *ngIf="fase === 'responder'">
     <button
       type="button"
-
       class="finish-button"
-
-      [disabled]="
-        !opcionSeleccionada ||
-        enviando
-      "
-
+      [disabled]="!opcionSeleccionada || enviando"
       (click)="enviar()"
     >
-
-      <span *ngIf="!enviando">
-        ✓
-      </span>
-
-      <span *ngIf="enviando">
-        ⏳
-      </span>
-
-      {{
-        enviando
-          ? 'Guardando...'
-          : 'Terminé'
-      }}
-
+      {{ enviando ? 'Guardando...' : 'Terminé' }}
     </button>
-
   </div>
-
-
-  <!-- FOOTER -->
 
   <div class="exercise-footer">
+    Serie {{ numeroSerie }} de {{ totalSeries }}
+  </div>
+</div>
 
-    <span>
-      Serie {{ numeroSerie }} de {{ totalSeries }}
-    </span>
 
-    <span>
-      Selecciona una sola respuesta
-    </span>
+<!-- =========================================================
+     CARA: foto real si existe en assets; si no, cara ilustrada
+     ========================================================= -->
 
+<ng-template #caraTpl let-id>
+
+  <div class="rc-cara">
+
+    <!-- Cara ilustrada -->
+    <svg
+      *ngIf="!tieneFoto(id)"
+      viewBox="0 0 120 140"
+      class="rc-svg"
+      role="img"
+      [attr.aria-label]="'Cara ' + numeroCara(id)"
+    >
+      <ng-container *ngIf="obtenerRasgos(id) as r">
+
+        <!-- Pelo largo (detrás de la cara) -->
+        <rect *ngIf="r.peinado === 'largo'" x="25" y="30" width="70" height="86" rx="32" [attr.fill]="r.pelo" />
+
+        <!-- Hombros y cuello -->
+        <path d="M12 140 Q12 108 60 104 Q108 108 108 140 Z" [attr.fill]="r.ropa" />
+        <rect x="50" y="86" width="20" height="22" rx="6" [attr.fill]="r.piel" />
+
+        <!-- Orejas -->
+        <circle [attr.cx]="r.rostro === 'redondo' ? 27 : (r.rostro === 'alargado' ? 33 : 30)" cy="64" r="6" [attr.fill]="r.piel" />
+        <circle [attr.cx]="r.rostro === 'redondo' ? 93 : (r.rostro === 'alargado' ? 87 : 90)" cy="64" r="6" [attr.fill]="r.piel" />
+
+        <!-- Rostro -->
+        <ellipse cx="60" cy="62"
+          [attr.rx]="r.rostro === 'redondo' ? 33 : (r.rostro === 'alargado' ? 27 : 30)"
+          [attr.ry]="r.rostro === 'redondo' ? 33 : (r.rostro === 'alargado' ? 39 : 36)"
+          [attr.fill]="r.piel" />
+
+        <!-- Barba -->
+        <path *ngIf="r.barba" d="M32 68 Q34 102 60 104 Q86 102 88 68 Q82 88 60 90 Q38 88 32 68 Z" [attr.fill]="r.pelo" />
+
+        <!-- Pelo (parte de arriba) -->
+        <path *ngIf="r.peinado === 'corto' || r.peinado === 'largo' || r.peinado === 'cola'"
+          d="M29 54 Q30 22 60 22 Q90 22 91 54 Q82 34 60 34 Q38 34 29 54 Z" [attr.fill]="r.pelo" />
+        <path *ngIf="r.peinado === 'flequillo'"
+          d="M29 54 Q30 20 60 20 Q90 20 91 54 L91 48 Q60 38 29 48 Z" [attr.fill]="r.pelo" />
+        <circle *ngIf="r.peinado === 'cola'" cx="60" cy="16" r="10" [attr.fill]="r.pelo" />
+        <g *ngIf="r.peinado === 'rizado'" [attr.fill]="r.pelo">
+          <circle cx="34" cy="44" r="9" /><circle cx="40" cy="31" r="10" />
+          <circle cx="52" cy="24" r="10" /><circle cx="66" cy="23" r="10" />
+          <circle cx="79" cy="30" r="10" /><circle cx="86" cy="43" r="9" />
+          <circle cx="60" cy="30" r="9" />
+        </g>
+        <g *ngIf="r.peinado === 'calvo'" [attr.fill]="r.pelo">
+          <path d="M28 56 Q29 46 34 42 L36 56 Z" /><path d="M92 56 Q91 46 86 42 L84 56 Z" />
+        </g>
+
+        <!-- Cejas -->
+        <g [attr.stroke]="r.pelo" stroke-linecap="round" fill="none"
+           [attr.stroke-width]="r.cejas === 'gruesas' ? 3.6 : 2.2">
+          <path *ngIf="r.cejas !== 'arqueadas'" d="M42 51 L54 50" />
+          <path *ngIf="r.cejas !== 'arqueadas'" d="M66 50 L78 51" />
+          <path *ngIf="r.cejas === 'arqueadas'" d="M42 52 Q48 46 54 50" />
+          <path *ngIf="r.cejas === 'arqueadas'" d="M66 50 Q72 46 78 52" />
+        </g>
+
+        <!-- Ojos -->
+        <g fill="#2B2B2B">
+          <ellipse cx="48" cy="60" [attr.rx]="r.ojos === 'almendra' ? 4.4 : 3.3" [attr.ry]="r.ojos === 'almendra' ? 2.4 : 3.6" />
+          <ellipse cx="72" cy="60" [attr.rx]="r.ojos === 'almendra' ? 4.4 : 3.3" [attr.ry]="r.ojos === 'almendra' ? 2.4 : 3.6" />
+        </g>
+        <circle cx="49" cy="59" r="1" fill="#fff" />
+        <circle cx="73" cy="59" r="1" fill="#fff" />
+
+        <!-- Lentes -->
+        <g *ngIf="r.lentes" stroke="#333" stroke-width="1.8" fill="none">
+          <circle cx="48" cy="60" r="8.5" /><circle cx="72" cy="60" r="8.5" />
+          <path d="M56.5 60 L63.5 60" />
+        </g>
+
+        <!-- Nariz -->
+        <path d="M60 63 Q56.5 72 60 74 Q63 74.5 64 72" stroke="rgba(0,0,0,.25)" stroke-width="1.6" fill="none" stroke-linecap="round" />
+
+        <!-- Boca -->
+        <path *ngIf="r.boca === 'sonrisa'" d="M50 81 Q60 89 70 81" stroke="#9E3B3B" stroke-width="2.4" fill="none" stroke-linecap="round" />
+        <path *ngIf="r.boca === 'neutra'" d="M52 83 L68 83" stroke="#9E3B3B" stroke-width="2.4" fill="none" stroke-linecap="round" />
+
+      </ng-container>
+    </svg>
+
+    <!-- Foto real (si existe el archivo, reemplaza al dibujo) -->
+    <img
+      [src]="rutaFoto(id)"
+      alt=""
+      class="rc-foto"
+      [class.rc-foto-visible]="tieneFoto(id)"
+      (load)="fotoCargada(id)"
+    />
   </div>
 
-</div>
+</ng-template>
