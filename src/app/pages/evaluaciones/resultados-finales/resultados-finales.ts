@@ -12,6 +12,7 @@ import {
 } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { Navbar } from '../../../layout/navbar/navbar';
@@ -169,6 +170,8 @@ export class ResultadosFinales implements OnInit {
   constructor(
     private ninoService: NinoService,
     private respuestaService: RespuestaService,
+    private route: ActivatedRoute,
+    private router: Router,
 
     @Inject(PLATFORM_ID)
     private platformId: object
@@ -350,6 +353,8 @@ export class ResultadosFinales implements OnInit {
 
       this.aplicarFiltro();
 
+      this.abrirDesdeRuta();
+
     } catch (error: any) {
       console.error(
         'Error cargando resultados integrados:',
@@ -362,6 +367,31 @@ export class ResultadosFinales implements OnInit {
 
     } finally {
       this.cargando = false;
+    }
+  }
+
+  // =====================================================
+  // ABRIR UN RESULTADO DESDE LA URL
+  // /evaluaciones/resultados-finales/:idEvaluacion
+  // (acepta el id de la evaluación Q-CHAT o K-ABC)
+  // =====================================================
+
+  private abrirDesdeRuta(): void {
+    const id = Number(
+      this.route.snapshot.paramMap.get('idEvaluacion')
+    );
+
+    if (!id) {
+      return;
+    }
+
+    const resultado = this.resultados.find(r =>
+      r.idEvaluacionQChat === id ||
+      r.idEvaluacionKabc === id
+    );
+
+    if (resultado) {
+      this.verResultado(resultado);
     }
   }
 
@@ -779,6 +809,11 @@ export class ResultadosFinales implements OnInit {
     this.resultadosSubtests = [];
 
     this.errorDetalle = '';
+
+    // Si se llegó desde un enlace directo, volver a la URL del listado.
+    if (this.route.snapshot.paramMap.has('idEvaluacion')) {
+      this.router.navigate(['/evaluaciones/resultados-finales']);
+    }
   }
 
   // =====================================================
