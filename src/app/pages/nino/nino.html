@@ -25,6 +25,79 @@
     </app-kpi-grid>
 
 
+    <!-- ================================================= -->
+    <!-- LISTADO DE NIÑOS REGISTRADOS -->
+    <!-- ================================================= -->
+
+    <section class="ninos-card">
+
+      <div class="ninos-card-header">
+        <div>
+          <h2>Niños registrados</h2>
+          <p>Nombre, edad y evaluaciones completadas de cada niño.</p>
+        </div>
+
+        <span class="ninos-total">{{ filasFiltradas.length }} niños</span>
+      </div>
+
+      <input
+        class="ninos-search"
+        type="text"
+        placeholder="Buscar por nombre o código..."
+        [(ngModel)]="textoBusqueda"
+        (input)="buscar()">
+
+      <p class="ninos-state" *ngIf="cargandoNinos">Cargando niños...</p>
+
+      <div class="ninos-state ninos-error" *ngIf="!cargandoNinos && errorNinos">
+        <span>{{ errorNinos }}</span>
+        <button type="button" class="btn-primary" (click)="cargarNinos()">Reintentar</button>
+      </div>
+
+      <p
+        class="ninos-state"
+        *ngIf="!cargandoNinos && !errorNinos && filasFiltradas.length === 0">
+        {{ filas.length === 0 ? 'Todavía no hay niños registrados.' : 'No hay coincidencias con tu búsqueda.' }}
+      </p>
+
+      <div
+        class="ninos-table-wrapper"
+        *ngIf="!cargandoNinos && !errorNinos && filasFiltradas.length > 0">
+
+        <table class="ninos-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Edad</th>
+              <th>Evaluación</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let fila of filasFiltradas">
+              <td class="ninos-codigo">{{ fila.idNino }}</td>
+              <td><strong>{{ fila.nombre }}</strong></td>
+              <td>{{ fila.edad }}</td>
+              <td>
+                <div class="ninos-chips">
+                  <span class="chip" [class.chip-ok]="fila.qchat">
+                    Q-CHAT {{ fila.qchat ? '✓' : '✗' }}
+                  </span>
+                  <span class="chip" [class.chip-ok]="fila.kabc">
+                    K-ABC {{ fila.kabc ? '✓' : '✗' }}
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+    </section>
+
+
 
   </div>
 
