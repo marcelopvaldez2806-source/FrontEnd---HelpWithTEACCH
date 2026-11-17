@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth.guard';
+
 import { Login } from './pages/login/login';
 import { Home } from './pages/home/home';
 import { Nino } from './pages/nino/nino';
@@ -32,6 +34,7 @@ export const routes: Routes = [
 
   {
     path: 'home',
+    canActivate: [authGuard],
     component: Home
   },
 
@@ -42,6 +45,7 @@ export const routes: Routes = [
 
   {
     path: 'nino',
+    canActivate: [authGuard],
     component: Nino
   },
 
@@ -52,6 +56,7 @@ export const routes: Routes = [
 
   {
     path: 'usuario',
+    canActivate: [authGuard],
     component: Usuario
   },
 
@@ -62,6 +67,7 @@ export const routes: Routes = [
 
   {
     path: 'evaluaciones',
+    canActivate: [authGuard],
     component: Evaluaciones
   },
 
@@ -72,11 +78,13 @@ export const routes: Routes = [
 
   {
     path: 'evaluaciones/qchat',
+    canActivate: [authGuard],
     component: QChat
   },
 
   {
     path: 'evaluaciones/qchat/resultados/:id',
+    canActivate: [authGuard],
     component: QChatResultados
   },
 
@@ -87,6 +95,7 @@ export const routes: Routes = [
 
   {
     path: 'evaluaciones/kabc',
+    canActivate: [authGuard],
     component: Kabc
   },
 
@@ -110,6 +119,7 @@ export const routes: Routes = [
 
   {
     path: 'evaluaciones/resultados-finales',
+    canActivate: [authGuard],
     component: ResultadosFinales
   },
 
@@ -121,6 +131,7 @@ export const routes: Routes = [
 
   {
     path: 'evaluaciones/resultados-finales/:idEvaluacion',
+    canActivate: [authGuard],
     component: ResultadosFinales
   },
 

@@ -1,4 +1,12 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn
+} from '@angular/common/http';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+
+import { limpiarSesion, tokenVencido } from '../utils/token.util';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -7,18 +15,37 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
+  const router = inject(Router);
+
   const token = localStorage.getItem('token');
 
-  if (token) {
+  const authReq = token
+    ? req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    : req;
 
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
+  return next(authReq).pipe(
+
+    catchError((error: HttpErrorResponse) => {
+
+      const esLogin = req.url.includes('/auth/');
+
+      // 401 = sin autenticación.
+      // 403 con token vencido = sesión expirada (Spring responde 403 por defecto).
+      const sesionExpirada =
+        error.status === 401 ||
+        (error.status === 403 && tokenVencido(token));
+
+      if (!esLogin && sesionExpirada) {
+        limpiarSesion();
+        router.navigate(['/login']);
       }
-    });
 
-    return next(authReq);
-  }
+      return throwError(() => error);
+    })
 
-  return next(req);
+  );
 };
