@@ -356,7 +356,7 @@ export class QChatResultados {
   volverResultados(): void {
 
     this.router.navigate([
-      '/resultados'
+      '/evaluaciones/resultados-finales'
     ]);
   }
 }
