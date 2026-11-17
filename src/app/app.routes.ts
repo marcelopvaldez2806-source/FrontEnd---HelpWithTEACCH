@@ -11,8 +11,6 @@ import { QChatResultados } from './pages/evaluaciones/qchat-resultados/qchat-res
 
 import { Kabc } from './pages/evaluaciones/kabc/kabc';
 
-import { Resultados } from './pages/resultados/resultados';
-
 import { ResultadosFinales } from './pages/evaluaciones/resultados-finales/resultados-finales';
 
 
@@ -94,13 +92,14 @@ export const routes: Routes = [
 
 
   // =========================================================
-  // RESULTADOS Q-CHAT
-  // Pantalla existente
+  // RESULTADOS (ruta antigua)
+  // Redirige a Resultados finales para no romper enlaces viejos
   // =========================================================
 
   {
     path: 'resultados',
-    component: Resultados
+    redirectTo: 'evaluaciones/resultados-finales',
+    pathMatch: 'full'
   },
 
 
