@@ -1,4 +1,5 @@
-import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, HostListener, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {limpiarSesion} from '../../core/utils/token.util';
 import {NavigationEnd, Router} from '@angular/router';
 import {isPlatformBrowser, NgIf} from '@angular/common';
 import {filter} from 'rxjs';
@@ -27,25 +28,7 @@ export class Navbar implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
 
-  const usuarioGuardado = localStorage.getItem('usuario');
-  const rolGuardado = localStorage.getItem('rol');
-
-  if (usuarioGuardado) {
-    try {
-      const response = JSON.parse(usuarioGuardado);
-
-      if (response.usuario) {
-        this.usuario =
-          `${response.usuario.nombres} ${response.usuario.apellidos}`;
-      }
-    } catch (error) {
-      console.error('Error al leer el usuario:', error);
-    }
-  }
-
-  this.rol = rolGuardado
-    ?.replace('ROLE_', '')
-    .toUpperCase() || '';
+  this.leerUsuarioGuardado();
 
   const savedTheme = localStorage.getItem('theme');
 
@@ -63,6 +46,43 @@ export class Navbar implements OnInit {
         this.showThemes = false;
         this.showUserMenu = false;
       });
+  }
+
+  // Refresca nombre y rol cuando se guardan cambios en "Mi perfil".
+  @HostListener('window:perfil-actualizado')
+  onPerfilActualizado(): void {
+    this.leerUsuarioGuardado();
+  }
+
+  private leerUsuarioGuardado(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const usuarioGuardado = localStorage.getItem('usuario');
+    const rolGuardado = localStorage.getItem('rol');
+
+    if (usuarioGuardado) {
+      try {
+        const response = JSON.parse(usuarioGuardado);
+
+        if (response.usuario) {
+          this.usuario =
+            `${response.usuario.nombres} ${response.usuario.apellidos}`;
+        }
+      } catch (error) {
+        console.error('Error al leer el usuario:', error);
+      }
+    }
+
+    this.rol = rolGuardado
+      ?.replace('ROLE_', '')
+      .toUpperCase() || '';
+  }
+
+  irAMiPerfil(): void {
+    this.showUserMenu = false;
+    this.router.navigate(['/perfil']);
   }
 
   toggleUserMenu(): void {
@@ -89,7 +109,7 @@ export class Navbar implements OnInit {
 
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
+      limpiarSesion();
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('role');
       localStorage.removeItem('username');
@@ -120,6 +140,10 @@ export class Navbar implements OnInit {
       case '/VentaHome':
         this.currentSection = 'Operaciones';
         this.currentPage = 'Ventas';
+        break;
+      case '/perfil':
+        this.currentSection = 'Cuenta';
+        this.currentPage = 'Mi perfil';
         break;
       case '/reportes':
         this.currentSection = 'Operaciones';
