@@ -1,0 +1,169 @@
+<app-sidebar
+  (sidebarToggle)="onSidebarToggle($event)">
+</app-sidebar>
+
+<div class="main-layout" [class.expanded]="sidebarExpanded">
+
+  <app-navbar></app-navbar>
+
+  <div class="page-content">
+
+    <app-header
+      title="Mi perfil"
+      subtitle="Revisa y actualiza tus datos, tu ocupación y tu contraseña">
+    </app-header>
+
+    <!-- CARGANDO / ERROR -->
+    <p class="perfil-estado" *ngIf="cargando">Cargando tu perfil...</p>
+
+    <div class="perfil-estado perfil-error" *ngIf="!cargando && errorCarga">
+      <span>{{ errorCarga }}</span>
+      <button type="button" class="btn-primary" (click)="cargarPerfil()">Reintentar</button>
+    </div>
+
+    <div class="perfil-grid" *ngIf="!cargando && !errorCarga && perfil">
+
+      <!-- ================================================= -->
+      <!-- RESUMEN                                           -->
+      <!-- ================================================= -->
+      <aside class="perfil-card perfil-resumen">
+        <div class="perfil-avatar">{{ iniciales }}</div>
+        <h2>{{ perfil.nombres }} {{ perfil.apellidos }}</h2>
+        <p class="perfil-email">{{ perfil.email }}</p>
+        <span class="perfil-rol">{{ rolLegible }}</span>
+      </aside>
+
+      <div class="perfil-columna">
+
+        <!-- ================================================= -->
+        <!-- DATOS PERSONALES Y OCUPACIÓN                      -->
+        <!-- ================================================= -->
+        <section class="perfil-card">
+          <div class="perfil-card-header">
+            <h3>Datos personales</h3>
+            <p>Así aparecerás en la aplicación.</p>
+          </div>
+
+          <form (ngSubmit)="guardarDatos()" autocomplete="on">
+
+            <div class="perfil-fila">
+              <label class="perfil-campo">
+                <span>Nombres</span>
+                <input type="text" name="nombres" maxlength="100" required
+                       autocomplete="given-name" [(ngModel)]="nombres">
+              </label>
+
+              <label class="perfil-campo">
+                <span>Apellidos</span>
+                <input type="text" name="apellidos" maxlength="100" required
+                       autocomplete="family-name" [(ngModel)]="apellidos">
+              </label>
+            </div>
+
+            <label class="perfil-campo">
+              <span>Correo electrónico</span>
+              <input type="email" name="email" maxlength="150" required
+                     autocomplete="email" [(ngModel)]="email">
+              <small>Es el correo con el que inicias sesión.</small>
+            </label>
+
+            <div class="perfil-campo">
+              <span>Ocupación</span>
+
+              <div class="perfil-ocupaciones" *ngIf="!esAdmin">
+                <label
+                  *ngFor="let o of ocupaciones"
+                  class="perfil-ocupacion"
+                  [class.activa]="ocupacion === o.valor"
+                >
+                  <input type="radio" name="ocupacion" [value]="o.valor" [(ngModel)]="ocupacion">
+                  <span class="perfil-ocupacion-icono">{{ o.icono }}</span>
+                  <span class="perfil-ocupacion-texto">
+                    <strong>{{ o.titulo }}</strong>
+                    <small>{{ o.descripcion }}</small>
+                  </span>
+                </label>
+              </div>
+
+              <small *ngIf="esAdmin">
+                Tu cuenta es de administrador; la ocupación no se cambia desde aquí.
+              </small>
+            </div>
+
+            <div class="perfil-alerta perfil-ok" *ngIf="mensajeDatos">{{ mensajeDatos }}</div>
+            <div class="perfil-alerta perfil-mal" *ngIf="errorDatos">{{ errorDatos }}</div>
+
+            <div class="perfil-acciones">
+              <button type="button" class="perfil-btn-secundario"
+                      [disabled]="guardandoDatos || !datosModificados"
+                      (click)="descartarCambios()">
+                Descartar
+              </button>
+
+              <button type="submit" class="btn-primary"
+                      [disabled]="guardandoDatos || !datosValidos || !datosModificados">
+                {{ guardandoDatos ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- CONTRASEÑA                                        -->
+        <!-- ================================================= -->
+        <section class="perfil-card">
+          <div class="perfil-card-header">
+            <h3>Contraseña</h3>
+            <p>Usa al menos 8 caracteres.</p>
+          </div>
+
+          <form (ngSubmit)="cambiarPassword()" autocomplete="off">
+
+            <label class="perfil-campo">
+              <span>Contraseña actual</span>
+              <input [type]="mostrarPasswords ? 'text' : 'password'" name="passwordActual"
+                     autocomplete="current-password" [(ngModel)]="passwordActual">
+            </label>
+
+            <div class="perfil-fila">
+              <label class="perfil-campo">
+                <span>Nueva contraseña</span>
+                <input [type]="mostrarPasswords ? 'text' : 'password'" name="passwordNueva"
+                       maxlength="100" autocomplete="new-password" [(ngModel)]="passwordNueva">
+                <small class="perfil-aviso" *ngIf="passwordNueva && passwordNueva.length < 8">
+                  Faltan {{ 8 - passwordNueva.length }} caracteres.
+                </small>
+              </label>
+
+              <label class="perfil-campo">
+                <span>Repite la nueva contraseña</span>
+                <input [type]="mostrarPasswords ? 'text' : 'password'" name="confirmarPassword"
+                       maxlength="100" autocomplete="new-password" [(ngModel)]="confirmarPassword">
+                <small class="perfil-aviso" *ngIf="confirmarPassword && !passwordsCoinciden">
+                  No coincide con la nueva contraseña.
+                </small>
+              </label>
+            </div>
+
+            <label class="perfil-check">
+              <input type="checkbox" name="mostrar" [(ngModel)]="mostrarPasswords">
+              Mostrar contraseñas
+            </label>
+
+            <div class="perfil-alerta perfil-ok" *ngIf="mensajePassword">{{ mensajePassword }}</div>
+            <div class="perfil-alerta perfil-mal" *ngIf="errorPassword">{{ errorPassword }}</div>
+
+            <div class="perfil-acciones">
+              <button type="submit" class="btn-primary"
+                      [disabled]="guardandoPassword || !passwordValida">
+                {{ guardandoPassword ? 'Cambiando...' : 'Cambiar contraseña' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+</div>

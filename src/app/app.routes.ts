@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 
 import { Login } from './pages/login/login';
 import { Home } from './pages/home/home';
+import { Perfil } from './pages/perfil/perfil';
 import { Nino } from './pages/nino/nino';
 import { Usuario } from './pages/usuario/usuario';
 import { Evaluaciones } from './pages/evaluaciones/evaluaciones';
@@ -31,6 +32,12 @@ export const routes: Routes = [
   // =========================================================
   // HOME
   // =========================================================
+
+  {
+    path: 'perfil',
+    canActivate: [authGuard],
+    component: Perfil
+  },
 
   {
     path: 'home',
