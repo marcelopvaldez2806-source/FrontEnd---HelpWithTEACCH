@@ -35,6 +35,7 @@ interface Evaluacion {
   idVersion: number;
   fechaEvaluacion: string;
   estado: string;
+  tiempoActivoSegundos?: number | null;
 }
 
 interface Nino {
