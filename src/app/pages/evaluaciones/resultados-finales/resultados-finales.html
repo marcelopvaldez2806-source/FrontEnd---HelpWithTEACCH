@@ -205,6 +205,34 @@
 
         </section>
 
+        <!-- TIEMPO DE EVALUACIÓN -->
+        <section class="tiempo-section">
+
+          <div class="tiempo-card tiempo-total">
+            <span class="tiempo-icono">⏱</span>
+            <div>
+              <span class="tiempo-etiqueta">Tiempo total</span>
+              <strong>{{ formatearDuracion(tiempoTotal(resultadoSeleccionado)) }}</strong>
+            </div>
+          </div>
+
+          <div class="tiempo-card">
+            <span class="tiempo-etiqueta">Q-CHAT</span>
+            <strong>{{ formatearDuracion(resultadoSeleccionado.tiempoQChat) }}</strong>
+          </div>
+
+          <div class="tiempo-card">
+            <span class="tiempo-etiqueta">K-ABC</span>
+            <strong>{{ formatearDuracion(resultadoSeleccionado.tiempoKabc) }}</strong>
+          </div>
+
+          <p class="tiempo-nota">
+            Tiempo activo frente a cada prueba (no cuenta pausas ni la pestaña oculta).
+            "No medido" = evaluación hecha antes de agregar el cronómetro.
+          </p>
+
+        </section>
+
         <!-- CARGANDO DETALLE -->
         <div class="state-container" *ngIf="cargandoDetalle">
           <div class="loader"></div>

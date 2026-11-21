@@ -1722,3 +1722,66 @@
     max-width: 100%;
   }
 }
+
+
+/* =========================================================
+   TIEMPO DE EVALUACIÓN
+   ========================================================= */
+
+.tiempo-section {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 14px;
+  margin: 0 0 22px;
+}
+
+.tiempo-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.tiempo-total {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.tiempo-icono {
+  font-size: 26px;
+}
+
+.tiempo-etiqueta {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.tiempo-card strong {
+  font-size: 20px;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.tiempo-nota {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+@media (max-width: 700px) {
+  .tiempo-section {
+    grid-template-columns: 1fr;
+  }
+}
