@@ -1,0 +1,17 @@
+<div
+  class="cronometro"
+  *ngIf="idEvaluacion"
+  [class.corriendo]="activo && cargado"
+  role="timer"
+  [attr.aria-label]="etiqueta + ': ' + tiempoFormateado"
+>
+  <span class="cronometro-icono">⏱</span>
+
+  <div class="cronometro-texto">
+    <span class="cronometro-etiqueta">{{ etiqueta }}</span>
+    <strong class="cronometro-valor">{{ tiempoFormateado }}</strong>
+    <small class="cronometro-base" *ngIf="tieneBase">
+      incluye Q-CHAT ({{ baseFormateada }})
+    </small>
+  </div>
+</div>

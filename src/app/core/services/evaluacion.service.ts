@@ -33,6 +33,8 @@ export interface EvaluacionResponse {
   fechaInicio?: string | null;
   fechaFinalizacion?: string | null;
 
+  tiempoActivoSegundos?: number | null;
+
   creadoPor?: string | null;
   fechaCreacion?: string | null;
   modificadoPor?: string | null;

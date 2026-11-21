@@ -137,6 +137,8 @@ interface RespuestaGuardada {
 }
 
 
+import { Cronometro } from '../../../layout/cronometro/cronometro';
+
 @Component({
   selector: 'app-kabc',
   standalone: true,
@@ -146,6 +148,7 @@ interface RespuestaGuardada {
     Navbar,
     Sidebar,
     Header,
+    Cronometro,
     Ejercicio01,
     Ejercicio02,
     Ejercicio03,

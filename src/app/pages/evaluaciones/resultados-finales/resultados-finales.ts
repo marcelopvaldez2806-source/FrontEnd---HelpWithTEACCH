@@ -50,6 +50,9 @@ interface ResultadoIntegrado {
   idEvaluacionKabc: number;
   fechaQChat: string;
   fechaKabc: string;
+  // Tiempo activo de cada evaluación (segundos; null si no se midió)
+  tiempoQChat: number | null;
+  tiempoKabc: number | null;
 }
 
 interface RespuestaKabc {
@@ -345,7 +348,9 @@ export class ResultadosFinales implements OnInit {
           idEvaluacionQChat: qchat.idEvaluacion,
           idEvaluacionKabc: kabc.idEvaluacion,
           fechaQChat: qchat.fechaEvaluacion,
-          fechaKabc: kabc.fechaEvaluacion
+          fechaKabc: kabc.fechaEvaluacion,
+          tiempoQChat: qchat.tiempoActivoSegundos ?? null,
+          tiempoKabc: kabc.tiempoActivoSegundos ?? null
         });
       }
 
@@ -393,6 +398,35 @@ export class ResultadosFinales implements OnInit {
     if (resultado) {
       this.verResultado(resultado);
     }
+  }
+
+  // =====================================================
+  // TIEMPO DE EVALUACIÓN
+  // =====================================================
+
+  formatearDuracion(segundos: number | null | undefined): string {
+    if (segundos === null || segundos === undefined) {
+      return 'No medido';
+    }
+
+    const total = Math.max(0, Math.floor(segundos));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+
+    if (h > 0) {
+      return `${h} h ${m} min ${s} s`;
+    }
+
+    return m > 0 ? `${m} min ${s} s` : `${s} s`;
+  }
+
+  tiempoTotal(resultado: ResultadoIntegrado): number | null {
+    if (resultado.tiempoQChat === null && resultado.tiempoKabc === null) {
+      return null;
+    }
+
+    return (resultado.tiempoQChat ?? 0) + (resultado.tiempoKabc ?? 0);
   }
 
   // =====================================================

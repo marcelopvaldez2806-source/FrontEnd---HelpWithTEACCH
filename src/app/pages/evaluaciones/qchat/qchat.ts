@@ -95,6 +95,8 @@ interface PrediccionML {
    COMPONENTE
    ========================================================= */
 
+import { Cronometro } from '../../../layout/cronometro/cronometro';
+
 @Component({
   selector: 'app-qchat',
   standalone: true,
@@ -103,7 +105,8 @@ interface PrediccionML {
     CommonModule,
     Navbar,
     Sidebar,
-    Header
+    Header,
+    Cronometro
   ],
 
   templateUrl: './qchat.html',

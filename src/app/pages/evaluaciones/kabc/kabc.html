@@ -1,3 +1,10 @@
+<app-cronometro
+  etiqueta="Tiempo total (Q-CHAT + K-ABC)"
+  [idEvaluacion]="evaluacionId"
+  [idNinoBase]="ninoSeleccionado?.idNino ?? null"
+  [activo]="evaluacionCreada && !evaluacionCompletada && !cargandoConfiguracion && items.length > 0"
+></app-cronometro>
+
 <app-sidebar
   (sidebarToggle)="onSidebarToggle($event)">
 </app-sidebar>
